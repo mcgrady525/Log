@@ -18,7 +18,7 @@ namespace Log.Common.Helper
         /// <returns></returns>
         public static IDbConnection CreateConnection()
         {
-            IDbConnection conn = new SqlConnection(ConfigHelper.GetConnectionString("RightsDB"));
+            IDbConnection conn = new SqlConnection(ConfigHelper.GetConnectionString("LogDB"));
             if (conn.State != ConnectionState.Open)
             {
                 conn.Close();
