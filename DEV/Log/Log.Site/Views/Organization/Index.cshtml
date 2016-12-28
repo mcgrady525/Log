@@ -1,0 +1,256 @@
+﻿<div id="ui_org_layout" class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'west',split:true,title:'组织机构'" style="width: 200px; padding: 10px;">
+        <div>
+            <ul id="ui_org_treeOrg"></ul>
+        </div>
+    </div>
+    <div data-options="region:'center',border:false, title:'组织机构列表'">
+        <table id="ui_org_tg" data-options="fit:true,border:false"></table>
+    </div>
+</div>
+
+@if (false)
+{
+    <script type="text/javascript" src="~/Scripts/jquery-1.8.2.js"></script>
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('#ui_org_treeOrg').tree({
+            method: 'POST',
+            url: '@Url.Action("GetTreeOrgData", "Organization")',
+            lines: true,
+            onClick: function (node) {
+                var centerPanel = $("#ui_org_layout").layout("panel", "center");
+                centerPanel.panel("setTitle", "组织机构列表 - " + node.text);
+                GetChildrenOrgs(node.id);
+            }
+        });
+
+        //默认加载所有机构
+        GetChildrenOrgs(0);
+    });
+
+    //获取指定机构下的所有子机构
+    function GetChildrenOrgs(orgId) {
+        $.ajax({
+            url: '@Url.Action("GetButtonsByUserIdAndMenuCode", "Organization")',
+            type: "POST",
+            dataType: "json",
+            data: { "menuCode": "organization", "pageName": "organization" },
+            timeout: 5000,
+            success: function (data) {
+                if (data.success) {
+                    var oldSelectDeptId;
+                    var toolbar = getToolBar(data);
+                    if (data.browser) {
+                        $("#ui_org_tg").treegrid({
+                            url: '@Url.Action("GetChildrenOrgs", "Organization")' + "?orgId=" + orgId,
+                            idField: 'id',
+                            treeField: 'text',
+                            rownumbers: true,
+                            columns: [[
+                                        { field: 'text', title: '机构名称', width: 200 },
+                                        { field: 'Code', title: '编码', width: 100 },
+                                        { field: 'Sort', title: '排序', width: 60 },
+                                        {
+                                            field: 'Enabled', title: '启用', sortable: true, width: 60, align: 'center',
+                                            formatter: function (value, row, index) {
+                                                return value ? '<img src="@Url.Content("~/Content/easyui/icon/chk_checked.gif")" alt="已启用" title="机构已启用" />' : '<img src="@Url.Content("~/Content/easyui/icon/chk_unchecked.gif")" alt="未启用" title="机构未启用" />';
+                                            }
+                                        },
+                                        { field: 'CreatedTime', title: '创建时间', width: 150 },
+                                        { field: 'LastUpdatedTime', title: '上次修改时间', width: 150 }
+                            ]],
+                            toolbar: toolbar.length == 0 ? null : toolbar
+                        });
+                    }
+                    else {
+                        $.show_warning("提示", "无权限，请联系管理员！");
+                    }
+                } else {
+                    $.show_warning("错误", data.result);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (textStatus == "timeout") {
+                    $.show_warning("提示", "请求超时，请刷新当前页重试！");
+                }
+                else {
+                    $.show_warning("错误", textStatus + "：" + errorThrown);
+                }
+            }
+        })
+    };
+
+    var orgIds = "";
+    function recursionGetIds(rows) {
+        if (rows.children != undefined) {
+            $.each(rows.children, function (i, row) {
+                orgIds += row.id + ",";
+                recursionGetIds(row);
+            });
+        }
+    }
+
+    //添加机构
+    function organization_add() {
+        $("<div/>").dialog({
+            id: "ui_org_add_dialog",
+            href: '@Url.Action("Add", "Organization")',
+            title: "添加机构",
+            height: 350,
+            width: 460,
+            modal: true,
+            buttons: [{
+                id: "ui_org_add_btn",
+                text: '添 加',
+                handler: function () {
+                    $("#ui_org_addform").form("submit", {
+                        url: '@Url.Action("Add", "Organization")',
+                        onSubmit: function (param) {
+                            $('#ui_org_add_btn').linkbutton('disable');
+                            if ($(this).form('validate')) {
+                                var t = $("#comboParent").combotree('tree');
+                                var node = t.tree('getSelected');
+                                param.ParentId = node.id;
+                                return true;
+                            }
+                            else {
+                                $('#ui_org_add_btn').linkbutton('enable');
+                                return false;
+                            }
+                        },
+                        success: function (data) {
+                            var dataJson = eval('(' + data + ')');
+                            if (dataJson.success) {
+                                $("#ui_org_add_dialog").dialog('destroy');
+                                $.show_warning("提示", dataJson.msg);
+                                $("#ui_org_tg").treegrid("reload");
+                            } else {
+                                $('#ui_org_add_btn').linkbutton('enable');
+                                $.show_warning("提示", dataJson.msg);
+                            }
+                        }
+                    });
+                }
+            }],
+            onLoad: function () {
+                $("#Name").focus();
+            },
+            onClose: function () {
+                $("#ui_org_add_dialog").dialog('destroy');
+            }
+        });
+    };
+
+    //修改机构
+    function organization_edit() {
+        var row = $("#ui_org_tg").treegrid("getSelected");
+        if (!row) {
+            $.show_warning("提示", "请先选择要修改的机构!");
+            return;
+        }
+
+        //不可以修改根节点
+        if (row.ParentId== 0) {
+            $.show_warning("提示", "不能修改顶级机构!");
+            return;
+        }
+
+        $("<div/>").dialog({
+            id: "ui_org_edit_dialog",
+            href: '@Url.Action("Edit", "Organization")',
+            title: "修改机构",
+            height: 350,
+            width: 460,
+            modal: true,
+            buttons: [{
+                id: "ui_org_edit_btn",
+                text: '修 改',
+                handler: function () {
+                    $("#ui_org_editform").form("submit", {
+                        url: '@Url.Action("Edit", "Organization")',
+                        onSubmit: function (param) {
+                            $('#ui_org_edit_btn').linkbutton('disable');
+                            if ($(this).form('validate')) {
+                                var t = $("#comboParent").combotree('tree');
+                                var node = t.tree('getSelected');
+                                param.ParentId = node.id;
+                                return true;
+                            }
+                            else {
+                                $('#ui_org_edit_btn').linkbutton('enable');
+                                return false;
+                            }
+                        },
+                        success: function (data) {
+                            var dataJson = eval('(' + data + ')');
+                            if (dataJson.success) {
+                                $("#ui_org_edit_dialog").dialog('destroy');
+                                $.show_warning("提示", dataJson.msg);
+                                $("#ui_org_tg").treegrid("reload");
+                            } else {
+                                $('#ui_org_edit_btn').linkbutton('enable');
+                                $.show_warning("提示", dataJson.msg);
+                            }
+                        }
+                    });
+                }
+            }],
+            onLoad: function () {
+                $("#id").val(row.id);
+                $("#Name").val(row.text);
+                $('#Sort').numberspinner('setValue', row.Sort);
+                $("#comboParent").combotree('setValue', row.ParentId);
+            },
+            onClose: function () {
+                $("#ui_org_edit_dialog").dialog('destroy');
+            }
+        });
+    }
+
+    //删除机构
+    function organization_delete() {
+        var row = $("#ui_org_tg").datagrid("getSelected");
+        if (!row) {
+            $.show_warning("提示", "请先勾选要删除的机构");
+            return;
+        }
+        $.messager.confirm('提示', '确定删除：' + row.text + '？如果有子机构也会同时删除！', function (r) {
+            if (r) {
+                orgIds = "";
+                recursionGetIds(row);
+                $.ajax({
+                    url: '@Url.Action("Delete", "Organization")',
+                    data: { "deleteOrgIds": row.id + "," + orgIds },
+                    type: "POST",
+                    dataType: "JSON",
+                    success: function (data) {
+                        if (data.success) {
+                            $.show_warning("提示", data.msg);
+                            $("#ui_org_tg").treegrid("reload");
+                            if ($('#tabs').tabs('exists', '组织机构')) {
+                                $('#tabs').tabs('getTab', '组织机构').panel('refresh');
+                            }
+                            //$("#ui_org_layout").layout("collapse", "east");
+                        } else {
+                            $.show_warning("提示", data.msg);
+                        }
+                    }
+                });
+            }
+        });
+    };
+
+    //全部展开
+    function organization_expandall() {
+        $("#ui_org_tg").treegrid("expandAll");
+    };
+
+    //全部折叠
+    function organization_collapseall() {
+        $("#ui_org_tg").treegrid("collapseAll");
+    };
+
+</script>

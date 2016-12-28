@@ -1,0 +1,259 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link type="image/x-icon" rel="shortcut icon" href="~/Content/images/favicon.ico" />
+    @Styles.Render("~/Content/easyui/bootstrap")
+    @Styles.Render("~/Content/site")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/easyui")
+    @Scripts.Render("~/bundles/common")
+    <title>首页</title>
+</head>
+<body class="easyui-layout">
+    <noscript>
+        <div style="position: absolute; z-index: 100000; height: 2046px; top: 0px; left: 0px;
+            width: 100%; background: white; text-align: center;">
+            <h1>
+                必须打开浏览器javascript支持！！！
+            </h1>
+        </div>
+    </noscript>
+    <div data-options="region:'north',border:false" style="height: 60px; background: #5090C1; padding: 10px; font-size: xx-large;">
+        <span style="color: #FFFFFF; opacity: 0.9;font-size:x-large;">网站后台管理</span>
+        <div style="position: absolute; right: 5px; top: 10px; color: #FFFFFF; opacity: 0.9;" id="div_welcome"></div>
+        <div style="position: absolute; right: 0px; bottom: 0px;">
+            <a href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-boss'" style="color: #FFFFFF; opacity:0.9;" onclick="searchMyInfo();">我的信息</a>
+            <a href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-set1'" style="color: #FFFFFF; opacity:0.9;" onclick="changePwd();">修改密码</a>
+            <a href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-stop'" style="color: #FFFFFF; opacity:0.9;" onclick="loginOut();">退出系统</a>
+        </div>
+    </div>
+    <div data-options="region:'west',split:true,title:'功能导航'" style="width: 180px;">
+        <div id="leftAccordion" class="easyui-accordion">
+        </div>
+    </div>
+    <div data-options="region:'center'">
+        <div id="tabs" class="easyui-tabs" fit="true" border="false" data-options="
+                    tools:[
+                    {iconCls : 'icon-arrow_refresh',text:'刷新',handler:refreshTab},
+                    {iconCls : 'icon-delete3',text:'关闭全部',handler:closeTab}
+                    ]">
+        </div>
+    </div>
+
+    @if (false)
+    {
+        <script type="text/javascript" src="~/Scripts/jquery-1.8.2.js"></script>
+    }
+    <script type="text/javascript">
+        $(function () {
+            initLeftMenu();
+            getCurrentUser();
+        });
+
+        function initLeftMenu() {
+            $("#leftAccordion").accordion({
+                fillSpace: true,
+                fit: true,
+                border: false,
+                animate: true
+            });
+
+            $.post('@Url.Action("GetLeftMenuAccordion", "Home")', { id: "0" }, function (data) {
+                data = JSON.parse(data);
+                //创建accordion
+                $.each(data, function (i, item) {
+                    var id = item.id;
+                    $('#leftAccordion').accordion('add', {
+                        title: item.text,
+                        content: "<ul id='tree" + id + "' style='margin:5px;' ></ul>",
+                        selected: true,
+                        iconCls: item.iconCls
+                    });
+                    $.parser.parse();//?再次加载easyui
+
+                    //创建tree
+                    $.post('@Url.Action("GetLeftMenuTree", "Home")', { id: id }, function (data) {
+                        data = JSON.parse(data);
+                        $("#tree" + id).tree({
+                            data: data,
+                            lines: true,
+                            onClick: function (node) {
+                                if (node.attributes) {
+                                    addTab(node.text, node.attributes.url, node.iconCls);
+                                }
+                            }
+                        });
+                    });
+
+                });
+            });
+        }
+
+        function getCurrentUser() {
+            $.ajax({
+                url: '@Url.Action("GetCurrentUser", "Home")',//获取该用户的信息并再次验证cookie
+                type: "post",
+                dataType: "json",
+                success: function (result) {
+                    if (result.success) {
+                        var resultMsg = eval('(' + result.msg + ')');
+                        $("#div_welcome").html("当前登录用户：" + resultMsg.UserName);
+                        if (!resultMsg.IsChangePwd) {
+                            $("<div/>").dialog({
+                                id: "ui_user_userfirstlogin_dialog",
+                                href: '@Url.Action("FirstLogin", "Home")',
+                                title: "首次登陆需重置密码",
+                                height: 160,
+                                width: 360,
+                                modal: true,
+                                closable: false,
+                                buttons: [{
+                                    id: "ui_user_userfirstlogin_edit",
+                                    text: '修 改',
+                                    handler: function () {
+                                        $("#ui_user_userfirstlogin_form").form("submit", {
+                                            url: '@Url.Action("FirstLogin", "Home")',
+                                            onSubmit: function (param) {
+                                                $('#ui_user_userfirstlogin_edit').linkbutton('disable');
+                                                if ($(this).form('validate'))
+                                                    return true;
+                                                else {
+                                                    $('#ui_user_userfirstlogin_edit').linkbutton('enable');
+                                                    return false;
+                                                }
+                                            },
+                                            success: function (data) {
+                                                $('#ui_user_userfirstlogin_edit').linkbutton('enable');
+                                                var dataBack = $.parseJSON(data);
+                                                if (dataBack.success) {
+                                                    $("#ui_user_userfirstlogin_dialog").dialog('destroy');
+                                                    $.show_warning("提示", dataBack.msg);
+                                                }
+                                                else {
+                                                    $('#ui_user_userfirstlogin_edit').linkbutton('enable');
+                                                    $.show_warning("提示", dataBack.msg);
+                                                }
+                                            }
+                                        });
+                                    }
+                                }, {
+                                    text: '退 出',
+                                    handler: function () { loginOut(); }
+                                }],
+                                onLoad: function () {
+                                    $("#NewPwd").focus();
+                                    $("#Id").val(resultMsg.Id);
+                                }
+                            });
+                        }
+                    }
+                    else {
+                        window.location.href = '@Url.Action("Login", "Account")';
+                    }
+                }
+            });
+        }
+
+        //查看当前用户信息
+        function searchMyInfo() {
+            $("<div/>").dialog({
+                id: "ui_myinfo_dialog",
+                href: '@Url.Action("GetMyInfo", "Home")',
+                title: "我的信息",
+                height: 500,
+                width: 580,
+                modal: true,
+                onLoad: function () {
+                    $.ajax({
+                        url: '@Url.Action("GetMyInfoPost", "Home")',
+                        type: "POST",
+                        dataType: "json",
+                        success: function (result) {
+                            $("#ui_myinfo_userid").html(result.data.UserId);
+                            $("#ui_myinfo_username").html(result.data.UserName);
+                            $("#ui_myinfo_adddate").html(result.data.CreatedTime);
+                            $("#ui_myinfo_roles").html(result.data.RolesName.length > 12 ? "<span title=" + result.data.RolesName + ">" + result.data.RolesName.substring(0, 12) + "...</span>" : result.data.RolesName);
+                            $("#ui_myinfo_departments").html(result.data.DepartmentsName.length > 12 ? "<span title=" + result.data.DepartmentsName + ">" + result.data.DepartmentsName.substring(0, 12) + "...</span>" : result.data.DepartmentsName);
+                        }
+                    });
+
+                    $('#ui_myinfo_authority').tree({
+                        url: '@Url.Action("GetMyAuthority", "Home")',
+                        onlyLeafCheck: true,
+                        checkbox: true
+                    });
+                },
+                onClose: function () {
+                    $("#ui_myinfo_dialog").dialog('destroy');  //销毁dialog对象
+                }
+            });
+        }
+
+        //修改密码
+        function changePwd() {
+            $("<div/>").dialog({
+                id: "ui_user_userchangepwd_dialog",
+                href: '@Url.Action("ChangePwd", "Home")',
+                title: "修改密码",
+                height: 240,
+                width: 380,
+                modal: true,
+                closable: false,
+                buttons: [{
+                    id: "ui_user_userchangepwd_edit",
+                    text: '修 改',
+                    handler: function () {
+                        $("#ui_user_userchangepwd_form").form("submit", {
+                            url: '@Url.Action("ChangePwd", "Home")',
+                            onSubmit: function (param) {
+                                $('#ui_user_userchangepwd_edit').linkbutton('disable');
+                                if ($(this).form('validate'))
+                                    return true;
+                                else {
+                                    $('#ui_user_userchangepwd_edit').linkbutton('enable');
+                                    return false;
+                                }
+                            },
+                            success: function (data) {
+                                $('#ui_user_userchangepwd_edit').linkbutton('enable');
+                                var dataBack = $.parseJSON(data);
+                                if (dataBack.success) {
+                                    alert(dataBack.msg);
+                                    window.location.href = '@Url.Action("Login", "Account")';
+                                }
+                                else {
+                                    $('#ui_user_userchangepwd_edit').linkbutton('enable');
+                                    $.show_warning("提示", dataBack.msg);
+                                }
+                            }
+                        });
+                    }
+                }, {
+                    text: '取 消',
+                    handler: function () { $("#ui_user_userchangepwd_dialog").dialog('destroy'); }
+                }],
+                onLoad: function () {
+                    $("#OriginalPwd").focus();
+                }
+            });
+        }
+
+        //退出系统
+        function loginOut() {
+            if (confirm("确定退出当前登陆账户？")) {
+                $.post('@Url.Action("LogOut", "Account")', null, function (result) {
+                    if (result.success) {
+                        window.location.href = '@Url.Action("Login", "Account")';
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

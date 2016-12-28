@@ -1,0 +1,257 @@
+[{
+	"id": "1",
+	"text": "系统管理",
+	"children": [{
+		"id": "3",
+		"text": "权限管理",
+		"children": [{
+			"id": "5",
+			"text": "组织机构",
+			"children": [{
+				"id": "1",
+				"text": "浏览",
+				"checked": true,
+				"attributes": {
+					"menuid": "5",
+					"buttonid": "1"
+				}
+			}]
+		},
+		{
+			"id": "6",
+			"text": "用户管理",
+			"children": [{
+				"id": "1",
+				"text": "浏览",
+				"checked": true,
+				"attributes": {
+					"menuid": "6",
+					"buttonid": "1"
+				}
+			},
+			{
+				"id": "1",
+				"text": "添加",
+				"checked": true,
+				"attributes": {
+					"menuid": "6",
+					"buttonid": "2"
+				}
+			},
+			{
+				"id": "1",
+				"text": "修改",
+				"checked": true,
+				"attributes": {
+					"menuid": "6",
+					"buttonid": "3"
+				}
+			},
+			{
+				"id": "1",
+				"text": "删除",
+				"checked": true,
+				"attributes": {
+					"menuid": "6",
+					"buttonid": "4"
+				}
+			},
+			{
+				"id": "1",
+				"text": "设置机构",
+				"checked": true,
+				"attributes": {
+					"menuid": "6",
+					"buttonid": "7"
+				}
+			},
+			{
+				"id": "1",
+				"text": "设置角色",
+				"checked": true,
+				"attributes": {
+					"menuid": "6",
+					"buttonid": "8"
+				}
+			}]
+		},
+		{
+			"id": "7",
+			"text": "角色管理",
+			"children": [{
+				"id": "1",
+				"text": "浏览",
+				"checked": true,
+				"attributes": {
+					"menuid": "7",
+					"buttonid": "1"
+				}
+			},
+			{
+				"id": "1",
+				"text": "添加",
+				"checked": true,
+				"attributes": {
+					"menuid": "7",
+					"buttonid": "2"
+				}
+			},
+			{
+				"id": "1",
+				"text": "修改",
+				"checked": true,
+				"attributes": {
+					"menuid": "7",
+					"buttonid": "3"
+				}
+			},
+			{
+				"id": "1",
+				"text": "删除",
+				"checked": true,
+				"attributes": {
+					"menuid": "7",
+					"buttonid": "4"
+				}
+			},
+			{
+				"id": "1",
+				"text": "角色授权",
+				"checked": true,
+				"attributes": {
+					"menuid": "7",
+					"buttonid": "9"
+				}
+			}]
+		},
+		{
+			"id": "8",
+			"text": "菜单管理",
+			"children": [{
+				"id": "1",
+				"text": "浏览",
+				"checked": true,
+				"attributes": {
+					"menuid": "8",
+					"buttonid": "1"
+				}
+			}]
+		},
+		{
+			"id": "9",
+			"text": "按钮管理",
+			"children": [{
+				"id": "1",
+				"text": "浏览",
+				"checked": true,
+				"attributes": {
+					"menuid": "9",
+					"buttonid": "1"
+				}
+			}]
+		}]
+	},
+	{
+		"id": "4",
+		"text": "日志管理",
+		"children": [{
+			"id": "10",
+			"text": "调试日志",
+			"children": [{
+				"id": "1",
+				"text": "浏览",
+				"checked": true,
+				"attributes": {
+					"menuid": "10",
+					"buttonid": "1"
+				}
+			}]
+		},
+		{
+			"id": "11",
+			"text": "错误日志",
+			"children": [{
+				"id": "1",
+				"text": "浏览",
+				"checked": true,
+				"attributes": {
+					"menuid": "11",
+					"buttonid": "1"
+				}
+			}]
+		},
+		{
+			"id": "12",
+			"text": "性能日志",
+			"children": [{
+				"id": "1",
+				"text": "浏览",
+				"checked": true,
+				"attributes": {
+					"menuid": "12",
+					"buttonid": "1"
+				}
+			}]
+		},
+		{
+			"id": "13",
+			"text": "Xml日志",
+			"children": [{
+				"id": "1",
+				"text": "浏览",
+				"checked": true,
+				"attributes": {
+					"menuid": "13",
+					"buttonid": "1"
+				}
+			}]
+		}]
+	}]
+},
+{
+	"id": "2",
+	"text": "其它",
+	"children": [{
+		"id": "14",
+		"text": "流程管理",
+		"children": [{
+			"id": "15",
+			"text": "表单定义",
+			"children": [{
+				"id": "1",
+				"text": "浏览",
+				"checked": true,
+				"attributes": {
+					"menuid": "15",
+					"buttonid": "1"
+				}
+			}]
+		},
+		{
+			"id": "16",
+			"text": "流程定义",
+			"children": [{
+				"id": "1",
+				"text": "浏览",
+				"checked": true,
+				"attributes": {
+					"menuid": "16",
+					"buttonid": "1"
+				}
+			}]
+		},
+		{
+			"id": "17",
+			"text": "流程监控",
+			"children": [{
+				"id": "1",
+				"text": "浏览",
+				"checked": true,
+				"attributes": {
+					"menuid": "17",
+					"buttonid": "1"
+				}
+			}]
+		}]
+	}]
+}]

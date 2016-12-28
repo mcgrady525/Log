@@ -1,0 +1,39 @@
+﻿<div style="padding: 15px; overflow: hidden">
+    <form id="ui_menu_editform" method="post" action="">
+        <table class="tableForm" width="100%">
+            <tr>
+                <th>
+                    名称：
+                </th>
+                <td>
+                    <input type="hidden" name="id" id="id" />
+                    <input type="text" name="Name" id="Name" />
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    链接地址：
+                </th>
+                <td>
+                    <input id="Url" name="Url" />
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    图标：
+                </th>
+                <td>
+                    <input id="Icon" name="Icon" />
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    排序：
+                </th>
+                <td>
+                    <input id="Sort" name="Sort" class="easyui-numberspinner" style="width: 70px;" data-options="min:1,max:100,editable:false">
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

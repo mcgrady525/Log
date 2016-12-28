@@ -1,0 +1,451 @@
+﻿<div id="ui_org_layout" class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'west',split:true,title:'组织机构'" style="width: 200px; padding: 10px;">
+        <div>
+            <ul id="ui_user_treeOrg"></ul>
+        </div>
+    </div>
+    <div data-options="region:'center',border:false, title:'用户列表'">
+        <table id="ui_user_dg" data-options="fit:true,border:false"></table>
+    </div>
+</div>
+@if (false)
+{
+    <script type="text/javascript" src="~/Scripts/jquery-1.8.2.js"></script>
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('#ui_user_treeOrg').tree({
+            method: 'POST',
+            url: '@Url.Action("GetTreeOrgData", "Organization")',
+            lines: true,
+            onClick: function (node) {
+                var centerPanel = $("#ui_org_layout").layout("panel", "center");
+                centerPanel.panel("setTitle", "用户列表 - " + node.text);
+                GetUserByOrgId(node.id);
+            }
+        });
+
+        //默认加载所有用户
+        GetUserByOrgId(0);
+    });
+
+    //获取指定机构下(包括子机构)的所有用户
+    function GetUserByOrgId(orgId) {
+        $.ajax({
+            url: '@Url.Action("GetButtonsByUserIdAndMenuCode", "Organization")',
+            type: "POST",
+            dataType: "json",
+            data: { "menuCode": "user", "pageName": "user" },
+            timeout: 5000,
+            success: function (data) {
+                if (data.success) {
+                    var oldSelectDeptId;
+                    var toolbar = getToolBar(data);
+                    if (data.browser) {
+                        $("#ui_user_dg").datagrid({
+                            url: '@Url.Action("GetPagingUsers", "User")' + "?orgId=" + orgId,
+                            striped: true,
+                            rownumbers: true,
+                            pagination: true,
+                            pageSize: 10,
+                            idField: 'Id',
+                            sortName: 'CreatedTime',
+                            sortOrder: 'desc',
+                            pageList: [10, 20, 40, 60, 80, 100],
+                            frozenColumns: [[
+                                             { field: 'ck', checkbox: true },
+                                             {
+                                                 width: 100,
+                                                 title: '登录id',
+                                                 field: 'UserId',
+                                                 sortable: true,
+                                                 formatter: function (value, row, index) {
+                                                     return value.length > 8 ? '<span title="' + value + '">' + value + '</span>' : value;
+                                                 }
+                                             }, {
+                                                 width: 80,
+                                                 title: '用户名',
+                                                 field: 'UserName',
+                                                 sortable: true,
+                                                 formatter: function (value, row, index) {
+                                                     return value.length > 5 ? '<span title="' + value + '">' + value + '</span>' : value;
+                                                 }
+                                             }]],
+                            columns: [[
+                                        {
+                                            field: 'UserOrgNames',
+                                            title: '所属机构',
+                                            width: 180,
+                                            formatter: function (value, row, index) {
+                                                return value.length > 12 ? '<span title="' + value + '">' + value + '</span>' : value;
+                                            }
+                                        },
+                                       {
+                                           field: 'UserRoleNames',
+                                           title: '拥有角色',
+                                           width: 180,
+                                           formatter: function (value, row, index) {
+                                               return value.length > 12 ? '<span title="' + value + '">' + value + '</span>' : value;
+                                           }
+                                       },
+                                       {
+                                           field: 'EnableFlag',
+                                           title: '启用',
+                                           sortable: true,
+                                           width: 60,
+                                           align: 'center',
+                                           formatter: function (value, row, index) {
+                                               return value ? '<img src="@Url.Content("~/Content/easyui/icon/chk_checked.gif")" alt="已启用" title="用户已启用" />' : '<img src="@Url.Content("~/Content/easyui/icon/chk_unchecked.gif")" alt="未启用" title="用户未启用" />';
+                                           }
+                                       },
+                                       {
+                                           field: 'IsChangePwd',
+                                           title: '改密',
+                                           sortable: true,
+                                           width: 60,
+                                           align: 'center',
+                                           formatter: function (value, row, index) {
+                                               return value ? '<img src="@Url.Content("~/Content/easyui/icon/chk_checked.gif")" alt="已改密" title="用户已改密" />' : '<img src="@Url.Content("~/Content/easyui/icon/chk_unchecked.gif")" alt="未改密" title="用户未改密" />';
+                                           }
+                                       },
+                                       {
+                                           field: 'CreatedTime',
+                                           title: '创建时间',
+                                           sortable: true,
+                                           width: 130
+                                       },
+                                       {
+                                           field: 'LastUpdatedTime',
+                                           title: '上次修改时间',
+                                           sortable: true,
+                                           width: 130
+                                       }
+                            ]],
+                            toolbar: toolbar.length == 0 ? null : toolbar,
+                            onDblClickRow: function (rowIndex, rowData) {
+                                $("#ui_user_dg").datagrid('clearSelections').datagrid('clearChecked').datagrid('checkRow', rowIndex);
+                                user_edit();
+                            }
+                        });
+                    }
+                    else {
+                        $.show_warning("提示", "无权限，请联系管理员！");
+                    }
+                } else {
+                    $.show_warning("错误", data.result);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (textStatus == "timeout") {
+                    $.show_warning("提示", "请求超时，请刷新当前页重试！");
+                }
+                else {
+                    $.show_warning("错误", textStatus + "：" + errorThrown);
+                }
+            }
+        })
+    };
+
+    var orgIds = "";
+    function recursionGetIds(rows) {
+        if (rows.children != undefined) {
+            $.each(rows.children, function (i, row) {
+                orgIds += row.id + ",";
+                recursionGetIds(row);
+            });
+        }
+    }
+
+    //新增用户
+    function user_add() {
+        $("<div/>").dialog({
+            id: "ui_user_add_dialog",
+            href: '@Url.Action("Add", "User")',
+            title: "添加用户",
+            height: 350,
+            width: 460,
+            modal: true,
+            buttons: [{
+                id: "ui_user_add_btn",
+                text: '添 加',
+                handler: function () {
+                    $("#ui_user_addform").form("submit", {
+                        url: '@Url.Action("Add", "User")',
+                        onSubmit: function (param) {
+                            $('#ui_user_add_btn').linkbutton('disable');
+                            if ($(this).form('validate')) {
+                                return true;
+                            }
+                            else {
+                                $('#ui_user_add_btn').linkbutton('enable');
+                                return false;
+                            }
+                        },
+                        success: function (data) {
+                            var dataJson = eval('(' + data + ')');
+                            if (dataJson.success) {
+                                $("#ui_user_add_dialog").dialog('destroy');
+                                $.show_warning("提示", dataJson.msg);
+                                $('#ui_user_dg').datagrid('reload');
+                            } else {
+                                $('#ui_user_add_btn').linkbutton('enable');
+                                $.show_warning("提示", dataJson.msg);
+                            }
+                        }
+                    });
+                }
+            }],
+            onLoad: function () {
+                $("#UserId").focus();
+            },
+            onClose: function () {
+                $("#ui_user_add_dialog").dialog('destroy');
+            }
+        });
+    };
+
+    //修改用户
+    function user_edit() {
+        var rows = $('#ui_user_dg').datagrid('getChecked');
+        if (rows.length < 1) {
+            $.show_warning("提示", "请先勾选要修改的用户或者双击某个用户!");
+            return;
+        }
+        if (rows.length > 1) {
+            $.show_warning("提示", "不支持批量修改!");
+            return;
+        }
+
+        $("<div/>").dialog({
+            id: "ui_user_edit_dialog",
+            href: '@Url.Action("Edit", "User")',
+            title: "修改用户",
+            height: 350,
+            width: 460,
+            modal: true,
+            buttons: [{
+                id: "ui_user_edit_btn",
+                text: '修 改',
+                handler: function () {
+                    $("#ui_user_editform").form("submit", {
+                        url: '@Url.Action("Edit", "User")',
+                        onSubmit: function (param) {
+                            $('#ui_user_edit_btn').linkbutton('disable');
+                            if ($(this).form('validate')) {
+                                return true;
+                            }
+                            else {
+                                $('#ui_user_edit_btn').linkbutton('enable');
+                                return false;
+                            }
+                        },
+                        success: function (data) {
+                            var dataJson = eval('(' + data + ')');
+                            if (dataJson.success) {
+                                $("#ui_user_edit_dialog").dialog('destroy');
+                                $.show_warning("提示", dataJson.msg);
+                                $("#ui_user_dg").datagrid("reload").datagrid('clearSelections').datagrid('clearChecked');//刷新并清除已选择
+                            } else {
+                                $('#ui_user_edit_btn').linkbutton('enable');
+                                $.show_warning("提示", dataJson.msg);
+                            }
+                        }
+                    });
+                }
+            }],
+            onLoad: function () {
+                //初始化
+                $("#id").val(rows[0].Id);
+                $("#OriginalUserId").val(rows[0].UserId);
+                $("#NewUserId").val(rows[0].UserId);
+                $("#NewUserName").val(rows[0].UserName);
+                if (rows[0].EnableFlag) {
+                    $("#EnableFlag").attr("checked", "checked");
+                }
+                if (rows[0].IsChangePwd) {
+                    $("#IsChangePwd").attr("checked", "checked");
+                }
+            },
+            onClose: function () {
+                $("#ui_user_edit_dialog").dialog('destroy');
+            }
+        });
+    }
+
+    //删除用户(可批量)
+    function user_delete() {
+        var rows = $('#ui_user_dg').datagrid('getChecked');
+        if (rows.length < 1) {
+            $.show_warning("提示", "请先勾选要删除的用户");
+            return;
+        }
+
+        $.messager.confirm('提示', '确定删除勾选的这' + rows.length + '个用户？', function (r) {
+            if (r) {
+                para = {};
+                para.action = "delete";
+                para.timespan = new Date().getTime();
+                para.ids = "";
+                $.each(rows, function (i, row) {
+                    para.ids += row.Id + ",";
+                });
+                $.ajax({
+                    url: '@Url.Action("Delete", "User")',
+                    data: para,
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.success) {
+                            $.show_warning("提示", data.msg);
+                            $("#ui_user_dg").datagrid("reload").datagrid('clearSelections').datagrid('clearChecked');
+                        } else {
+                            $.show_warning("提示", data.msg);
+                        }
+                    }
+                });
+            }
+        });
+    };
+
+
+    //设置机构(可批量)
+    function user_setorg() {
+        var rows = $("#ui_user_dg").datagrid("getChecked");
+        if (rows.length < 1) {
+            $.show_warning("提示", "请先勾选要设置机构的用户");
+            return;
+        }
+        $("<div/>").dialog({
+            id: "ui_user_setorg_dialog",
+            href: '@Url.Action("SetOrg", "User")',
+            title: rows.length == 1 ? "设置机构" : "批量设置机构：" + rows.length + "个用户",
+            height: 220,
+            width: 380,
+            modal: true,
+            buttons: [{
+                id: "ui_user_setorg_btn",
+                text: '确 定',
+                handler: function () {
+                    $("#ui_user_setorgform").form("submit", {
+                        url: '@Url.Action("SetOrg", "User")',
+                        onSubmit: function (param) {
+                            $('#ui_user_setorg_btn').linkbutton('disable');
+                            param.action = 'setdep';
+
+                            //调用api手动获取combotree选中节点的值，默认使用隐藏域会有多个相同的name，mvc的模型绑定只会取第一个
+                            var selectedOrgIds = "";
+                            var t = $("#CombotreeOrg").combotree('tree');
+                            var nodes = t.tree('getChecked');
+                            for (var i = 0; i < nodes.length; i++) {
+                                selectedOrgIds += nodes[i].id + ",";
+                            }
+                            param.OrgIds = selectedOrgIds.substring(0, selectedOrgIds.length - 1);
+                        },
+                        success: function (data) {
+                            var dataJson = eval('(' + data + ')');
+                            if (dataJson.success) {
+                                $("#ui_user_setorg_dialog").dialog('destroy');
+                                $.show_warning("提示", dataJson.msg);
+                                $("#ui_user_dg").datagrid("reload").datagrid('clearSelections').datagrid('clearChecked');
+                            } else {
+                                $('#ui_user_setorg_btn').linkbutton('enable');
+                                $.show_warning("提示", dataJson.msg);
+                            }
+                        }
+                    });
+                }
+            }],
+            onLoad: function () {
+                if (rows.length == 1) {//单个用户
+                    $("#UserIds").val(rows[0].Id);
+                    $("#UserNames").val(rows[0].UserName);
+                    $("#CombotreeOrg").combotree('setValues', stringToList(rows[0].UserOrgIds));
+                }
+                else {//多个用户(批量)
+                    var userids = "";
+                    var usernames = "";
+                    for (var i = 0; i < rows.length; i++) {
+                        userids += rows[i].Id + ",";
+                        usernames += rows[i].UserName + ",";
+                    }
+                    $("#UserIds").val(userids.substring(0, userids.length - 1));
+                    $("#UserNames").val(usernames.substring(0, usernames.length - 1));
+                }
+            },
+            onClose: function () {
+                $("#ui_user_setorg_dialog").dialog('destroy');
+            }
+        });
+    };
+
+    //设置角色(可批量)
+    function user_setrole() {
+        var rows = $("#ui_user_dg").datagrid("getChecked");
+        if (rows.length < 1) {
+            $.show_warning("提示", "请先勾选要设置角色的用户");
+            return;
+        }
+        $("<div/>").dialog({
+            id: "ui_user_setrole_dialog",
+            href: '@Url.Action("SetRole", "User")',
+            title: rows.length == 1 ? "设置角色" : "批量设置角色：" + rows.length + "个用户",
+            height: 220,
+            width: 380,
+            modal: true,
+            buttons: [{
+                id: "ui_user_setrole_btn",
+                text: '确 定',
+                handler: function () {
+                    $("#ui_user_setroleform").form("submit", {
+                        url: '@Url.Action("SetRole", "User")',
+                        onSubmit: function (param) {
+                            $('#ui_user_setrole_btn').linkbutton('disable');
+                            param.action = 'setrole';
+
+                            //调用api手动获取combotree选中节点的值，默认使用隐藏域会有多个相同的name，mvc的模型绑定只会取第一个
+                            var selectedRoleIds = "";
+                            var nodes = $("#ComboboxRole").combo('getValues');
+                            for (var i = 0; i < nodes.length; i++) {
+                                selectedRoleIds += nodes[i] + ",";
+                            }
+                            param.RoleIds = selectedRoleIds.substring(0, selectedRoleIds.length - 1);
+                        },
+                        success: function (data) {
+                            var dataJson = eval('(' + data + ')');
+                            if (dataJson.success) {
+                                $("#ui_user_setrole_dialog").dialog('destroy');
+                                $.show_warning("提示", dataJson.msg);
+                                $("#ui_user_dg").datagrid("reload").datagrid('clearSelections').datagrid('clearChecked');
+                            } else {
+                                $('#ui_user_setrole_btn').linkbutton('enable');
+                                $.show_warning("提示", dataJson.msg);
+                            }
+                        }
+                    });
+                }
+            }],
+            onLoad: function () {
+                if (rows.length == 1) {//单个用户
+                    $("#UserIds").val(rows[0].Id);
+                    $("#UserNames").val(rows[0].UserName);
+                    $("#ComboboxRole").combobox('setValues', stringToList(rows[0].UserRoleIds));
+                }
+                else {//批量
+                    var userids = "";
+                    var usernames = "";
+                    for (var i = 0; i < rows.length; i++) {
+                        userids += rows[i].Id + ",";
+                        usernames += rows[i].UserName + ",";
+                    }
+                    $("#UserIds").val(userids.substring(0, userids.length - 1));
+                    $("#UserNames").val(usernames.substring(0, usernames.length - 1));
+                }
+            },
+            onClose: function () {
+                $("#ui_user_setrole_dialog").dialog('destroy');
+            }
+        });
+    };
+
+</script>

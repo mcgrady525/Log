@@ -1,0 +1,307 @@
+﻿<div id="ui_menu_layout" class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:false, title:'菜单列表'">
+        <table id="ui_menu_tg" data-options="fit:true,border:false"></table>
+    </div>
+</div>
+@if (false)
+{
+    <script type="text/javascript" src="~/Scripts/jquery-1.8.2.js"></script>
+}
+<script type="text/javascript">
+    $(function () {
+        //默认加载所有菜单
+        GetAllMenus();
+    });
+
+    //获取所有菜单
+    function GetAllMenus() {
+        $.ajax({
+            url: '@Url.Action("GetButtonsByUserIdAndMenuCode", "Organization")',
+            type: "POST",
+            dataType: "json",
+            data: { "menuCode": "menu", "pageName": "menu" },
+            timeout: 5000,
+            success: function (data) {
+                if (data.success) {
+                    var oldSelectDeptId;
+                    var toolbar = getToolBar(data);
+                    if (data.browser) {
+                        $("#ui_menu_tg").treegrid({
+                            url: '@Url.Action("GetAll", "Menu")',
+                            idField: 'id',
+                            treeField: 'text',
+                            rownumbers: true,
+                            columns: [[
+                                   { field: 'text', title: '菜单名称', width: 150 },
+                                   { field: 'ParentId', title: '上级菜单id', sortable: true, width: 80 },
+                                   { field: 'Code', title: '菜单编码', width: 120 },
+                                   { field: 'Url', title: '链接地址', width: 250 },
+                                   { field: 'Icon', title: '图标', width: 150 },
+                                   { field: 'Sort', title: '排序', sortable: true, width: 80 },
+                                   { field: 'CreatedTime', title: '创建时间', width: 150 },
+                                   { field: 'LastUpdatedTime', title: '上次更新时间', width: 150 }
+                            ]],
+                            toolbar: toolbar.length == 0 ? null : toolbar
+                        });
+                    }
+                    else {
+                        $.show_warning("提示", "无权限，请联系管理员！");
+                    }
+                } else {
+                    $.show_warning("错误", data.result);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (textStatus == "timeout") {
+                    $.show_warning("提示", "请求超时，请刷新当前页重试！");
+                }
+                else {
+                    $.show_warning("错误", textStatus + "：" + errorThrown);
+                }
+            }
+        })
+    };
+
+    var menuIds = "";
+    function recursionGetIds(rows) {
+        if (rows.children != undefined) {
+            $.each(rows.children, function (i, row) {
+                menuIds += row.id + ",";
+                recursionGetIds(row);
+            });
+        }
+    }
+
+    //添加菜单
+    function menu_add() {
+        $("<div/>").dialog({
+            id: "ui_menu_add_dialog",
+            href: '@Url.Action("Add", "Menu")',
+            title: "添加菜单",
+            height: 350,
+            width: 460,
+            modal: true,
+            buttons: [{
+                id: "ui_menu_add_btn",
+                text: '添 加',
+                handler: function () {
+                    $("#ui_menu_addform").form("submit", {
+                        url: '@Url.Action("Add", "Menu")',
+                        onSubmit: function (param) {
+                            $('#ui_menu_add_btn').linkbutton('disable');
+                            if ($(this).form('validate')) {
+                                var t = $("#ComboParentMenu").combotree('tree');
+                                var node = t.tree('getSelected');
+                                param.ParentId = node.id;
+                                return true;
+                            }
+                            else {
+                                $('#ui_menu_add_btn').linkbutton('enable');
+                                return false;
+                            }
+                        },
+                        success: function (data) {
+                            var dataJson = eval('(' + data + ')');
+                            if (dataJson.success) {
+                                $("#ui_menu_add_dialog").dialog('destroy');
+                                $.show_warning("提示", dataJson.msg);
+                                $("#ui_menu_tg").treegrid("reload").treegrid('clearSelections').treegrid('clearChecked');//刷新并清除已选择
+                            } else {
+                                $('#ui_menu_add_btn').linkbutton('enable');
+                                $.show_warning("提示", dataJson.msg);
+                            }
+                        }
+                    });
+                }
+            }],
+            onLoad: function () {
+                $("#Name").focus();
+            },
+            onClose: function () {
+                $("#ui_menu_add_dialog").dialog('destroy');
+            }
+        });
+    };
+
+    //修改菜单
+    function menu_edit() {
+        var row = $("#ui_menu_tg").treegrid("getSelected");
+        if (!row) {
+            $.show_warning("提示", "请先选择要修改的菜单!");
+            return;
+        }
+        $("<div/>").dialog({
+            id: "ui_menu_edit_dialog",
+            href: '@Url.Action("Edit", "Menu")',
+            title: "修改菜单",
+            height: 350,
+            width: 460,
+            modal: true,
+            buttons: [{
+                id: "ui_menu_edit_btn",
+                text: '修 改',
+                handler: function () {
+                    $("#ui_menu_editform").form("submit", {
+                        url: '@Url.Action("Edit", "Menu")',
+                        onSubmit: function (param) {
+                            $('#ui_menu_edit_btn').linkbutton('disable');
+                            if ($(this).form('validate')) {
+                                return true;
+                            }
+                            else {
+                                $('#ui_menu_edit_btn').linkbutton('enable');
+                                return false;
+                            }
+                        },
+                        success: function (data) {
+                            var dataJson = eval('(' + data + ')');
+                            if (dataJson.success) {
+                                $("#ui_menu_edit_dialog").dialog('destroy');
+                                $.show_warning("提示", dataJson.msg);
+                                $("#ui_menu_tg").treegrid("reload").treegrid('clearSelections').treegrid('clearChecked');//刷新并清除已选择
+                            } else {
+                                $('#ui_menu_edit_btn').linkbutton('enable');
+                                $.show_warning("提示", dataJson.msg);
+                            }
+                        }
+                    });
+                }
+            }],
+            onLoad: function () {
+                $("#id").val(row.id);
+                $("#Name").val(row.text);
+                $("#Url").val(row.Url);
+                $("#Icon").val(row.Icon);
+                $('#Sort').numberspinner('setValue', row.Sort);
+            },
+            onClose: function () {
+                $("#ui_menu_edit_dialog").dialog('destroy');
+            }
+        });
+    }
+
+    //删除菜单
+    function menu_delete() {
+        var row = $("#ui_menu_tg").treegrid("getSelected");
+        if (!row) {
+            $.show_warning("提示", "请先勾选要删除的菜单");
+            return;
+        }
+        $.messager.confirm('提示', '确定删除：' + row.text + '？如果有子菜单也会同时删除！', function (r) {
+            if (r) {
+                menuIds = "";
+                recursionGetIds(row);
+                $.ajax({
+                    url: '@Url.Action("Delete", "Menu")',
+                    data: { "deleteMenuIds": row.id + "," + menuIds },
+                    type: "POST",
+                    dataType: "JSON",
+                    success: function (data) {
+                        if (data.success) {
+                            $.show_warning("提示", data.msg);
+                            $("#ui_menu_tg").treegrid("reload").treegrid('clearSelections').treegrid('clearChecked');//刷新并清除已选择
+                        } else {
+                            $.show_warning("提示", data.msg);
+                        }
+                    }
+                });
+            }
+        });
+    };
+
+    //分配按钮
+    function menu_setbutton() {
+        var row = $("#ui_menu_tg").treegrid("getSelected");
+        if (row.length < 1) {
+            $.show_warning("提示", "请先勾选要分配按钮的菜单");
+            return;
+        }
+        if (row.length > 1) {
+            $.show_warning("提示", "无法批量分配菜单对应的按钮");
+            $("#ui_menu_tg").treegrid('clearSelections').treegrid('clearChecked');
+            return;
+        }
+        if (row.ParentId == 0 || row.ParentId == "") {
+            $.show_warning("提示", "根节点无法分配按钮");
+            $("#ui_menu_tg").treegrid('clearSelections').treegrid('clearChecked');
+            return;
+        }
+
+        //分配按钮
+        $("<div/>").dialog({
+            id: "ui_menu_setbutton_dialog",
+            href: '@Url.Action("SetButton", "Menu")',
+            title: "分配按钮",
+            height: 350,
+            width: 460,
+            modal: true,
+            buttons: [{
+                id: "ui_menu_setbutton_btn",
+                text: '确 定',
+                handler: function () {
+                    $("#ui_menu_setbuttonform").form("submit", {
+                        url: '@Url.Action("SetButton", "Menu")',
+                        onSubmit: function (param) {
+                            $('#ui_menu_setbutton_btn').linkbutton('disable');
+                            param.menuId = row.id;
+                            var buttonIds = '';
+                            $("#btnList input:checked").each(function (index, el) {
+                                buttonIds += $(this).attr('value') + ",";
+                            });
+                            buttonIds = buttonIds.substring(0, buttonIds.length - 1);
+                            param.buttonIds = buttonIds;
+                            if ($(this).form('validate'))
+                                return true;
+                            else {
+                                $('#ui_menu_setbutton_btn').linkbutton('enable');
+                                return false;
+                            }
+                        },
+                        success: function (data) {
+                            var dataJson = eval('(' + data + ')');
+                            if (dataJson.success) {
+                                $("#ui_menu_setbutton_dialog").dialog('destroy');
+                                $.show_warning("提示", dataJson.msg);
+                                $("#ui_menu_tg").treegrid("reload");
+                            } else {
+                                $('#ui_menu_setbutton_btn').linkbutton('enable');
+                                $.show_warning("提示", dataJson.msg);
+                            }
+                        }
+                    });
+                }
+            }],
+            onLoad: function () {
+                $.post('@Url.Action("GetButton", "Menu")' + '?menuId=' + row.id, function (data) {
+                    data = eval('(' + data + ')');
+                    if (data != null && data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            var li = "";
+                            if (data[i].IsChecked) {
+                                li = "<li><input type=\"checkbox\" name=\"menubutton\" value=\"" + data[i].ButtonId + "\" checked=\"checked\" />" + data[i].ButtonName + "</li>";
+                            } else {
+                                li = "<li><input type=\"checkbox\" name=\"menubutton\" value=\"" + data[i].ButtonId + "\" />" + data[i].ButtonName + "</li>";
+                            }
+                            $("#btnList").append(li);
+                        }
+                    }
+                });
+
+            },
+            onClose: function () {
+                $("#ui_menu_setbutton_dialog").dialog('destroy');  //销毁dialog对象
+            }
+        });
+    };
+
+    //全部展开
+    function menu_expandall() {
+        $("#ui_menu_tg").treegrid("expandAll");
+    };
+
+    //全部折叠
+    function menu_collapseall() {
+        $("#ui_menu_tg").treegrid("collapseAll");
+    };
+
+</script>

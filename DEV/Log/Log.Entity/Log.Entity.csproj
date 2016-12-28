@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{051CE919-124E-4FF6-9605-824417AD4F51}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Log.Entity</RootNamespace>
+    <AssemblyName>Log.Entity</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes\ColumnAttribute.cs" />
+    <Compile Include="Attributes\TableAttribute.cs" />
+    <Compile Include="Common\OpenApiResult.cs" />
+    <Compile Include="Common\PagingBase.cs" />
+    <Compile Include="Common\ReturnCodeType.cs" />
+    <Compile Include="Common\ServiceResult.cs" />
+    <Compile Include="Db\TRightsButton.cs" />
+    <Compile Include="Db\TRightsMenu.cs" />
+    <Compile Include="Db\TRightsMenuButton.cs" />
+    <Compile Include="Db\TRightsOrganization.cs" />
+    <Compile Include="Db\TRightsRole.cs" />
+    <Compile Include="Db\TRightsRoleMenuButton.cs" />
+    <Compile Include="Db\TRightsUser.cs" />
+    <Compile Include="Db\TRightsUserOrganization.cs" />
+    <Compile Include="Db\TRightsUserRole.cs" />
+    <Compile Include="Enum\Enums.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Log.Entity.Partial.cs" />
+    <Compile Include="Rights\GetMyInfoResponse.cs" />
+    <Compile Include="Rights\LeftMenu.cs" />
+    <Compile Include="ViewModel\AddButtonRequest.cs" />
+    <Compile Include="ViewModel\AddMenuRequest.cs" />
+    <Compile Include="ViewModel\AddOrganizationRequest.cs" />
+    <Compile Include="ViewModel\AddRoleRequest.cs" />
+    <Compile Include="ViewModel\AddUserRequest.cs" />
+    <Compile Include="ViewModel\AuthorizeRoleRequest.cs" />
+    <Compile Include="ViewModel\ChangePwdRequest.cs" />
+    <Compile Include="ViewModel\CheckLoginRequest.cs" />
+    <Compile Include="ViewModel\DeleteButtonRequest.cs" />
+    <Compile Include="ViewModel\DeleteMenuRequest.cs" />
+    <Compile Include="ViewModel\DeleteOrganizationRequest.cs" />
+    <Compile Include="ViewModel\DeleteRoleRequest.cs" />
+    <Compile Include="ViewModel\DeleteUserRequest.cs" />
+    <Compile Include="ViewModel\EditButtonRequest.cs" />
+    <Compile Include="ViewModel\EditMenuRequest.cs" />
+    <Compile Include="ViewModel\EditOrganizationRequest.cs" />
+    <Compile Include="ViewModel\EditRoleRequest.cs" />
+    <Compile Include="ViewModel\EditUserRequest.cs" />
+    <Compile Include="ViewModel\FirstLoginRequest.cs" />
+    <Compile Include="ViewModel\GetButtonResponse.cs" />
+    <Compile Include="ViewModel\GetPagingButtonsRequest.cs" />
+    <Compile Include="ViewModel\GetPagingButtonsResponse.cs" />
+    <Compile Include="ViewModel\GetPagingRolesRequest.cs" />
+    <Compile Include="ViewModel\GetPagingRolesResponse.cs" />
+    <Compile Include="ViewModel\GetPagingRoleUsersRequest.cs" />
+    <Compile Include="ViewModel\GetPagingRoleUsersResponse.cs" />
+    <Compile Include="ViewModel\GetPagingUsersRequest.cs" />
+    <Compile Include="ViewModel\GetPagingUsersResponse.cs" />
+    <Compile Include="ViewModel\GetRoleMenuButtonResponse.cs" />
+    <Compile Include="ViewModel\SetButtonRequest.cs" />
+    <Compile Include="ViewModel\SetOrgRequest.cs" />
+    <Compile Include="ViewModel\SetRoleRequest.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

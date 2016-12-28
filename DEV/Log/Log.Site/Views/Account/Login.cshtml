@@ -1,0 +1,210 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link type="image/x-icon" rel="shortcut icon" href="~/Content/images/favicon.ico" />
+    @Styles.Render("~/Content/easyui/bootstrap")
+    @Styles.Render("~/Content/site")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/easyui")
+    <script type="text/javascript" src="~/Scripts/common.js"></script>
+    <title>登录</title>
+    <style type="text/css">
+        .code {
+            background-color: White;
+            font-family: Arial;
+            font-style: italic;
+            color: Red;
+            border: 0;
+            padding: 2px 3px;
+            letter-spacing: 3px;
+            font-weight: bolder;
+            cursor: pointer;
+            width: 60px;
+        }
+
+        .unchanged {
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="loginDialog" style="padding: 15px; text-align: center">
+        <form id="loginFrm" method="post">
+            <table class="tableForm" style="width: 100%">
+                <tr>
+                    <th>
+                        用户名：
+                    </th>
+                    <td>
+                        <input type="text" name="loginId" class="easyui-validatebox" required="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        密&nbsp;码：
+                    </th>
+                    <td>
+                        <input type="password" name="loginPwd" class="easyui-validatebox" required="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        验证码：
+                    </th>
+                    <td>
+                        <input type="text" id="loginVerificationCode" autocomplete="off" />
+                        <input type="text" onclick="createCode();$('#loginVerificationCode').val('').focus();"
+                               readonly="readonly" id="checkCode" class="unchanged" title="点击刷新验证码" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        记住我：
+                    </th>
+                    <td>
+                        <select name="remember">
+                            <option value="notremember">不记住</option>
+                            <option value="oneday">一天</option>
+                            <option value="sevenday" selected="selected">七天</option>
+                            <option value="onemouth">一个月</option>
+                            <option value="oneyear">一年</option>
+                        </select>
+                        <span id="msg" style="color: Red"></span>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    @if (false)
+    {
+        <script type="text/javascript" src="~/Scripts/jquery-1.8.2.js"></script>
+    }
+    <script type="text/javascript">
+        $(function () {
+            $("#loginDialog").dialog({
+                title: "Web框架后台登录",
+                closable: false,
+                modal: true,
+                width: 400,
+                height: 280,
+                buttons: [{
+                    id: "loginBtn",
+                    text: "登 录",
+                    handler: function () {
+                        if ($("#loginFrm").form('validate')) {
+                            $("#loginFrm").submit();
+                        }
+                    }
+                }]
+            });
+
+            //检查用户是否已经登录
+            getiflogin();
+
+            var url = location.href;
+            //登录
+            $("#loginFrm").form({
+                url: '@Url.Action("Login", "Account")',
+                onSubmit: function () {
+                    return checkInput();   //验证码是否正确
+                },
+                success: function (data) {
+                    var result = eval('(' + data + ')');
+                    if (result.success) {
+                        if (url.indexOf("ReturnUrl=") != -1) {
+                            window.location.href = decodeURIComponent(url.substring(url.indexOf("ReturnUrl=") + 10));
+                        }
+                        else {
+                            window.location.href = '@Url.Action("Index", "Home")';
+                        }
+                    } else {
+                        $.show_warning("提示", result.msg);
+                        $('#loginBtn').linkbutton('enable');
+                        createCode();   //刷新验证码
+                        $("#loginVerificationCode").val("");
+                    }
+                }
+            })
+
+            //回车提交表单
+            $("#loginFrm").find('input').on('keyup', function (event) {
+                if (event.keyCode == '13') {
+                    //登录按钮如果处于禁用状态，那么回车也不提交表单
+                    if (!($('#loginBtn').linkbutton("options").disabled) && $("#loginFrm").form('validate')) {
+                        $("#loginFrm").submit();
+                    }
+                }
+            })
+            createCode();//创建验证码
+            $("#loginVerificationCode").val(code);//调试用，上线的时候去掉
+        })
+
+        function getiflogin() {
+            $.ajax({
+                url: '@Url.Action("IfLogin", "Account")',
+                type: "post",
+                dataType: "json",
+                success: function (result) {
+                    if (result.success) {
+                        window.location.href = '@Url.Action("Index", "Home")';
+                    }
+                },
+                beforeSend: function () {
+                    $('#loginBtn').linkbutton('disable');
+                },
+                complete: function () {
+                    $('#loginBtn').linkbutton('enable');
+                }
+            });
+        }
+
+        //创建验证码
+        var code;
+        function createCode() {
+            code = "";
+            var codeLength = 4;     //验证码长度
+            var checkCode = document.getElementById("checkCode");
+            var selectChar = new Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+            for (var i = 0; i < codeLength; i++) {
+                var charIndex = Math.floor(Math.random() * 36);
+                code += selectChar[charIndex];
+            }
+            if (checkCode) {
+                checkCode.className = "code";
+                checkCode.value = code;
+            }
+        }
+
+        //检查验证码
+        function checkInput() {
+            if ($.trim($("#loginVerificationCode").val()) == "") {
+                $("#msg").text("验证码不能为空");
+                $("#msg").stop(true, true).animate({ opacity: "show" }, 300, function () {//.stop使动画达到末尾，否则连按回车一直显示隐藏
+                    $("#msg").animate({ opacity: "hide" }, 2000);
+                });
+                $("#loginVerificationCode").val("").focus();
+                return false;
+            }
+            else if (document.getElementById("loginVerificationCode").value.toUpperCase() != code) {
+                $("#msg").text("验证码错误！");
+                $("#msg").stop(true, true).animate({ opacity: "show" }, 300, function () {
+                    $("#msg").animate({ opacity: "hide" }, 2000);
+                });
+                $("#loginVerificationCode").val("").focus();
+                createCode();//刷新验证码
+                return false;
+            } else {
+                $('#loginBtn').linkbutton('disable');
+                return true;
+            }
+        }
+    </script>
+</body>
+</html>

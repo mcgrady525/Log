@@ -1,0 +1,42 @@
+﻿<div style="padding: 15px; overflow: hidden">
+    <form id="ui_user_editform" method="post" action="">
+        <table class="tableForm" width="100%">
+            <tr>
+                <th>
+                    用户id：
+                </th>
+                <td>
+                    <input type="hidden" name="id" id="id" />
+                    <input type="hidden" name="OriginalUserId" id="OriginalUserId" />
+                    <input type="text" name="NewUserId" id="NewUserId" class="easyui-validatebox"
+                           data-options="required:true" autocomplete="off" />
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    用户名：
+                </th>
+                <td>
+                    <input type="text" name="NewUserName" id="NewUserName" class="easyui-validatebox"
+                           data-options="required:true" autocomplete="off" />
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    是否启用：
+                </th>
+                <td>
+                    <input type="checkbox" name="EnableFlag" id="EnableFlag" />
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    是否改密：
+                </th>
+                <td>
+                    <input type="checkbox" name="IsChangePwd" id="IsChangePwd" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
