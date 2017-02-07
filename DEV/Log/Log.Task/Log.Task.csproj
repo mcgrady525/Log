@@ -4,8 +4,8 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1E77D012-9E67-4FE3-927A-D79791D2AD25}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{08FCBA97-6D48-4A55-AD8F-AB6C803C12BC}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Log.Task</RootNamespace>
     <AssemblyName>Log.Task</AssemblyName>
@@ -33,46 +33,40 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="RabbitMQ.Client">
-      <HintPath>..\packages\RabbitMQ.Client.3.6.6\lib\net45\RabbitMQ.Client.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LogWinService.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="LogWinService.Designer.cs">
+      <DependentUpon>LogWinService.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="ProjectInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ProjectInstaller.Designer.cs">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Log.Common\Log.Common.csproj">
-      <Project>{22fcb41e-d23e-4316-8b23-6e5abce8fc8c}</Project>
-      <Name>Log.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Log.Entity\Log.Entity.csproj">
-      <Project>{051ce919-124e-4ff6-9605-824417ad4f51}</Project>
-      <Name>Log.Entity</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Log.IService\Log.IService.csproj">
-      <Project>{096cbabd-9f64-49ed-b35b-d5a3d2978d72}</Project>
-      <Name>Log.IService</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Log.Service\Log.Service.csproj">
-      <Project>{0decfd77-920f-4f8a-baf0-b2c741ca4631}</Project>
-      <Name>Log.Service</Name>
-    </ProjectReference>
+    <EmbeddedResource Include="ProjectInstaller.resx">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
