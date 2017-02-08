@@ -51,9 +51,11 @@
   <ItemGroup>
     <Compile Include="Helper\ConfigHelper.cs" />
     <Compile Include="Helper\DapperHelper.cs" />
+    <Compile Include="Helper\LogHelper.cs" />
     <Compile Include="Helper\RabbitMQHelper.cs" />
     <Compile Include="Helper\RightsHelper.cs" />
     <Compile Include="Helper\ToolbarHelper.cs" />
+    <Compile Include="JobsConfigurationSection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
