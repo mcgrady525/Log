@@ -32,6 +32,7 @@ namespace Log.Task
         {
             //用多线程去分别消费各队列的消息
             //共用connection，各线程单独创建channel
+            WriteLogs("开始启动LogWinService服务!");
             var factory = new ConnectionFactory() { HostName = "127.0.0.1", Port = 5672, UserName = "admin", Password = "P@ssw0rd.123" };
             connection = factory.CreateConnection();
 
@@ -46,6 +47,8 @@ namespace Log.Task
             {
                 ConsumerErrorLogMessage(connection);
             });
+
+            WriteLogs("LogWinService服务启动成功!");
         }
 
         /// <summary>
@@ -58,6 +61,8 @@ namespace Log.Task
             {
                 connection.Dispose();
             }
+
+            WriteLogs("LogWinService服务已停止!");
         }
 
         /// <summary>
