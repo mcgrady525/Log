@@ -24,8 +24,14 @@ namespace Log.OpenApi.Controllers
         /// <param name="debugLog"></param>
         [Route("add")]
         [HttpPost]
-        public HttpResponseMessage AddLog(DebugLog debugLog)
+        public HttpResponseMessage AddLog(List<DebugLog> list)
         {
+            //校验
+            if (!list.HasValue())
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
+
             //将数据放到rabbitMQ消息队列中
             var factory = new ConnectionFactory() { HostName = "127.0.0.1", Port = 5672, UserName = "admin", Password = "P@ssw0rd.123" };
             using (var connection = factory.CreateConnection())
@@ -51,13 +57,16 @@ namespace Log.OpenApi.Controllers
                 props.Persistent = true;
 
                 //发送消息
-                var jsonData = debugLog.ToJson();
-                var body = Encoding.UTF8.GetBytes(jsonData);
-                channel.BasicPublish(exchange: "Log.Exchange.DebugLog",
-                                     routingKey: "Log.Queue.DebugLog",
-                                     basicProperties: props,
-                                     body: body);
-
+                //将批量转成单条发送
+                foreach (var item in list)
+                {
+                    var msg = item.ToJson();
+                    var body = Encoding.UTF8.GetBytes(msg);
+                    channel.BasicPublish(exchange: "Log.Exchange.DebugLog",
+                                         routingKey: "Log.Queue.DebugLog",
+                                         basicProperties: props,
+                                         body: body);
+                }
             }
 
             return new HttpResponseMessage(HttpStatusCode.OK);
