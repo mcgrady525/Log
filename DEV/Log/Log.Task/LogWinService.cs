@@ -30,25 +30,34 @@ namespace Log.Task
         /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
-            //用多线程去分别消费各队列的消息
-            //共用connection，各线程单独创建channel
-            WriteLogs("开始启动LogWinService服务!");
-            var factory = new ConnectionFactory() { HostName = "127.0.0.1", Port = 5672, UserName = "admin", Password = "P@ssw0rd.123" };
-            connection = factory.CreateConnection();
-
-            //消费debug log
-            System.Threading.Tasks.Task.Factory.StartNew(() =>
+            try
             {
-                ConsumerDebugLogMessage(connection);
-            });
+                //用多线程去分别消费各队列的消息
+                //共用connection，各线程单独创建channel
+                WriteLogs("开始启动LogWinService服务!");
+                var factory = new ConnectionFactory() { HostName = "127.0.0.1", Port = 5672, UserName = "admin", Password = "P@ssw0rd.123" };
+                connection = factory.CreateConnection();
 
-            //消费error log
-            System.Threading.Tasks.Task.Factory.StartNew(() =>
+                //消费debug log
+                var debugLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
+                {
+                    ConsumerDebugLogMessage(connection);
+                });
+                debugLogTask.Wait();
+
+                //消费error log
+                var errorLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
+                {
+                    ConsumerErrorLogMessage(connection);
+                });
+                errorLogTask.Wait();
+
+                WriteLogs("LogWinService服务启动成功!");
+            }
+            catch (Exception ex)
             {
-                ConsumerErrorLogMessage(connection);
-            });
-
-            WriteLogs("LogWinService服务启动成功!");
+                WriteLogs(string.Format("发生异常，异常详情：{0}", ex.ToString()));
+            }
         }
 
         /// <summary>
@@ -59,6 +68,7 @@ namespace Log.Task
             //关闭连接
             if (connection != null)
             {
+                connection.Close();
                 connection.Dispose();
             }
 
@@ -80,6 +90,7 @@ namespace Log.Task
         /// <param name="connection"></param>
         private void ConsumerDebugLogMessage(IConnection connection)
         {
+            WriteLogs("开始消费调试日志消息!");
             using (var channel = connection.CreateModel())
             {
                 //声明队列
@@ -93,18 +104,18 @@ namespace Log.Task
                 channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
 
                 //消费消息
-                var consumer = new EventingBasicConsumer(channel);
-                consumer.Received += (model, ea) =>
+                var consumer = new QueueingBasicConsumer(channel);
+                channel.BasicConsume(queue: "Log.Queue.DebugLog", noAck: false, consumer: consumer);
+                while (true)
                 {
+                    var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
                     var msg = Encoding.UTF8.GetString(ea.Body);
 
-                    //先写到日志里，后面要保存到数据库中
-                    //Console.WriteLine("[x] Received {0}", msg);
+                    //写到文本文件，后面会写到数据库中
                     WriteLogs(msg);
 
                     channel.BasicAck(ea.DeliveryTag, multiple: false);
-                };
-                channel.BasicConsume(queue: "Log.Queue.DebugLog", noAck: false, consumer: consumer);
+                }
             }
         }
 
@@ -114,6 +125,7 @@ namespace Log.Task
         /// <param name="msg"></param>
         private void WriteLogs(string msg)
         {
+            msg = string.Format("【{0}】{1}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff"), msg);
             var path = AppDomain.CurrentDomain.BaseDirectory + "LogWinService.log";
             var fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
             var sw = new StreamWriter(fs);
