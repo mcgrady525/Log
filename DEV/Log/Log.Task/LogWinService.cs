@@ -39,24 +39,22 @@ namespace Log.Task
                 connection = factory.CreateConnection();
 
                 //消费debug log
-                var debugLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
+                System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
                     ConsumerDebugLogMessage(connection);
                 });
-                debugLogTask.Wait();
 
                 //消费error log
-                var errorLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
+                System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
                     ConsumerErrorLogMessage(connection);
                 });
-                errorLogTask.Wait();
 
                 WriteLogs("LogWinService服务启动成功!");
             }
             catch (Exception ex)
             {
-                WriteLogs(string.Format("发生异常，异常详情：{0}", ex.ToString()));
+                WriteLogs(string.Format("启动LogWinService服务发生异常，异常详情：{0}", ex.ToString()));
             }
         }
 
@@ -81,7 +79,11 @@ namespace Log.Task
         /// <param name="connection"></param>
         private void ConsumerErrorLogMessage(IConnection connection)
         {
+            WriteLogs("开始消费调试日志消息!");
 
+            System.Threading.Thread.Sleep(1000);
+
+            WriteLogs("完成消费调试日志消息!");
         }
 
         /// <summary>
@@ -104,6 +106,7 @@ namespace Log.Task
                 channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
 
                 //消费消息
+                //EventingBasicConsumer的Received没有触发
                 var consumer = new QueueingBasicConsumer(channel);
                 channel.BasicConsume(queue: "Log.Queue.DebugLog", noAck: false, consumer: consumer);
                 while (true)
@@ -117,6 +120,7 @@ namespace Log.Task
                     channel.BasicAck(ea.DeliveryTag, multiple: false);
                 }
             }
+            WriteLogs("完成消费调试日志消息!");
         }
 
         /// <summary>
