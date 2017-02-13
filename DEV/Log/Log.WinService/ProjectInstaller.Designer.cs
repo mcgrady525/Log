@@ -1,4 +1,4 @@
-﻿namespace Log.Task
+﻿namespace Log.WinService
 {
     partial class ProjectInstaller
     {
@@ -39,8 +39,8 @@
             // 
             // serviceInstaller1
             // 
-            this.serviceInstaller1.Description = "Log系统的Task任务调度平台";
-            this.serviceInstaller1.ServiceName = "LogTask";
+            this.serviceInstaller1.Description = "Log系统的Windows服务平台";
+            this.serviceInstaller1.ServiceName = "LogWinService";
             // 
             // ProjectInstaller
             // 

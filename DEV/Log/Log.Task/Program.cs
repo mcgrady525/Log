@@ -17,7 +17,7 @@ namespace Log.Task
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[] 
             { 
-                new LogWinService() 
+                new LogTask() 
             };
             ServiceBase.Run(ServicesToRun);
         }

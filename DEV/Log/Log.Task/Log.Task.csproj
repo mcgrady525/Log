@@ -59,11 +59,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Jobs\DebugLogConsumerJob.cs" />
-    <Compile Include="LogWinService.cs">
+    <Compile Include="LogTask.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="LogWinService.Designer.cs">
-      <DependentUpon>LogWinService.cs</DependentUpon>
+    <Compile Include="LogTask.Designer.cs">
+      <DependentUpon>LogTask.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">

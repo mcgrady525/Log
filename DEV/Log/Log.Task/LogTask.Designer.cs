@@ -1,6 +1,6 @@
 ﻿namespace Log.Task
 {
-    partial class LogWinService
+    partial class LogTask
     {
         /// <summary> 
         /// 必需的设计器变量。
