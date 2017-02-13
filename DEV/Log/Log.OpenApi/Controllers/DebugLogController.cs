@@ -24,12 +24,12 @@ namespace Log.OpenApi.Controllers
         /// <param name="debugLog"></param>
         [Route("add")]
         [HttpPost]
-        public HttpResponseMessage AddLog(List<DebugLog> list)
+        public IHttpActionResult AddLog(List<DebugLog> list)
         {
             //校验
             if (!list.HasValue())
             {
-                return new HttpResponseMessage(HttpStatusCode.OK);
+                return BadRequest();//返回400错误
             }
 
             //将数据放到rabbitMQ消息队列中
@@ -69,7 +69,7 @@ namespace Log.OpenApi.Controllers
                 }
             }
 
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            return Ok();//返回200成功状态码
         }
 
     }
