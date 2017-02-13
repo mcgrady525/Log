@@ -34,6 +34,7 @@ namespace Log.Task
             {
                 //用多线程去分别消费各队列的消息
                 //共用connection，各线程单独创建channel
+                //windows服务默认的是后台线程
                 WriteLogs("开始启动LogWinService服务!");
                 var factory = new ConnectionFactory() { HostName = "127.0.0.1", Port = 5672, UserName = "admin", Password = "P@ssw0rd.123" };
                 connection = factory.CreateConnection();
@@ -54,7 +55,7 @@ namespace Log.Task
             }
             catch (Exception ex)
             {
-                WriteLogs(string.Format("启动LogWinService服务发生异常，异常详情：{0}", ex.ToString()));
+                WriteLogs(string.Format("启动LogWinService服务失败，失败原因：{0}", ex.ToString()));
             }
         }
 
@@ -79,11 +80,11 @@ namespace Log.Task
         /// <param name="connection"></param>
         private void ConsumerErrorLogMessage(IConnection connection)
         {
-            WriteLogs("开始消费调试日志消息!");
-
-            System.Threading.Thread.Sleep(1000);
-
-            WriteLogs("完成消费调试日志消息!");
+            WriteLogs("开始消费错误日志消息!");
+            while (true)
+            {
+                System.Threading.Thread.Sleep(1000); 
+            }
         }
 
         /// <summary>
@@ -106,7 +107,7 @@ namespace Log.Task
                 channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
 
                 //消费消息
-                //EventingBasicConsumer的Received没有触发
+                //EventingBasicConsumer的Received事件无法触发
                 var consumer = new QueueingBasicConsumer(channel);
                 channel.BasicConsume(queue: "Log.Queue.DebugLog", noAck: false, consumer: consumer);
                 while (true)
@@ -120,7 +121,6 @@ namespace Log.Task
                     channel.BasicAck(ea.DeliveryTag, multiple: false);
                 }
             }
-            WriteLogs("完成消费调试日志消息!");
         }
 
         /// <summary>
