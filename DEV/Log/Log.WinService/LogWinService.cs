@@ -14,6 +14,7 @@ using Log.Service;
 using Tracy.Frameworks.LogClient.Entity;
 using Tracy.Frameworks.Common.Extends;
 using Log.IService;
+using Tracy.Frameworks.Common.Consts;
 
 namespace Log.WinService
 {
@@ -21,6 +22,8 @@ namespace Log.WinService
     {
         //注入service
         private static readonly ILogsDebugLogService debugLogService = new LogsDebugLogService();
+        private static readonly ILogsErrorLogService errorLogService = new LogsErrorLogService();
+        private static readonly ILogsXmlLogService xmlLogService = new LogsXmlLogService();
 
         IConnection connection = null;
         public LogWinService()
@@ -87,9 +90,33 @@ namespace Log.WinService
         private void ConsumerXmlLogMessage(IConnection connection)
         {
             WriteLogs("开始消费Xml日志消息!");
-            while (true)
+            using (var channel = connection.CreateModel())
             {
-                System.Threading.Thread.Sleep(1000);
+                //声明队列
+                channel.QueueDeclare(queue: RabbitMQQueueConst.LogXmlLog,
+                                 durable: true,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
+
+                //设置公平调度
+                channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+
+                //消费消息
+                //EventingBasicConsumer的Received事件无法触发
+                var consumer = new QueueingBasicConsumer(channel);
+                channel.BasicConsume(queue: RabbitMQQueueConst.LogXmlLog, noAck: false, consumer: consumer);
+                while (true)
+                {
+                    var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
+                    var msg = Encoding.UTF8.GetString(ea.Body);
+
+                    //反序列化并持久化到数据中
+                    var xmlLog = msg.FromJson<XmlLog>();
+                    xmlLogService.AddXmlLog(xmlLog);
+
+                    channel.BasicAck(ea.DeliveryTag, multiple: false);
+                }
             }
         }
 
@@ -103,7 +130,7 @@ namespace Log.WinService
             using (var channel = connection.CreateModel())
             {
                 //声明队列
-                channel.QueueDeclare(queue: "Log.Queue.ErrorLog",
+                channel.QueueDeclare(queue: RabbitMQQueueConst.LogErrorLog,
                                  durable: true,
                                  exclusive: false,
                                  autoDelete: false,
@@ -115,15 +142,15 @@ namespace Log.WinService
                 //消费消息
                 //EventingBasicConsumer的Received事件无法触发
                 var consumer = new QueueingBasicConsumer(channel);
-                channel.BasicConsume(queue: "Log.Queue.ErrorLog", noAck: false, consumer: consumer);
+                channel.BasicConsume(queue: RabbitMQQueueConst.LogErrorLog, noAck: false, consumer: consumer);
                 while (true)
                 {
                     var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
                     var msg = Encoding.UTF8.GetString(ea.Body);
 
                     //反序列化并持久化到数据中
-                    //var debugLog = msg.FromJson<DebugLog>();
-                    //debugLogService.AddDebugLog(debugLog);
+                    var errorLog = msg.FromJson<ErrorLog>();
+                    errorLogService.AddErrorLog(errorLog);
 
                     channel.BasicAck(ea.DeliveryTag, multiple: false);
                 }
@@ -140,19 +167,19 @@ namespace Log.WinService
             using (var channel = connection.CreateModel())
             {
                 //声明队列
-                channel.QueueDeclare(queue: "Log.Queue.DebugLog",
+                channel.QueueDeclare(queue: RabbitMQQueueConst.LogDebugLog,
                                  durable: true,
                                  exclusive: false,
                                  autoDelete: false,
                                  arguments: null);
 
-                //设置公平调度
+                //设置公平调度，每次处理一条
                 channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
 
                 //消费消息
                 //EventingBasicConsumer的Received事件无法触发
                 var consumer = new QueueingBasicConsumer(channel);
-                channel.BasicConsume(queue: "Log.Queue.DebugLog", noAck: false, consumer: consumer);
+                channel.BasicConsume(queue: RabbitMQQueueConst.LogDebugLog, noAck: false, consumer: consumer);
                 while (true)
                 {
                     var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
