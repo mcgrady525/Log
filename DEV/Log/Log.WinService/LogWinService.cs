@@ -10,16 +10,23 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using Log.Service;
+using Tracy.Frameworks.LogClient.Entity;
+using Tracy.Frameworks.Common.Extends;
+using Log.IService;
 
 namespace Log.WinService
 {
     public partial class LogWinService : ServiceBase
     {
+        //注入service
+        private static readonly ILogsDebugLogService debugLogService = new LogsDebugLogService();
+
+        IConnection connection = null;
         public LogWinService()
         {
             InitializeComponent();
         }
-        IConnection connection = null;
 
         protected override void OnStart(string[] args)
         {
@@ -44,6 +51,12 @@ namespace Log.WinService
                     ConsumerErrorLogMessage(connection);
                 });
 
+                //消费xml log
+                System.Threading.Tasks.Task.Factory.StartNew(() =>
+                {
+                    ConsumerXmlLogMessage(connection);
+                });
+
                 WriteLogs("LogWinService服务启动成功!");
             }
             catch (Exception ex)
@@ -62,6 +75,19 @@ namespace Log.WinService
             }
 
             WriteLogs("LogWinService服务已停止!");
+        }
+
+        /// <summary>
+        /// 消费xml日志消息
+        /// </summary>
+        /// <param name="connection"></param>
+        private void ConsumerXmlLogMessage(IConnection connection)
+        {
+            WriteLogs("开始消费Xml日志消息!");
+            while (true)
+            {
+                System.Threading.Thread.Sleep(1000);
+            }
         }
 
         /// <summary>
@@ -105,8 +131,9 @@ namespace Log.WinService
                     var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
                     var msg = Encoding.UTF8.GetString(ea.Body);
 
-                    //写到文本文件，后面会写到数据库中
-                    WriteLogs(msg);
+                    //反序列化并持久化到数据中
+                    var debugLog = msg.FromJson<DebugLog>();
+                    debugLogService.AddDebugLog(debugLog);
 
                     channel.BasicAck(ea.DeliveryTag, multiple: false);
                 }

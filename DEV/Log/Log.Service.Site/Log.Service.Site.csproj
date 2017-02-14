@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="LogsDebugLogService.svc" />
     <Content Include="RightsAccountService.svc" />
     <Content Include="RightsButtonService.svc" />
     <Content Include="RightsMenuService.svc" />

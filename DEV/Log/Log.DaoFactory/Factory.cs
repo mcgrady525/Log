@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Log.IDao.Rights;
+using Log.IDao;
 
 namespace Log.DaoFactory
 {
@@ -88,6 +89,15 @@ namespace Log.DaoFactory
         public static IRightsButtonDao GetRightsButtonDao()
         {
             return GetInstance("RightsButtonDao", "Rights") as IRightsButtonDao;
+        }
+
+        /// <summary>
+        /// debug log
+        /// </summary>
+        /// <returns></returns>
+        public static ILogsDebugLogDao GetLogsDebugLogDao()
+        {
+            return GetInstance("LogsDebugLogDao") as ILogsDebugLogDao;
         }
 
     }
