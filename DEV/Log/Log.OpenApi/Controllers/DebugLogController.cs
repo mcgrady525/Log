@@ -9,6 +9,7 @@ using Tracy.Frameworks.LogClient.Helper;
 using Tracy.Frameworks.Common.Extends;
 using RabbitMQ.Client;
 using System.Text;
+using Tracy.Frameworks.Common.Consts;
 
 namespace Log.OpenApi.Controllers
 {
@@ -38,19 +39,19 @@ namespace Log.OpenApi.Controllers
             using (var channel = connection.CreateModel())
             {
                 //声明交换机
-                channel.ExchangeDeclare(exchange: "Log.Exchange.DebugLog", type: ExchangeType.Direct, durable: true);
+                channel.ExchangeDeclare(exchange: RabbitMQExchangeConst.LogDebugLog, type: ExchangeType.Direct, durable: true);
 
                 //声明队列
-                channel.QueueDeclare(queue: "Log.Queue.DebugLog",
+                channel.QueueDeclare(queue: RabbitMQQueueConst.LogDebugLog,
                                      durable: true,
                                      exclusive: false,
                                      autoDelete: false,
                                      arguments: null);
 
                 //绑定
-                channel.QueueBind(queue: "Log.Queue.DebugLog",
-                                  exchange: "Log.Exchange.DebugLog",
-                                  routingKey: "Log.Queue.DebugLog");
+                channel.QueueBind(queue: RabbitMQQueueConst.LogDebugLog,
+                                  exchange: RabbitMQExchangeConst.LogDebugLog,
+                                  routingKey: RabbitMQQueueConst.LogDebugLog);
 
                 //持久化
                 var props = channel.CreateBasicProperties();
@@ -62,8 +63,8 @@ namespace Log.OpenApi.Controllers
                 {
                     var msg = item.ToJson();
                     var body = Encoding.UTF8.GetBytes(msg);
-                    channel.BasicPublish(exchange: "Log.Exchange.DebugLog",
-                                         routingKey: "Log.Queue.DebugLog",
+                    channel.BasicPublish(exchange: RabbitMQExchangeConst.LogDebugLog,
+                                         routingKey: RabbitMQQueueConst.LogDebugLog,
                                          basicProperties: props,
                                          body: body);
                 }

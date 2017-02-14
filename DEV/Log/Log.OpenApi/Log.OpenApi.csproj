@@ -111,6 +111,20 @@
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Log.Common\Log.Common.csproj">
+      <Project>{22fcb41e-d23e-4316-8b23-6e5abce8fc8c}</Project>
+      <Name>Log.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Log.Entity\Log.Entity.csproj">
+      <Project>{051ce919-124e-4ff6-9605-824417ad4f51}</Project>
+      <Name>Log.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Log.IService\Log.IService.csproj">
+      <Project>{096cbabd-9f64-49ed-b35b-d5a3d2978d72}</Project>
+      <Name>Log.IService</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
