@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ILogsDebugLogDao.cs" />
+    <Compile Include="ILogsErrorLogDao.cs" />
+    <Compile Include="ILogsXmlLogDao.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rights\IRightsAccountDao.cs" />
     <Compile Include="Rights\IRightsButtonDao.cs" />

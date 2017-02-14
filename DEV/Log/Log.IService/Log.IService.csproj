@@ -50,6 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ILogsDebugLogService.cs" />
+    <Compile Include="ILogsErrorLogService.cs" />
+    <Compile Include="ILogsXmlLogService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rights\IRightsAccountService.cs" />
     <Compile Include="Rights\IRightsButtonService.cs" />

@@ -100,5 +100,23 @@ namespace Log.DaoFactory
             return GetInstance("LogsDebugLogDao") as ILogsDebugLogDao;
         }
 
+        /// <summary>
+        /// error log
+        /// </summary>
+        /// <returns></returns>
+        public static ILogsErrorLogDao GetLogsErrorLogDao()
+        {
+            return GetInstance("LogsErrorLogDao") as ILogsErrorLogDao;
+        }
+
+        /// <summary>
+        /// xml log
+        /// </summary>
+        /// <returns></returns>
+        public static ILogsXmlLogDao GetLogsXmlLogDao()
+        {
+            return GetInstance("LogsXmlLogDao") as ILogsXmlLogDao;
+        }
+
     }
 }

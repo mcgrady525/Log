@@ -70,6 +70,8 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="LogsDebugLogService.svc" />
+    <Content Include="LogsErrorLogService.svc" />
+    <Content Include="LogsXmlLogService.svc" />
     <Content Include="RightsAccountService.svc" />
     <Content Include="RightsButtonService.svc" />
     <Content Include="RightsMenuService.svc" />

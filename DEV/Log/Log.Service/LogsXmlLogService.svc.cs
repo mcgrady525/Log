@@ -1,42 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
+using System.ServiceModel.Activation;
 using System.Text;
 using System.Threading.Tasks;
 using Log.IService;
-using System.ServiceModel.Activation;
-using System.ServiceModel;
+using Log.Entity.Common;
+using Tracy.Frameworks.LogClient.Entity;
 using Log.IDao;
 using Log.DaoFactory;
-using Log.Entity.Common;
 using Log.Entity.Db;
-using Tracy.Frameworks.LogClient.Entity;
 
 namespace Log.Service
 {
-    /// <summary>
-    /// debug log服务
-    /// </summary>
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public class LogsDebugLogService : ILogsDebugLogService
+    public class LogsXmlLogService : ILogsXmlLogService
     {
         //注入dao
-        private static readonly ILogsDebugLogDao debugLogDao = Factory.GetLogsDebugLogDao();
+        private static readonly ILogsXmlLogDao xmlLogDao = Factory.GetLogsXmlLogDao();
 
         /// <summary>
-        /// 插入调试日志
+        /// 插入xml log
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public ServiceResult<bool> AddDebugLog(DebugLog request)
+        public ServiceResult<bool> AddXmlLog(XmlLog request)
         {
             var result = new ServiceResult<bool>
             {
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var item = new TLogsDebugLog
+            var item = new TLogsXmlLog
             {
                 SystemCode = request.SystemCode,
                 Source = request.Source,
@@ -47,11 +44,14 @@ namespace Log.Service
                 ThreadId = request.ThreadID,
                 ThreadName = request.ThreadName,
                 AppdomainName = request.AppDomainName,
-                Message = request.Message,
-                Detail = request.Detail,
+                ClassName = request.ClassName,
+                MethodName = request.MethodName,
+                Rq = request.RQ,
+                Rs = request.RS,
+                Remark = request.Remark,
                 CreatedTime = request.CreatedTime
             };
-            var rs = debugLogDao.Insert(item);
+            var rs = xmlLogDao.Insert(item);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -60,7 +60,5 @@ namespace Log.Service
 
             return result;
         }
-
-
     }
 }

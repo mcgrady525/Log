@@ -6,37 +6,37 @@ using System.Threading.Tasks;
 using Log.IService;
 using System.ServiceModel.Activation;
 using System.ServiceModel;
+using Log.Entity.Common;
+using Tracy.Frameworks.LogClient.Entity;
 using Log.IDao;
 using Log.DaoFactory;
-using Log.Entity.Common;
 using Log.Entity.Db;
-using Tracy.Frameworks.LogClient.Entity;
 
 namespace Log.Service
 {
     /// <summary>
-    /// debug log服务
+    /// error log服务
     /// </summary>
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public class LogsDebugLogService : ILogsDebugLogService
+    public class LogsErrorLogService : ILogsErrorLogService
     {
         //注入dao
-        private static readonly ILogsDebugLogDao debugLogDao = Factory.GetLogsDebugLogDao();
+        private static readonly ILogsErrorLogDao errorLogDao = Factory.GetLogsErrorLogDao();
 
         /// <summary>
-        /// 插入调试日志
+        /// 插入error log
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public ServiceResult<bool> AddDebugLog(DebugLog request)
+        public ServiceResult<bool> AddErrorLog(ErrorLog request)
         {
             var result = new ServiceResult<bool>
             {
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var item = new TLogsDebugLog
+            var item = new TLogsErrorLog
             {
                 SystemCode = request.SystemCode,
                 Source = request.Source,
@@ -51,7 +51,7 @@ namespace Log.Service
                 Detail = request.Detail,
                 CreatedTime = request.CreatedTime
             };
-            var rs = debugLogDao.Insert(item);
+            var rs = errorLogDao.Insert(item);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -60,7 +60,5 @@ namespace Log.Service
 
             return result;
         }
-
-
     }
 }

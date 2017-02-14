@@ -1,5 +1,4 @@
 ﻿using Log.Entity.Common;
-using Log.Entity.Db;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,17 +10,17 @@ using Tracy.Frameworks.LogClient.Entity;
 namespace Log.IService
 {
     /// <summary>
-    /// debug log服务接口
+    /// error log服务接口
     /// </summary>
-    [ServiceContract(ConfigurationName = "LogsDebugLogService.ILogsDebugLogService")]
-    public interface ILogsDebugLogService
+    [ServiceContract(ConfigurationName = "LogsErrorLogService.ILogsErrorLogService")]
+    public interface ILogsErrorLogService
     {
         /// <summary>
-        /// 插入调试日志
+        /// 插入error log
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [OperationContract]
-        ServiceResult<bool> AddDebugLog(DebugLog request);
+        ServiceResult<bool> AddErrorLog(ErrorLog request);
     }
 }
