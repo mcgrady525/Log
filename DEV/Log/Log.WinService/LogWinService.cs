@@ -40,22 +40,25 @@ namespace Log.WinService
                 connection = factory.CreateConnection();
 
                 //消费debug log
-                System.Threading.Tasks.Task.Factory.StartNew(() =>
+                var debugLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
                     ConsumerDebugLogMessage(connection);
                 });
+                //debugLogTask.Wait();
 
                 //消费error log
-                System.Threading.Tasks.Task.Factory.StartNew(() =>
+                var errorLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
                     ConsumerErrorLogMessage(connection);
                 });
+                //errorLogTask.Wait();
 
                 //消费xml log
-                System.Threading.Tasks.Task.Factory.StartNew(() =>
+                var xmlLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
                     ConsumerXmlLogMessage(connection);
                 });
+                //xmlLogTask.Wait();
 
                 WriteLogs("LogWinService服务启动成功!");
             }
@@ -97,9 +100,33 @@ namespace Log.WinService
         private void ConsumerErrorLogMessage(IConnection connection)
         {
             WriteLogs("开始消费错误日志消息!");
-            while (true)
+            using (var channel = connection.CreateModel())
             {
-                System.Threading.Thread.Sleep(1000);
+                //声明队列
+                channel.QueueDeclare(queue: "Log.Queue.ErrorLog",
+                                 durable: true,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
+
+                //设置公平调度
+                channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+
+                //消费消息
+                //EventingBasicConsumer的Received事件无法触发
+                var consumer = new QueueingBasicConsumer(channel);
+                channel.BasicConsume(queue: "Log.Queue.ErrorLog", noAck: false, consumer: consumer);
+                while (true)
+                {
+                    var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
+                    var msg = Encoding.UTF8.GetString(ea.Body);
+
+                    //反序列化并持久化到数据中
+                    //var debugLog = msg.FromJson<DebugLog>();
+                    //debugLogService.AddDebugLog(debugLog);
+
+                    channel.BasicAck(ea.DeliveryTag, multiple: false);
+                }
             }
         }
 
