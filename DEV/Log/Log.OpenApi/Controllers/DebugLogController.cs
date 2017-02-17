@@ -10,6 +10,8 @@ using Tracy.Frameworks.Common.Extends;
 using RabbitMQ.Client;
 using System.Text;
 using Tracy.Frameworks.Common.Consts;
+using System.Configuration;
+using Tracy.Frameworks.Configurations;
 
 namespace Log.OpenApi.Controllers
 {
@@ -34,7 +36,8 @@ namespace Log.OpenApi.Controllers
             }
 
             //将数据放到rabbitMQ消息队列中
-            var factory = new ConnectionFactory() { HostName = "127.0.0.1", Port = 5672, UserName = "admin", Password = "P@ssw0rd.123" };
+            var rabbitMQConfig = ConfigurationManager.GetSection("rabbitMQ") as RabbitMQConfigurationSection;
+            var factory = new ConnectionFactory() { HostName = rabbitMQConfig.HostName, Port = rabbitMQConfig.Port, UserName = rabbitMQConfig.UserName, Password = rabbitMQConfig.Password };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {

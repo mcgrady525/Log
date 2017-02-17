@@ -15,6 +15,9 @@ using Tracy.Frameworks.LogClient.Entity;
 using Tracy.Frameworks.Common.Extends;
 using Log.IService;
 using Tracy.Frameworks.Common.Consts;
+using Log.Common.Helper;
+using Tracy.Frameworks.Configurations;
+using System.Configuration;
 
 namespace Log.WinService
 {
@@ -39,25 +42,26 @@ namespace Log.WinService
                 //共用connection，各线程单独创建channel
                 //windows服务默认的是后台线程
                 WriteLogs("开始启动LogWinService服务!");
-                var factory = new ConnectionFactory() { HostName = "127.0.0.1", Port = 5672, UserName = "admin", Password = "P@ssw0rd.123" };
+                var rabbitMQConfig = ConfigurationManager.GetSection("rabbitMQ") as RabbitMQConfigurationSection;
+                var factory = new ConnectionFactory() { HostName = rabbitMQConfig.HostName, Port = rabbitMQConfig.Port, UserName = rabbitMQConfig.UserName, Password = rabbitMQConfig.Password };
                 connection = factory.CreateConnection();
 
                 //消费debug log
-                var debugLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
+                System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
                     ConsumerDebugLogMessage(connection);
                 });
                 //debugLogTask.Wait();
 
                 //消费error log
-                var errorLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
+                System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
                     ConsumerErrorLogMessage(connection);
                 });
                 //errorLogTask.Wait();
 
                 //消费xml log
-                var xmlLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
+                System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
                     ConsumerXmlLogMessage(connection);
                 });
@@ -89,7 +93,7 @@ namespace Log.WinService
         /// <param name="connection"></param>
         private void ConsumerXmlLogMessage(IConnection connection)
         {
-            WriteLogs("开始消费Xml日志消息!");
+            //WriteLogs("开始消费Xml日志消息!");
             using (var channel = connection.CreateModel())
             {
                 //声明队列
@@ -126,7 +130,7 @@ namespace Log.WinService
         /// <param name="connection"></param>
         private void ConsumerErrorLogMessage(IConnection connection)
         {
-            WriteLogs("开始消费错误日志消息!");
+            //WriteLogs("开始消费错误日志消息!");
             using (var channel = connection.CreateModel())
             {
                 //声明队列
@@ -163,7 +167,7 @@ namespace Log.WinService
         /// <param name="connection"></param>
         private void ConsumerDebugLogMessage(IConnection connection)
         {
-            WriteLogs("开始消费调试日志消息!");
+            //WriteLogs("开始消费调试日志消息!");
             using (var channel = connection.CreateModel())
             {
                 //声明队列

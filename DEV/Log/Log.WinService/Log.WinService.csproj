@@ -55,6 +55,9 @@
     <Reference Include="Tracy.Frameworks.Common">
       <HintPath>..\..\..\DLL\Tracy.Frameworks.Common.dll</HintPath>
     </Reference>
+    <Reference Include="Tracy.Frameworks.Configurations">
+      <HintPath>..\..\..\DLL\Tracy.Frameworks.Configurations.dll</HintPath>
+    </Reference>
     <Reference Include="Tracy.Frameworks.LogClient">
       <HintPath>..\..\..\DLL\Tracy.Frameworks.LogClient.dll</HintPath>
     </Reference>

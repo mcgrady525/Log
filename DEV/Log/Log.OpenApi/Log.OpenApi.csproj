@@ -66,6 +66,10 @@
     <Reference Include="Tracy.Frameworks.Common">
       <HintPath>..\..\..\DLL\Tracy.Frameworks.Common.dll</HintPath>
     </Reference>
+    <Reference Include="Tracy.Frameworks.Configurations, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\DLL\Tracy.Frameworks.Configurations.dll</HintPath>
+    </Reference>
     <Reference Include="Tracy.Frameworks.LogClient">
       <HintPath>..\..\..\DLL\Tracy.Frameworks.LogClient.dll</HintPath>
     </Reference>
