@@ -41,7 +41,7 @@ namespace Log.WinService
                 //用多线程去分别消费各队列的消息
                 //共用connection，各线程单独创建channel
                 //windows服务默认的是后台线程
-                WriteLogs("开始启动LogWinService服务!");
+                LogHelper.Info(() => "开始启动LogWinService服务!");
                 var rabbitMQConfig = ConfigurationManager.GetSection("rabbitMQ") as RabbitMQConfigurationSection;
                 var factory = new ConnectionFactory() { HostName = rabbitMQConfig.HostName, Port = rabbitMQConfig.Port, UserName = rabbitMQConfig.UserName, Password = rabbitMQConfig.Password };
                 connection = factory.CreateConnection();
@@ -51,27 +51,24 @@ namespace Log.WinService
                 {
                     ConsumerDebugLogMessage(connection);
                 });
-                //debugLogTask.Wait();
 
                 //消费error log
                 System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
                     ConsumerErrorLogMessage(connection);
                 });
-                //errorLogTask.Wait();
 
                 //消费xml log
                 System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
                     ConsumerXmlLogMessage(connection);
                 });
-                //xmlLogTask.Wait();
 
-                WriteLogs("LogWinService服务启动成功!");
+                LogHelper.Info(() => "LogWinService服务启动成功!");
             }
             catch (Exception ex)
             {
-                WriteLogs(string.Format("启动LogWinService服务失败，失败原因：{0}", ex.ToString()));
+                LogHelper.Error(() => string.Format("启动LogWinService服务失败，失败原因：{0}", ex.ToString()));
             }
         }
 
@@ -84,7 +81,7 @@ namespace Log.WinService
                 connection.Dispose();
             }
 
-            WriteLogs("LogWinService服务已停止!");
+            LogHelper.Info(() => "LogWinService服务已停止!");
         }
 
         /// <summary>
@@ -93,7 +90,7 @@ namespace Log.WinService
         /// <param name="connection"></param>
         private void ConsumerXmlLogMessage(IConnection connection)
         {
-            //WriteLogs("开始消费Xml日志消息!");
+            LogHelper.Info(() => "开始消费Xml日志消息!");
             using (var channel = connection.CreateModel())
             {
                 //声明队列
@@ -130,7 +127,7 @@ namespace Log.WinService
         /// <param name="connection"></param>
         private void ConsumerErrorLogMessage(IConnection connection)
         {
-            //WriteLogs("开始消费错误日志消息!");
+            LogHelper.Info(() => "开始消费错误日志消息!");
             using (var channel = connection.CreateModel())
             {
                 //声明队列
@@ -167,7 +164,7 @@ namespace Log.WinService
         /// <param name="connection"></param>
         private void ConsumerDebugLogMessage(IConnection connection)
         {
-            //WriteLogs("开始消费调试日志消息!");
+            LogHelper.Info(() => "开始消费调试日志消息!");
             using (var channel = connection.CreateModel())
             {
                 //声明队列
@@ -196,24 +193,6 @@ namespace Log.WinService
                     channel.BasicAck(ea.DeliveryTag, multiple: false);
                 }
             }
-        }
-
-        /// <summary>
-        /// 写日志
-        /// </summary>
-        /// <param name="msg"></param>
-        private void WriteLogs(string msg)
-        {
-            msg = string.Format("【{0}】{1}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff"), msg);
-            var path = AppDomain.CurrentDomain.BaseDirectory + "LogWinService.log";
-            var fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
-            var sw = new StreamWriter(fs);
-            sw.BaseStream.Seek(0, SeekOrigin.End);
-            sw.WriteLine(msg);
-
-            sw.Flush();
-            sw.Close();
-            fs.Close();
         }
     }
 }
