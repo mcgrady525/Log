@@ -8,7 +8,6 @@ namespace Log.Entity.ViewModel
     /// <summary>
     /// 修改密码request
     /// </summary>
-    [Serializable]
     public class ChangePwdRequest
     {
         /// <summary>

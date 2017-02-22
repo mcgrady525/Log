@@ -8,7 +8,6 @@ namespace Log.Entity.ViewModel
     /// <summary>
     /// 删除角色request
     /// </summary>
-    [Serializable]
     public class DeleteRoleRequest
     {
         /// <summary>

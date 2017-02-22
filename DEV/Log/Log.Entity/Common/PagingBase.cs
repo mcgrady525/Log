@@ -5,7 +5,6 @@ using System.Text;
 
 namespace Log.Entity.Common
 {
-    [Serializable]
     public class PagingBase
     {
         /// <summary>

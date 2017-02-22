@@ -9,7 +9,6 @@ namespace Log.Entity.ViewModel
     /// <summary>
     /// 获取用户列表(分页)
     /// </summary>
-    [Serializable]
     public class GetPagingUsersRequest : PagingBase
     {
         /// <summary>

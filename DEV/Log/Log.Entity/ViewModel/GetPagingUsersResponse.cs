@@ -8,7 +8,6 @@ namespace Log.Entity.ViewModel
     /// <summary>
     /// 查询用户列表(分页)返回结果
     /// </summary>
-    [Serializable]
     public class GetPagingUsersResponse
     {
         /// <summary>

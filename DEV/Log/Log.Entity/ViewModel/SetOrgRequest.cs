@@ -8,7 +8,6 @@ namespace Log.Entity.ViewModel
     /// <summary>
     /// 设置机构request
     /// </summary>
-    [Serializable]
     public class SetOrgRequest
     {
         /// <summary>

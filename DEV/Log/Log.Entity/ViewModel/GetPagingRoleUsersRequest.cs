@@ -9,7 +9,6 @@ namespace Log.Entity.ViewModel
     /// <summary>
     /// 获取指定角色下的所有用户request
     /// </summary>
-    [Serializable]
     public class GetPagingRoleUsersRequest : PagingBase
     {
         /// <summary>

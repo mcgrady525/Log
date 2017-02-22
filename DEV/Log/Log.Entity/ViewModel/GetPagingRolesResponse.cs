@@ -5,7 +5,6 @@ using System.Text;
 
 namespace Log.Entity.ViewModel
 {
-    [Serializable]
     public class GetPagingRolesResponse
     {
         /// <summary>

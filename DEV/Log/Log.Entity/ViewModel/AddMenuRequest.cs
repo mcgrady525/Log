@@ -8,7 +8,6 @@ namespace Log.Entity.ViewModel
     /// <summary>
     /// 添加菜单request
     /// </summary>
-    [Serializable]
     public class AddMenuRequest
     {
         /// <summary>

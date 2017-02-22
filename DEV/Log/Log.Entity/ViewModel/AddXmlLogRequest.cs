@@ -9,7 +9,6 @@ namespace Log.Entity.ViewModel
     /// 新增xml log request
     /// DTO
     /// </summary>
-    [Serializable]
     public class AddXmlLogRequest
     {
         /// <summary>

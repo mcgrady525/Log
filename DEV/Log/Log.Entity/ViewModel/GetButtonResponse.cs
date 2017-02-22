@@ -8,7 +8,6 @@ namespace Log.Entity.ViewModel
     /// <summary>
     /// 获取当前菜单关联的按钮response
     /// </summary>
-    [Serializable]
     public class GetButtonResponse
     {
         /// <summary>

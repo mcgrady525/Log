@@ -8,7 +8,6 @@ namespace Log.Entity.ViewModel
     /// <summary>
     /// 删除菜单request
     /// </summary>
-    [Serializable]
     public class DeleteMenuRequest
     {
         /// <summary>

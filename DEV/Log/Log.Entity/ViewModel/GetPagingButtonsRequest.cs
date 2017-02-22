@@ -6,7 +6,6 @@ using System.Text;
 
 namespace Log.Entity.ViewModel
 {
-    [Serializable]
     public class GetPagingButtonsRequest : PagingBase
     {
 

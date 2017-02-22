@@ -8,7 +8,6 @@ namespace Log.Entity.ViewModel
     /// <summary>
     /// 获取所有按钮(分页)
     /// </summary>
-    [Serializable]
     public class GetPagingButtonsResponse
     {
         /// <summary>

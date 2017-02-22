@@ -8,7 +8,6 @@ namespace Log.Entity.ViewModel
     /// <summary>
     /// 角色授权页面，获取角色所拥有的菜单按钮权限request
     /// </summary>
-    [Serializable]
     public class GetRoleMenuButtonResponse
     {
         /// <summary>

@@ -8,7 +8,6 @@ namespace Log.Entity.ViewModel
     /// <summary>
     /// 分配按钮request
     /// </summary>
-    [Serializable]
     public class SetButtonRequest
     {
         /// <summary>

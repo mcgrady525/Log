@@ -8,7 +8,6 @@ namespace Log.Entity.ViewModel
     /// <summary>
     /// 修改角色request
     /// </summary>
-    [Serializable]
     public class EditRoleRequest
     {
         /// <summary>
