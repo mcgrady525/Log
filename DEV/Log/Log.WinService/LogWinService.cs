@@ -11,13 +11,13 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using Log.Service;
-using Tracy.Frameworks.LogClient.Entity;
 using Tracy.Frameworks.Common.Extends;
 using Log.IService;
 using Tracy.Frameworks.Common.Consts;
 using Log.Common.Helper;
 using Tracy.Frameworks.Configurations;
 using System.Configuration;
+using Log.Entity.ViewModel;
 
 namespace Log.WinService
 {
@@ -113,7 +113,7 @@ namespace Log.WinService
                     var msg = Encoding.UTF8.GetString(ea.Body);
 
                     //反序列化并持久化到数据中
-                    var xmlLog = msg.FromJson<XmlLog>();
+                    var xmlLog = msg.FromJson<AddXmlLogRequest>();
                     xmlLogService.AddXmlLog(xmlLog);
 
                     channel.BasicAck(ea.DeliveryTag, multiple: false);
@@ -150,7 +150,7 @@ namespace Log.WinService
                     var msg = Encoding.UTF8.GetString(ea.Body);
 
                     //反序列化并持久化到数据中
-                    var errorLog = msg.FromJson<ErrorLog>();
+                    var errorLog = msg.FromJson<AddErrorLogRequest>();
                     errorLogService.AddErrorLog(errorLog);
 
                     channel.BasicAck(ea.DeliveryTag, multiple: false);
@@ -187,7 +187,7 @@ namespace Log.WinService
                     var msg = Encoding.UTF8.GetString(ea.Body);
 
                     //反序列化并持久化到数据中
-                    var debugLog = msg.FromJson<DebugLog>();
+                    var debugLog = msg.FromJson<AddDebugLogRequest>();
                     debugLogService.AddDebugLog(debugLog);
 
                     channel.BasicAck(ea.DeliveryTag, multiple: false);

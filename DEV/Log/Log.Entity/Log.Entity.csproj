@@ -65,10 +65,13 @@
     <Compile Include="Rights\GetMyInfoResponse.cs" />
     <Compile Include="Rights\LeftMenu.cs" />
     <Compile Include="ViewModel\AddButtonRequest.cs" />
+    <Compile Include="ViewModel\AddDebugLogRequest.cs" />
+    <Compile Include="ViewModel\AddErrorLogRequest.cs" />
     <Compile Include="ViewModel\AddMenuRequest.cs" />
     <Compile Include="ViewModel\AddOrganizationRequest.cs" />
     <Compile Include="ViewModel\AddRoleRequest.cs" />
     <Compile Include="ViewModel\AddUserRequest.cs" />
+    <Compile Include="ViewModel\AddXmlLogRequest.cs" />
     <Compile Include="ViewModel\AuthorizeRoleRequest.cs" />
     <Compile Include="ViewModel\ChangePwdRequest.cs" />
     <Compile Include="ViewModel\CheckLoginRequest.cs" />

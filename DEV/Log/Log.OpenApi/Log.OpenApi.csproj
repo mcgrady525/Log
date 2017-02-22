@@ -70,9 +70,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\DLL\Tracy.Frameworks.Configurations.dll</HintPath>
     </Reference>
-    <Reference Include="Tracy.Frameworks.LogClient">
-      <HintPath>..\..\..\DLL\Tracy.Frameworks.LogClient.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Net.Http.Formatting">

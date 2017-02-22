@@ -1,12 +1,6 @@
 ﻿using Log.Entity.Common;
-using Log.Entity.Db;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Log.Entity.ViewModel;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
-using Tracy.Frameworks.LogClient.Entity;
 
 namespace Log.IService
 {
@@ -22,6 +16,6 @@ namespace Log.IService
         /// <param name="request"></param>
         /// <returns></returns>
         [OperationContract]
-        ServiceResult<bool> AddDebugLog(DebugLog request);
+        ServiceResult<bool> AddDebugLog(AddDebugLogRequest request);
     }
 }

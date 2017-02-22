@@ -98,18 +98,18 @@ namespace Log.Entity.Db
 		public string Message { get; set; }
 		
 		/// <summary>
-		/// detail
-		/// </summary>
-		[DataMember]
-		[Column("detail")] 
-		public string Detail { get; set; }
-		
-		/// <summary>
 		/// created_time
 		/// </summary>
 		[DataMember]
 		[Column("created_time")] 
 		public DateTime? CreatedTime { get; set; }
+		
+		/// <summary>
+		/// detail
+		/// </summary>
+		[DataMember]
+		[Column("detail")] 
+		public byte[] Detail { get; set; }
 		
 	}
 }

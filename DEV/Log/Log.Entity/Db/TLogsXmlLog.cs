@@ -105,20 +105,6 @@ namespace Log.Entity.Db
 		public string MethodName { get; set; }
 		
 		/// <summary>
-		/// rq
-		/// </summary>
-		[DataMember]
-		[Column("rq")] 
-		public string Rq { get; set; }
-		
-		/// <summary>
-		/// rs
-		/// </summary>
-		[DataMember]
-		[Column("rs")] 
-		public string Rs { get; set; }
-		
-		/// <summary>
 		/// remark
 		/// </summary>
 		[DataMember]
@@ -131,6 +117,20 @@ namespace Log.Entity.Db
 		[DataMember]
 		[Column("created_time")] 
 		public DateTime? CreatedTime { get; set; }
+		
+		/// <summary>
+		/// rq
+		/// </summary>
+		[DataMember]
+		[Column("rq")] 
+		public byte[] Rq { get; set; }
+		
+		/// <summary>
+		/// rs
+		/// </summary>
+		[DataMember]
+		[Column("rs")] 
+		public byte[] Rs { get; set; }
 		
 	}
 }

@@ -7,10 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Log.IService;
 using Log.Entity.Common;
-using Tracy.Frameworks.LogClient.Entity;
 using Log.IDao;
 using Log.DaoFactory;
 using Log.Entity.Db;
+using Log.Entity.ViewModel;
+using Nelibur.ObjectMapper;
+using Nelibur.ObjectMapper.Bindings;
 
 namespace Log.Service
 {
@@ -26,31 +28,17 @@ namespace Log.Service
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public ServiceResult<bool> AddXmlLog(XmlLog request)
+        public ServiceResult<bool> AddXmlLog(AddXmlLogRequest request)
         {
             var result = new ServiceResult<bool>
             {
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var item = new TLogsXmlLog
-            {
-                SystemCode = request.SystemCode,
-                Source = request.Source,
-                MachineName = request.MachineName,
-                IpAddress = request.IPAddress,
-                ProcessId = request.ProcessID,
-                ProcessName = request.ProcessName,
-                ThreadId = request.ThreadID,
-                ThreadName = request.ThreadName,
-                AppdomainName = request.AppDomainName,
-                ClassName = request.ClassName,
-                MethodName = request.MethodName,
-                Rq = request.RQ,
-                Rs = request.RS,
-                Remark = request.Remark,
-                CreatedTime = request.CreatedTime
-            };
+            //TinyMapper对象映射
+            TinyMapper.Bind<AddXmlLogRequest, TLogsXmlLog>();
+            var item = TinyMapper.Map<TLogsXmlLog>(request);
+
             var rs = xmlLogDao.Insert(item);
             if (rs == true)
             {

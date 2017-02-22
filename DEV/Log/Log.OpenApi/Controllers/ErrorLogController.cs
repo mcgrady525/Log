@@ -4,13 +4,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using Tracy.Frameworks.LogClient.Entity;
 using Tracy.Frameworks.Common.Extends;
 using RabbitMQ.Client;
 using System.Text;
 using Tracy.Frameworks.Common.Consts;
 using System.Configuration;
 using Tracy.Frameworks.Configurations;
+using Log.Entity.ViewModel;
 
 namespace Log.OpenApi.Controllers
 {
@@ -26,7 +26,7 @@ namespace Log.OpenApi.Controllers
         /// <param name="debugLog"></param>
         [Route("add")]
         [HttpPost]
-        public IHttpActionResult AddLog(List<ErrorLog> list)
+        public IHttpActionResult AddLog(List<AddErrorLogRequest> list)
         {
             //校验
             if (!list.HasValue())
