@@ -93,6 +93,8 @@
     <Compile Include="ViewModel\GetButtonResponse.cs" />
     <Compile Include="ViewModel\GetPagingButtonsRequest.cs" />
     <Compile Include="ViewModel\GetPagingButtonsResponse.cs" />
+    <Compile Include="ViewModel\GetPagingDebugLogsRequest.cs" />
+    <Compile Include="ViewModel\GetPagingDebugLogsResponse.cs" />
     <Compile Include="ViewModel\GetPagingRolesRequest.cs" />
     <Compile Include="ViewModel\GetPagingRolesResponse.cs" />
     <Compile Include="ViewModel\GetPagingRoleUsersRequest.cs" />

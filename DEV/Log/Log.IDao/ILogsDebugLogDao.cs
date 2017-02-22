@@ -1,9 +1,11 @@
 ﻿using Log.Entity.Db;
+using Log.Entity.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tracy.Frameworks.Common.Result;
 
 
 namespace Log.IDao
@@ -18,5 +20,13 @@ namespace Log.IDao
         /// </summary>
         /// <param name="item">待插入的记录</param>
         bool Insert(TLogsDebugLog item);
+
+        /// <summary>
+        /// 获取所有调试日志(分页)
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        PagingResult<GetPagingDebugLogsResponse> GetPagingDebugLogs(GetPagingDebugLogsRequest request);
+
     }
 }

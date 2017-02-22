@@ -13,6 +13,8 @@ using Log.Entity.Db;
 using Log.Entity.ViewModel;
 using Nelibur.ObjectMapper;
 using Nelibur.ObjectMapper.Bindings;
+using Tracy.Frameworks.Common.Result;
+using Tracy.Frameworks.Common.Extends;
 
 namespace Log.Service
 {
@@ -39,7 +41,7 @@ namespace Log.Service
             };
 
             //TinyMapper对象映射
-            TinyMapper.Bind<AddDebugLogRequest,TLogsDebugLog>();
+            TinyMapper.Bind<AddDebugLogRequest, TLogsDebugLog>();
             var item = TinyMapper.Map<TLogsDebugLog>(request);
 
             var rs = debugLogDao.Insert(item);
@@ -48,6 +50,37 @@ namespace Log.Service
                 result.ReturnCode = ReturnCodeType.Success;
                 result.Content = true;
             }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 获取所有调试日志(分页)
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public ServiceResult<PagingResult<GetPagingDebugLogsResponse>> GetPagingDebugLogs(GetPagingDebugLogsRequest request)
+        {
+            var result = new ServiceResult<PagingResult<GetPagingDebugLogsResponse>>
+            {
+                ReturnCode = ReturnCodeType.Error,
+                Content = new PagingResult<GetPagingDebugLogsResponse>()
+            };
+
+            //处理详情页面url
+            var logSiteUrl = Log.Common.Helper.ConfigHelper.LogSite;
+            var rs = debugLogDao.GetPagingDebugLogs(request);
+            if (rs != null && rs.Entities.HasValue())
+            {
+                var debugLogs = rs.Entities;
+                foreach (var item in debugLogs)
+                {
+                    item.DetailUrl = string.Format("{0}DebugLog/Detail/{1}", logSiteUrl, item.Id);
+                }
+            }
+
+            result.ReturnCode = ReturnCodeType.Success;
+            result.Content = rs;
 
             return result;
         }

@@ -1675,6 +1675,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ButtonController.cs" />
+    <Compile Include="Controllers\DebugLogController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
@@ -1719,6 +1720,7 @@
     <Content Include="Views\Button\Index.cshtml" />
     <Content Include="Views\Button\Add.cshtml" />
     <Content Include="Views\Button\Edit.cshtml" />
+    <Content Include="Views\DebugLog\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

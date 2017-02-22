@@ -1,0 +1,78 @@
+﻿<div id="ui_debuglog_layout" class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:false, title:'调试日志列表'">
+        <table id="ui_debuglog_dg" data-options="fit:true,border:false"></table>
+    </div>
+</div>
+@if (false)
+{
+    <script type="text/javascript" src="~/Scripts/jquery-1.8.2.js"></script>
+}
+
+<script type="text/javascript">
+    $(function () {
+        //默认加载所有调试日志
+        GetAllDebugLogs();
+    });
+
+    //默认加载所有按钮
+    function GetAllDebugLogs() {
+        $.ajax({
+            url: '@Url.Action("GetButtonsByUserIdAndMenuCode", "Organization")',
+            type: "POST",
+            dataType: "json",
+            data: { "menuCode": "debuglog", "pageName": "debuglog" },
+            timeout: 5000,
+            success: function (data) {
+                if (data.success) {
+                    var oldSelectRoleId;
+                    var toolbar = getToolBar(data);
+                    if (data.browser) {
+                        $("#ui_debuglog_dg").datagrid({
+                            url: '@Url.Action("GetPagingDebugLogs", "DebugLog")',
+                            striped: true,
+                            rownumbers: true,
+                            pagination: true,
+                            pageSize: 10,
+                            singleSelect: true,
+                            nowrap: false,
+                            idField: 'Id',
+                            sortName: 'CreatedTime',
+                            sortOrder: 'desc',
+                            pageList: [10, 20, 40, 60, 80, 100],
+                            columns: [[
+                                        {
+                                            field: 'Id', title: 'Id', sortable: true, width: 80,
+                                            formatter: function (value, row, index) {
+                                                //生成a链接，点击打开日志详情
+                                                return '<a href="' + row.DetailUrl + '" target="_blank">' + value + '</a>';
+                                            }
+                                        },
+                                        { field: 'CreatedTime', title: 'CreatedTime', sortable: true, width: 160 },
+                                        { field: 'SystemCode', title: 'SystemCode', sortable: true, width: 100 },
+                                        { field: 'Source', title: 'Source', sortable: true, width: 120 },
+                                        { field: 'IpAddress', title: 'IpAddress', sortable: true, width: 120 },
+                                        { field: 'AppDomainName', title: 'AppDomainName', sortable: true, width: 300 },
+                                        { field: 'Message', title: 'Message', sortable: true, width: 300 }
+                            ]],
+                            toolbar: toolbar.length == 0 ? null : toolbar
+                        });
+                    }
+                    else {
+                        $.show_warning("提示", "无权限，请联系管理员！");
+                    }
+                } else {
+                    $.show_warning("错误", data.result);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (textStatus == "timeout") {
+                    $.show_warning("提示", "请求超时，请刷新当前页重试！");
+                }
+                else {
+                    $.show_warning("错误", textStatus + "：" + errorThrown);
+                }
+            }
+        })
+    };
+
+</script>
