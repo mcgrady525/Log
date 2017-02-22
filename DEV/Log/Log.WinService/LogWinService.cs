@@ -47,22 +47,25 @@ namespace Log.WinService
                 connection = factory.CreateConnection();
 
                 //消费debug log
-                System.Threading.Tasks.Task.Factory.StartNew(() =>
+                var debugLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
                     ConsumerDebugLogMessage(connection);
                 });
+                //debugLogTask.Wait();
 
                 //消费error log
-                System.Threading.Tasks.Task.Factory.StartNew(() =>
+                var errorLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
                     ConsumerErrorLogMessage(connection);
                 });
+                //errorLogTask.Wait();
 
                 //消费xml log
-                System.Threading.Tasks.Task.Factory.StartNew(() =>
+                var xmlLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
                     ConsumerXmlLogMessage(connection);
                 });
+                //xmlLogTask.Wait();
 
                 LogHelper.Info(() => "LogWinService服务启动成功!");
             }
