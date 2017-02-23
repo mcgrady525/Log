@@ -85,6 +85,29 @@ namespace Log.Service
             return result;
         }
 
+        /// <summary>
+        /// 依据id查询
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ServiceResult<TLogsDebugLog> GetDebugLogById(int id)
+        {
+            var result = new ServiceResult<TLogsDebugLog>
+            {
+                ReturnCode = ReturnCodeType.Error,
+                Content = new TLogsDebugLog()
+            };
+
+            var rs = debugLogDao.GetById(id);
+            if (rs != null)
+            {
+                result.ReturnCode = ReturnCodeType.Success;
+                result.Content = rs;
+            }
+
+            return result;
+        }
+
 
     }
 }

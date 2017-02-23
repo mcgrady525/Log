@@ -1,0 +1,48 @@
+﻿
+@using Tracy.Frameworks.Common.Extends;
+@using Log.Common.Helper;
+@model Log.Entity.Db.TLogsDebugLog
+@{
+    ViewBag.Title = "调试日志详情";
+    Layout = "~/Views/Shared/_DebugLogDetailLayout.cshtml";
+}
+
+@{
+    //创建时间
+    var createdTime = string.Empty;
+    if (Model.CreatedTime.HasValue)
+    {
+        createdTime = Model.CreatedTime.Value.ToString("yyyy-MM-dd HH:mm:ss.fff");
+    }
+    
+}
+
+<h2>Id</h2>
+@Html.DisplayFor(p=> p.Id)
+<h2>Created Time</h2>
+@Html.Raw(createdTime)
+<h2>System Code</h2>
+@Html.DisplayFor(p=> p.SystemCode)
+<h2>Source</h2>
+@Html.DisplayFor(p=> p.Source)
+<h2>Machine Name</h2>
+@Html.DisplayFor(p=> p.MachineName)
+<h2>Ip Address</h2>
+@Html.DisplayFor(p=> p.IpAddress)
+<h2>Process Id</h2>
+@Html.DisplayFor(p=> p.ProcessId)
+<h2>Process Name</h2>
+@Html.DisplayFor(p=> p.ProcessName)
+<h2>Thread Id</h2>
+@Html.DisplayFor(p=> p.ThreadId)
+<h2>Thread Name</h2>
+@Html.DisplayFor(p=> p.ThreadName)
+<h2>Appdomain Name</h2>
+@Html.DisplayFor(p=> p.AppdomainName)
+<h2>Message</h2>
+@Html.DisplayFor(p=> p.Message)
+<h2>Detail</h2>
+@Html.Raw(Model.Detail.LZ4Decompress())
+
+
+

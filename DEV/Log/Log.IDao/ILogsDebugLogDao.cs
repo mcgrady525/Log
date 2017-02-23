@@ -28,5 +28,12 @@ namespace Log.IDao
         /// <returns></returns>
         PagingResult<GetPagingDebugLogsResponse> GetPagingDebugLogs(GetPagingDebugLogsRequest request);
 
+        /// <summary>
+        /// 依id查询
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns></returns>
+        TLogsDebugLog GetById(int id);
+
     }
 }

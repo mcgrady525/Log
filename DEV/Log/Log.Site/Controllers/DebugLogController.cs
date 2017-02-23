@@ -10,6 +10,7 @@ using System.Web;
 using System.Web.Mvc;
 using Tracy.Frameworks.Common.Consts;
 using Tracy.Frameworks.Common.Extends;
+using Log.Entity.Db;
 
 namespace Log.Site.Controllers
 {
@@ -26,6 +27,28 @@ namespace Log.Site.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        /// <summary>
+        /// 详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [LoginAuthorization]
+        public ActionResult Detail(int id)
+        {
+            TLogsDebugLog debugLog = null;
+            using (var factory = new ChannelFactory<ILogsDebugLogService>("*"))
+            {
+                var client = factory.CreateChannel();
+                var rs = client.GetDebugLogById(id);
+                if (rs.ReturnCode == ReturnCodeType.Success)
+                {
+                    debugLog = rs.Content;
+                }
+            }
+
+            return View(debugLog);
         }
 
         /// <summary>
@@ -58,5 +81,5 @@ namespace Log.Site.Controllers
             return Content(result);
         }
 
-	}
+    }
 }

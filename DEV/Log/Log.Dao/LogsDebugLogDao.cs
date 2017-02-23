@@ -73,5 +73,32 @@ namespace Log.Dao
 
             return result;
         }
+
+        /// <summary>
+        /// 依id查询
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns></returns>
+        public TLogsDebugLog GetById(int id)
+        {
+            TLogsDebugLog result = null;
+            using (var conn= DapperHelper.CreateConnection())
+            {
+                result = conn.Query<TLogsDebugLog>(@"SELECT  debugLogs.system_code AS SystemCode ,
+                            debugLogs.machine_name AS MachineName ,
+                            debugLogs.ip_address AS IpAddress ,
+                            debugLogs.process_id AS ProcessId ,
+                            debugLogs.process_name AS ProcessName ,
+                            debugLogs.thread_id AS ThreadId ,
+                            debugLogs.thread_name AS ThreadName ,
+                            debugLogs.appdomain_name AS AppdomainName ,
+                            debugLogs.created_time AS CreatedTime ,
+                            *
+                    FROM    dbo.t_logs_debug_log AS debugLogs
+                    WHERE   debugLogs.id = @Id;", new { @Id = id }).FirstOrDefault();
+            }
+
+            return result;
+        }
     }
 }

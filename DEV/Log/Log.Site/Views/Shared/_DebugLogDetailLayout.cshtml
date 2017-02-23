@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link type="image/x-icon" rel="shortcut icon" href="~/Content/images/favicon.ico" />
+    @RenderSection("Header", false)
+</head>
+<body>
+    <noscript>
+        <div style="position: absolute; z-index: 100000; height: 2046px; top: 0px; left: 0px;
+            width: 100%; background: white; text-align: center;">
+            <h1>
+                必须打开浏览器javascript支持！！！
+            </h1>
+        </div>
+    </noscript>
+    @RenderBody()
+    @RenderSection("Footer", false)
+</body>
+</html>

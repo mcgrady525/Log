@@ -2,6 +2,7 @@
 using Log.Entity.ViewModel;
 using System.ServiceModel;
 using Tracy.Frameworks.Common.Result;
+using Log.Entity.Db;
 
 namespace Log.IService
 {
@@ -26,5 +27,14 @@ namespace Log.IService
         /// <returns></returns>
         [OperationContract]
         ServiceResult<PagingResult<GetPagingDebugLogsResponse>> GetPagingDebugLogs(GetPagingDebugLogsRequest request);
+
+        /// <summary>
+        /// 依据id查询
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ServiceResult<TLogsDebugLog> GetDebugLogById(int id);
+
     }
 }
