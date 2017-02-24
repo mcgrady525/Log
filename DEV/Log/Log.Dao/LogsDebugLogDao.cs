@@ -9,13 +9,14 @@ using Log.Common.Helper;
 using Dapper;
 using Tracy.Frameworks.Common.Result;
 using Log.Entity.ViewModel;
+using Tracy.Frameworks.Common.Extends;
 
 namespace Log.Dao
 {
     /// <summary>
     /// 调试日志
     /// </summary>
-    public class LogsDebugLogDao: ILogsDebugLogDao
+    public class LogsDebugLogDao : ILogsDebugLogDao
     {
         /// <summary>
         /// 插入
@@ -47,23 +48,64 @@ namespace Log.Dao
             var startIndex = (request.PageIndex - 1) * request.PageSize + 1;
             var endIndex = request.PageIndex * request.PageSize;
 
-            using (var conn = DapperHelper.CreateConnection())
-            {
-                var multi = conn.QueryMultiple(@"--获取所有调试日志(分页)
-                    SELECT  rs.*
-                    FROM    ( SELECT    ROW_NUMBER() OVER ( ORDER BY debugLogs.id DESC ) AS RowNum ,
+            //按条件查询，构造where
+            //使用DynamicParameters
+            var p= new DynamicParameters();
+            var sbSqlPaging = new StringBuilder(@"SELECT  ROW_NUMBER() OVER ( ORDER BY debugLogs.id DESC ) AS RowNum ,
                                         debugLogs.created_time AS CreatedTime ,
                                         debugLogs.system_code AS SystemCode ,
                                         debugLogs.ip_address AS IpAddress ,
                                         debugLogs.appdomain_name AS AppDomainName ,
                                         *
-                              FROM      dbo.t_logs_debug_log AS debugLogs
-                            ) AS rs
-                    WHERE   rs.RowNum BETWEEN @Start AND @End;
+                                FROM    dbo.t_logs_debug_log AS debugLogs
+                                WHERE   1 = 1");
+            var sbSqlTotal = new StringBuilder(@"SELECT  COUNT(debugLogs.id)
+                                FROM    dbo.t_logs_debug_log AS debugLogs
+                                WHERE   1 = 1");
 
-                    --获取所有调试日志total
-                    SELECT  COUNT(debugLogs.id)
-                    FROM    dbo.t_logs_debug_log AS debugLogs;", new { @Start = startIndex, @End = endIndex });
+            if (!request.SystemCode.IsNullOrEmpty())
+            {
+                sbSqlPaging.Append(" AND debugLogs.system_code=@SystemCode");
+                sbSqlTotal.Append(" AND debugLogs.system_code=@SystemCode");
+                p.Add("SystemCode", request.SystemCode, dbType:System.Data.DbType.String);
+            }
+            if (!request.Source.IsNullOrEmpty())
+            {
+                sbSqlPaging.Append(" AND debugLogs.source=@Source");
+                sbSqlTotal.Append(" AND debugLogs.source=@Source");
+                p.Add("Source", request.Source, System.Data.DbType.String);
+            }
+            if (!request.Message.IsNullOrEmpty())
+            {
+                sbSqlPaging.Append(" AND debugLogs.message LIKE @Message");
+                sbSqlTotal.Append(" AND debugLogs.message LIKE @Message");
+                p.Add("Message", "%" +request.Message+ "%", System.Data.DbType.String);
+            }
+            if (request.CreatedTimeStart.HasValue)
+            {
+                sbSqlPaging.Append(" AND debugLogs.created_time >= @CreatedTimeStart");
+                sbSqlTotal.Append(" AND debugLogs.created_time >= @CreatedTimeStart");
+                p.Add("CreatedTimeStart", request.CreatedTimeStart.Value, System.Data.DbType.DateTime);
+            }
+            if (request.CreatedTimeEnd.HasValue)
+            {
+                sbSqlPaging.Append(" AND debugLogs.created_time <= @CreatedTimeEnd");
+                sbSqlTotal.Append(" AND debugLogs.created_time <= @CreatedTimeEnd");
+                p.Add("CreatedTimeEnd", request.CreatedTimeEnd.Value, System.Data.DbType.DateTime);
+            }
+            
+            var sqlPaging = string.Format(@"SELECT  rs.*
+                FROM    ( {0}
+		                ) AS rs
+                WHERE   rs.RowNum BETWEEN @Start AND @End", sbSqlPaging.ToString());
+            var sqlStr = string.Format("{0};{1};", sqlPaging, sbSqlTotal.ToString());
+
+            p.Add("Start", request.PageIndex, System.Data.DbType.Int32);
+            p.Add("End", request.PageSize, System.Data.DbType.Int32);
+
+            using (var conn = DapperHelper.CreateConnection())
+            {
+                var multi = conn.QueryMultiple(sqlStr, p);
                 var query1 = multi.Read<GetPagingDebugLogsResponse>();
                 var query2 = multi.Read<int>();
                 totalCount = query2.First();
@@ -82,7 +124,7 @@ namespace Log.Dao
         public TLogsDebugLog GetById(int id)
         {
             TLogsDebugLog result = null;
-            using (var conn= DapperHelper.CreateConnection())
+            using (var conn = DapperHelper.CreateConnection())
             {
                 result = conn.Query<TLogsDebugLog>(@"SELECT  debugLogs.system_code AS SystemCode ,
                             debugLogs.machine_name AS MachineName ,

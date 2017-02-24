@@ -11,6 +11,15 @@ namespace Log.Entity.ViewModel
     /// </summary>
     public class GetPagingDebugLogsRequest : PagingBase
     {
+        public string SystemCode { get; set; }
+
+        public string Source { get; set; }
+
+        public string Message { get; set; }
+
+        public DateTime? CreatedTimeStart { get; set; }
+
+        public DateTime? CreatedTimeEnd { get; set; }
 
     }
 }

@@ -54,7 +54,7 @@ namespace Log.Site.Controllers
         /// <summary>
         /// 获取所有调试日志(分页)
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="request">查询条件</param>
         /// <param name="page"></param>
         /// <param name="rows"></param>
         /// <returns></returns>
