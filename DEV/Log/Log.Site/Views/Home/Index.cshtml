@@ -1,4 +1,6 @@
-﻿@{
+﻿
+@using StackExchange.Profiling;
+@{
     Layout = null;
 }
 
@@ -255,5 +257,6 @@
             }
         }
     </script>
+    @MiniProfiler.RenderIncludes()
 </body>
 </html>

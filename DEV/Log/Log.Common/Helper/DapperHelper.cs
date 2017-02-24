@@ -1,9 +1,12 @@
+using StackExchange.Profiling;
+using StackExchange.Profiling.Data;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using Tracy.Frameworks.Common.Extends;
 
 namespace Log.Common.Helper
 {
@@ -18,7 +21,16 @@ namespace Log.Common.Helper
         /// <returns></returns>
         public static IDbConnection CreateConnection()
         {
-            IDbConnection conn = new SqlConnection(ConfigHelper.GetConnectionString("LogDB"));
+            IDbConnection conn = null;
+            var connStr = ConfigHelper.GetConnectionString("LogDB");
+            conn = new SqlConnection(connStr);
+
+            var isMiniProfilerEnabled = ConfigHelper.GetAppSetting("IsMiniProfilerEnabled").ToBool();
+            if (isMiniProfilerEnabled)
+            {
+                conn = new ProfiledDbConnection(new SqlConnection(connStr), MiniProfiler.Current);
+            }
+
             if (conn.State != ConnectionState.Open)
             {
                 conn.Close();
