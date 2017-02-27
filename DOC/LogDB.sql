@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      Microsoft SQL Server 2008                    */
-/* Created on:     2017/2/13 17:28:56                           */
+/* Created on:     2017/2/27 18:26:08                           */
 /*==============================================================*/
 
 
@@ -13,9 +13,23 @@ go
 
 if exists (select 1
             from  sysobjects
+           where  id = object_id('t_logs_debug_log_tip')
+            and   type = 'U')
+   drop table t_logs_debug_log_tip
+go
+
+if exists (select 1
+            from  sysobjects
            where  id = object_id('t_logs_error_log')
             and   type = 'U')
    drop table t_logs_error_log
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('t_logs_error_log_tip')
+            and   type = 'U')
+   drop table t_logs_error_log_tip
 go
 
 if exists (select 1
@@ -27,9 +41,23 @@ go
 
 if exists (select 1
             from  sysobjects
+           where  id = object_id('t_logs_performance_log_tip')
+            and   type = 'U')
+   drop table t_logs_performance_log_tip
+go
+
+if exists (select 1
+            from  sysobjects
            where  id = object_id('t_logs_xml_log')
             and   type = 'U')
    drop table t_logs_xml_log
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('t_logs_xml_log_tip')
+            and   type = 'U')
+   drop table t_logs_xml_log_tip
 go
 
 if exists (select 1
@@ -110,7 +138,7 @@ create table t_logs_debug_log (
    thread_name          nvarchar(128)        null,
    appdomain_name       nvarchar(512)        null,
    message              nvarchar(1024)       null,
-   detail               nvarchar(max)        null,
+   detail               varbinary(max)       null,
    created_time         datetime             null,
    constraint PK_T_LOGS_DEBUG_LOG primary key (id)
 )
@@ -134,6 +162,36 @@ execute sp_addextendedproperty 'MS_Description',
 go
 
 /*==============================================================*/
+/* Table: t_logs_debug_log_tip                                  */
+/*==============================================================*/
+create table t_logs_debug_log_tip (
+   id                   bigint               identity,
+   system_code          nvarchar(32)         null,
+   source               nvarchar(64)         null,
+   created_time         datetime             null,
+   modified_time        datetime             null,
+   constraint PK_T_LOGS_DEBUG_LOG_TIP primary key (id)
+)
+go
+
+if exists (select 1 from  sys.extended_properties
+           where major_id = object_id('t_logs_debug_log_tip') and minor_id = 0)
+begin 
+   declare @CurrentUser sysname 
+select @CurrentUser = user_name() 
+execute sp_dropextendedproperty 'MS_Description',  
+   'user', @CurrentUser, 'table', 't_logs_debug_log_tip' 
+ 
+end 
+
+
+select @CurrentUser = user_name() 
+execute sp_addextendedproperty 'MS_Description',  
+   '调试日志智能提示', 
+   'user', @CurrentUser, 'table', 't_logs_debug_log_tip'
+go
+
+/*==============================================================*/
 /* Table: t_logs_error_log                                      */
 /*==============================================================*/
 create table t_logs_error_log (
@@ -148,7 +206,7 @@ create table t_logs_error_log (
    thread_name          nvarchar(128)        null,
    appdomain_name       nvarchar(512)        null,
    message              nvarchar(1024)       null,
-   detail               nvarchar(max)        null,
+   detail               varbinary(max)       null,
    created_time         datetime             null,
    constraint PK_T_LOGS_ERROR_LOG primary key (id)
 )
@@ -169,6 +227,36 @@ select @CurrentUser = user_name()
 execute sp_addextendedproperty 'MS_Description',  
    '错误日志', 
    'user', @CurrentUser, 'table', 't_logs_error_log'
+go
+
+/*==============================================================*/
+/* Table: t_logs_error_log_tip                                  */
+/*==============================================================*/
+create table t_logs_error_log_tip (
+   id                   bigint               identity,
+   system_code          nvarchar(32)         null,
+   source               nvarchar(64)         null,
+   created_time         datetime             null,
+   modified_time        datetime             null,
+   constraint PK_T_LOGS_ERROR_LOG_TIP primary key (id)
+)
+go
+
+if exists (select 1 from  sys.extended_properties
+           where major_id = object_id('t_logs_error_log_tip') and minor_id = 0)
+begin 
+   declare @CurrentUser sysname 
+select @CurrentUser = user_name() 
+execute sp_dropextendedproperty 'MS_Description',  
+   'user', @CurrentUser, 'table', 't_logs_error_log_tip' 
+ 
+end 
+
+
+select @CurrentUser = user_name() 
+execute sp_addextendedproperty 'MS_Description',  
+   '错误日志智能提示', 
+   'user', @CurrentUser, 'table', 't_logs_error_log_tip'
 go
 
 /*==============================================================*/
@@ -211,6 +299,38 @@ execute sp_addextendedproperty 'MS_Description',
 go
 
 /*==============================================================*/
+/* Table: t_logs_performance_log_tip                            */
+/*==============================================================*/
+create table t_logs_performance_log_tip (
+   id                   bigint               identity,
+   system_code          nvarchar(32)         null,
+   source               nvarchar(64)         null,
+   class_name           nvarchar(64)         null,
+   method_name          nvarchar(64)         null,
+   created_time         datetime             null,
+   modified_time        datetime             null,
+   constraint PK_T_LOGS_PERFORMANCE_LOG_TIP primary key (id)
+)
+go
+
+if exists (select 1 from  sys.extended_properties
+           where major_id = object_id('t_logs_performance_log_tip') and minor_id = 0)
+begin 
+   declare @CurrentUser sysname 
+select @CurrentUser = user_name() 
+execute sp_dropextendedproperty 'MS_Description',  
+   'user', @CurrentUser, 'table', 't_logs_performance_log_tip' 
+ 
+end 
+
+
+select @CurrentUser = user_name() 
+execute sp_addextendedproperty 'MS_Description',  
+   '性能日志智能提示', 
+   'user', @CurrentUser, 'table', 't_logs_performance_log_tip'
+go
+
+/*==============================================================*/
 /* Table: t_logs_xml_log                                        */
 /*==============================================================*/
 create table t_logs_xml_log (
@@ -226,8 +346,8 @@ create table t_logs_xml_log (
    appdomain_name       nvarchar(512)        null,
    class_name           nvarchar(64)         null,
    method_name          nvarchar(64)         null,
-   rq                   nvarchar(max)        null,
-   rs                   nvarchar(max)        null,
+   rq                   varbinary(max)       null,
+   rs                   varbinary(max)       null,
    remark               nvarchar(max)        null,
    created_time         datetime             null,
    constraint PK_T_LOGS_XML_LOG primary key (id)
@@ -249,6 +369,38 @@ select @CurrentUser = user_name()
 execute sp_addextendedproperty 'MS_Description',  
    'xml日志(记录接口请求和响应结果)', 
    'user', @CurrentUser, 'table', 't_logs_xml_log'
+go
+
+/*==============================================================*/
+/* Table: t_logs_xml_log_tip                                    */
+/*==============================================================*/
+create table t_logs_xml_log_tip (
+   id                   bigint               identity,
+   system_code          nvarchar(32)         null,
+   source               nvarchar(64)         null,
+   class_name           nvarchar(64)         null,
+   method_name          nvarchar(64)         null,
+   created_time         datetime             null,
+   modified_time        datetime             null,
+   constraint PK_T_LOGS_XML_LOG_TIP primary key (id)
+)
+go
+
+if exists (select 1 from  sys.extended_properties
+           where major_id = object_id('t_logs_xml_log_tip') and minor_id = 0)
+begin 
+   declare @CurrentUser sysname 
+select @CurrentUser = user_name() 
+execute sp_dropextendedproperty 'MS_Description',  
+   'user', @CurrentUser, 'table', 't_logs_xml_log_tip' 
+ 
+end 
+
+
+select @CurrentUser = user_name() 
+execute sp_addextendedproperty 'MS_Description',  
+   'xml日志智能提示', 
+   'user', @CurrentUser, 'table', 't_logs_xml_log_tip'
 go
 
 /*==============================================================*/

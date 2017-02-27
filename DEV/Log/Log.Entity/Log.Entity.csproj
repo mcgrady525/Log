@@ -51,9 +51,13 @@
     <Compile Include="Common\ReturnCodeType.cs" />
     <Compile Include="Common\ServiceResult.cs" />
     <Compile Include="Db\TLogsDebugLog.cs" />
+    <Compile Include="Db\TLogsDebugLogTip.cs" />
     <Compile Include="Db\TLogsErrorLog.cs" />
+    <Compile Include="Db\TLogsErrorLogTip.cs" />
     <Compile Include="Db\TLogsPerformanceLog.cs" />
+    <Compile Include="Db\TLogsPerformanceLogTip.cs" />
     <Compile Include="Db\TLogsXmlLog.cs" />
+    <Compile Include="Db\TLogsXmlLogTip.cs" />
     <Compile Include="Db\TRightsButton.cs" />
     <Compile Include="Db\TRightsMenu.cs" />
     <Compile Include="Db\TRightsMenuButton.cs" />
