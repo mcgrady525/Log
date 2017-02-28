@@ -108,6 +108,26 @@ namespace Log.Service
             return result;
         }
 
+        /// <summary>
+        /// 刷新调试日志的智能提示
+        /// </summary>
+        /// <returns></returns>
+        public ServiceResult<bool> RefreshDebugLogTip()
+        {
+            var result = new ServiceResult<bool>
+            {
+                ReturnCode = ReturnCodeType.Error
+            };
+            var flag = debugLogDao.RefreshDebugLogTip();
+            if (flag)
+            {
+                result.ReturnCode = ReturnCodeType.Success;
+                result.Content = true;
+            }
+
+            return result;
+        }
+
 
     }
 }

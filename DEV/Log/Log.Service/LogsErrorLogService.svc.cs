@@ -51,5 +51,25 @@ namespace Log.Service
 
             return result;
         }
+
+        /// <summary>
+        /// 刷新错误日志的智能提示
+        /// </summary>
+        /// <returns></returns>
+        public ServiceResult<bool> RefreshErrorLogTip()
+        {
+            var result = new ServiceResult<bool>
+            {
+                ReturnCode = ReturnCodeType.Error
+            };
+            var flag = errorLogDao.RefreshErrorLogTip();
+            if (flag)
+            {
+                result.ReturnCode = ReturnCodeType.Success;
+                result.Content = true;
+            }
+
+            return result;
+        }
     }
 }

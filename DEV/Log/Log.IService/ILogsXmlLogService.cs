@@ -23,5 +23,12 @@ namespace Log.IService
         [OperationContract]
         ServiceResult<bool> AddXmlLog(AddXmlLogRequest request);
 
+        /// <summary>
+        /// 刷新xml日志的智能提示
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        ServiceResult<bool> RefreshXmlLogTip();
+
     }
 }

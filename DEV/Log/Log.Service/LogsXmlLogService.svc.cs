@@ -48,5 +48,25 @@ namespace Log.Service
 
             return result;
         }
+
+        /// <summary>
+        /// 刷新xml日志的智能提示
+        /// </summary>
+        /// <returns></returns>
+        public ServiceResult<bool> RefreshXmlLogTip()
+        {
+            var result = new ServiceResult<bool>
+            {
+                ReturnCode = ReturnCodeType.Error
+            };
+            var flag = xmlLogDao.RefreshXmlLogTip();
+            if (flag)
+            {
+                result.ReturnCode = ReturnCodeType.Success;
+                result.Content = true;
+            }
+
+            return result;
+        }
     }
 }

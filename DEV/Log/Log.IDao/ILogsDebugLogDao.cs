@@ -35,5 +35,11 @@ namespace Log.IDao
         /// <returns></returns>
         TLogsDebugLog GetById(int id);
 
+        /// <summary>
+        /// 刷新调试日志的智能提示
+        /// </summary>
+        /// <returns></returns>
+        bool RefreshDebugLogTip();
+
     }
 }

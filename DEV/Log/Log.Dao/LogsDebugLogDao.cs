@@ -10,6 +10,7 @@ using Dapper;
 using Tracy.Frameworks.Common.Result;
 using Log.Entity.ViewModel;
 using Tracy.Frameworks.Common.Extends;
+using System.Data;
 
 namespace Log.Dao
 {
@@ -50,7 +51,7 @@ namespace Log.Dao
 
             //按条件查询，构造where
             //使用DynamicParameters
-            var p= new DynamicParameters();
+            var p = new DynamicParameters();
             var sbSqlPaging = new StringBuilder(@"SELECT  ROW_NUMBER() OVER ( ORDER BY debugLogs.id DESC ) AS RowNum ,
                                         debugLogs.created_time AS CreatedTime ,
                                         debugLogs.system_code AS SystemCode ,
@@ -67,7 +68,7 @@ namespace Log.Dao
             {
                 sbSqlPaging.Append(" AND debugLogs.system_code=@SystemCode");
                 sbSqlTotal.Append(" AND debugLogs.system_code=@SystemCode");
-                p.Add("SystemCode", request.SystemCode, dbType:System.Data.DbType.String);
+                p.Add("SystemCode", request.SystemCode, dbType: System.Data.DbType.String);
             }
             if (!request.Source.IsNullOrEmpty())
             {
@@ -79,7 +80,7 @@ namespace Log.Dao
             {
                 sbSqlPaging.Append(" AND debugLogs.message LIKE @Message");
                 sbSqlTotal.Append(" AND debugLogs.message LIKE @Message");
-                p.Add("Message", "%" +request.Message+ "%", System.Data.DbType.String);
+                p.Add("Message", "%" + request.Message + "%", System.Data.DbType.String);
             }
             if (request.CreatedTimeStart.HasValue)
             {
@@ -93,7 +94,7 @@ namespace Log.Dao
                 sbSqlTotal.Append(" AND debugLogs.created_time <= @CreatedTimeEnd");
                 p.Add("CreatedTimeEnd", request.CreatedTimeEnd.Value, System.Data.DbType.DateTime);
             }
-            
+
             var sqlPaging = string.Format(@"SELECT  rs.*
                 FROM    ( {0}
 		                ) AS rs
@@ -138,6 +139,27 @@ namespace Log.Dao
                             *
                     FROM    dbo.t_logs_debug_log AS debugLogs
                     WHERE   debugLogs.id = @Id;", new { @Id = id }).FirstOrDefault();
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 刷新调试日志的智能提示
+        /// </summary>
+        /// <returns></returns>
+        public bool RefreshDebugLogTip()
+        {
+            var result = false;
+            using (var conn = DapperHelper.CreateConnection())
+            {
+                var p = new DynamicParameters();
+                p.Add("IsSuccess", dbType: System.Data.DbType.Int32, direction: ParameterDirection.ReturnValue);
+
+                conn.Execute("usp_RefreshDebugLogTip", p, commandType: CommandType.StoredProcedure);
+
+                var isSuccess = p.Get<int>("IsSuccess");
+                result = isSuccess == 1 ? true : false;
             }
 
             return result;

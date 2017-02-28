@@ -7,6 +7,7 @@ using Log.IDao;
 using Log.Entity.Db;
 using Dapper;
 using Log.Common.Helper;
+using System.Data;
 
 namespace Log.Dao
 {
@@ -28,6 +29,27 @@ namespace Log.Dao
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// 刷新错误日志的智能提示
+        /// </summary>
+        /// <returns></returns>
+        public bool RefreshErrorLogTip()
+        {
+            var result = false;
+            using (var conn = DapperHelper.CreateConnection())
+            {
+                var p = new DynamicParameters();
+                p.Add("IsSuccess", dbType: System.Data.DbType.Int32, direction: ParameterDirection.ReturnValue);
+
+                conn.Execute("usp_RefreshErrorLogTip", p, commandType: CommandType.StoredProcedure);
+
+                var isSuccess = p.Get<int>("IsSuccess");
+                result = isSuccess == 1 ? true : false;
+            }
+
+            return result;
         }
     }
 }

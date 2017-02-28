@@ -36,5 +36,12 @@ namespace Log.IService
         [OperationContract]
         ServiceResult<TLogsDebugLog> GetDebugLogById(int id);
 
+        /// <summary>
+        /// 刷新调试日志的智能提示
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        ServiceResult<bool> RefreshDebugLogTip();
+
     }
 }

@@ -17,5 +17,11 @@ namespace Log.IDao
         /// </summary>
         /// <param name="item">待插入的记录</param>
         bool Insert(TLogsXmlLog item);
+
+        /// <summary>
+        /// 刷新xml日志的智能提示
+        /// </summary>
+        /// <returns></returns>
+        bool RefreshXmlLogTip();
     }
 }

@@ -22,5 +22,12 @@ namespace Log.IService
         /// <returns></returns>
         [OperationContract]
         ServiceResult<bool> AddErrorLog(AddErrorLogRequest request);
+
+        /// <summary>
+        /// 刷新错误日志的智能提示
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        ServiceResult<bool> RefreshErrorLogTip();
     }
 }
