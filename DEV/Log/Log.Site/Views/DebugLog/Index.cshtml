@@ -73,6 +73,18 @@
         GetAllDebugLogs();
     });
 
+    //刷新智能提示
+    function debuglog_refresh_debuglog_tip() {
+        $.post('@Url.Action("RefreshDebugLogTip", "DebugLog")', function (data) {
+            if (data.success) {
+                $.show_warning("提示", "刷新调试日志智能提示成功!");
+            }
+            else {
+                $.show_warning("提示", "刷新调试日志智能提示失败!");
+            }
+        });
+    };
+
     //清空查询条件
     function ui_debuglog_cleardata() {
         $('#ui_debuglog_search input').val('');
@@ -114,7 +126,7 @@
                             striped: true,
                             rownumbers: true,
                             pagination: true,
-                            pageSize: 10,
+                            pageSize: 20,
                             singleSelect: true,
                             nowrap: false,
                             idField: 'Id',

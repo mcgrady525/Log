@@ -52,6 +52,15 @@ namespace Log.Common.Helper
                     case "collapseall"://全部折叠
                         sb.Append("{\"text\": \"" + dt.Rows[i]["Name"] + "\",\"iconCls\":\"" + dt.Rows[i]["Icon"] + "\",\"handler\":\"" + pageName + "_collapseall();\"},");
                         break;
+                    case "refresh_debuglog_tip"://刷新调试日志智能提示
+                        sb.Append("{\"text\": \"" + dt.Rows[i]["Name"] + "\",\"iconCls\":\"" + dt.Rows[i]["Icon"] + "\",\"handler\":\"" + pageName + "_refresh_debuglog_tip();\"},");
+                        break;
+                    case "refresh_errorlog_tip"://刷新错误日志智能提示
+                        sb.Append("{\"text\": \"" + dt.Rows[i]["Name"] + "\",\"iconCls\":\"" + dt.Rows[i]["Icon"] + "\",\"handler\":\"" + pageName + "_refresh_errorlog_tip();\"},");
+                        break;
+                    case "refresh_xmllog_tip"://刷新xml日志智能提示
+                        sb.Append("{\"text\": \"" + dt.Rows[i]["Name"] + "\",\"iconCls\":\"" + dt.Rows[i]["Icon"] + "\",\"handler\":\"" + pageName + "_refresh_xmllog_tip();\"},");
+                        break;
                     default:
                         //browser不是按钮
                         break;

@@ -81,5 +81,28 @@ namespace Log.Site.Controllers
             return Content(result);
         }
 
+        /// <summary>
+        /// 刷新智能提示
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult RefreshDebugLogTip()
+        {
+            var flag = false;
+            var msg = string.Empty;
+
+            using (var factory = new ChannelFactory<ILogsDebugLogService>("*"))
+            {
+                var client = factory.CreateChannel();
+                var rs = client.RefreshDebugLogTip();
+                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
+                {
+                    flag = true;
+                }
+            }
+
+            return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }
