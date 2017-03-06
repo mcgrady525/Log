@@ -58,9 +58,6 @@
     <Reference Include="Tracy.Frameworks.Configurations">
       <HintPath>..\..\..\DLL\Tracy.Frameworks.Configurations.dll</HintPath>
     </Reference>
-    <Reference Include="Tracy.Frameworks.LogClient">
-      <HintPath>..\..\..\DLL\Tracy.Frameworks.LogClient.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LogWinService.cs">

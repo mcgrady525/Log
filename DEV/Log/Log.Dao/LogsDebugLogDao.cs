@@ -164,5 +164,27 @@ namespace Log.Dao
 
             return result;
         }
+
+        /// <summary>
+        /// 获取智能提示数据
+        /// </summary>
+        /// <returns></returns>
+        public Tuple<List<string>, List<string>> GetAutoCompleteData()
+        {
+            var systemCodes = new List<string>();
+            var sources = new List<string>();
+            using (var conn= DapperHelper.CreateConnection())
+            {
+                var query = conn.Query<TLogsDebugLogTip>(@"SELECT debugLogTips.system_code AS SystemCode, * FROM dbo.t_logs_debug_log_tip AS debugLogTips
+                    ORDER BY debugLogTips.system_code, debugLogTips.source;").ToList();
+                if (query.HasValue())
+                {
+                    systemCodes = query.Select(p => p.SystemCode).ToList();
+                    sources = query.Select(p => p.Source).ToList();
+                }
+            }
+
+            return new Tuple<List<string>, List<string>>(systemCodes, sources);
+        }
     }
 }

@@ -3,6 +3,8 @@ using Log.Entity.ViewModel;
 using System.ServiceModel;
 using Tracy.Frameworks.Common.Result;
 using Log.Entity.Db;
+using System;
+using System.Collections.Generic;
 
 namespace Log.IService
 {
@@ -42,6 +44,13 @@ namespace Log.IService
         /// <returns></returns>
         [OperationContract]
         ServiceResult<bool> RefreshDebugLogTip();
+
+        /// <summary>
+        /// 获取智能提示数据
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        ServiceResult<Tuple<List<string>, List<string>>> GetAutoCompleteData();
 
     }
 }

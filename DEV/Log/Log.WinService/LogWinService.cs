@@ -51,7 +51,7 @@ namespace Log.WinService
                 {
                     ConsumerDebugLogMessage(connection);
                 });
-                //debugLogTask.Wait();
+                debugLogTask.Wait();
 
                 //消费error log
                 var errorLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>

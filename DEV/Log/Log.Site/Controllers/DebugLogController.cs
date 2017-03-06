@@ -104,5 +104,32 @@ namespace Log.Site.Controllers
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 获取智能提示数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GetAutoCompleteData()
+        {
+            var flag = false;
+            var msg = string.Empty;
+            var systemCodes = new List<string>();
+            var sources = new List<string>();
+
+            using (var factory = new ChannelFactory<ILogsDebugLogService>("*"))
+            {
+                var client = factory.CreateChannel();
+                var rs = client.GetAutoCompleteData();
+                if (rs.ReturnCode == ReturnCodeType.Success)
+                {
+                    systemCodes = rs.Content.Item1;
+                    sources = rs.Content.Item2;
+                    flag = true;
+                }
+            }
+
+            return Json(new { success = flag, msg = msg, systemCodes= systemCodes.ToJson(), sources= sources.ToJson() }, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

@@ -11,7 +11,7 @@
                         SystemCode：
                     </th>
                     <td>
-                        <input type="text" name="SystemCode" autocomplete="off" style="width: 130px;" />
+                        <input type="text" name="SystemCode" id="SystemCode" style="width: 130px;" />
                     </td>
                 </tr>
                 <tr>
@@ -19,7 +19,7 @@
                         Source：
                     </th>
                     <td>
-                        <input type="text" name="Source" autocomplete="off" style="width: 130px;" />
+                        <input type="text" name="Source" id="Source" style="width: 130px;" />
                     </td>
                 </tr>
                 <tr>
@@ -65,13 +65,35 @@
 @if (false)
 {
     <script type="text/javascript" src="~/Scripts/jquery-1.8.2.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
 }
 
 <script type="text/javascript">
     $(function () {
         //默认加载所有调试日志
         GetAllDebugLogs();
+
+        //智能提示
+        InitAutoComplete();
     });
+
+    //初始化智能提示
+    function InitAutoComplete() {
+        var systemCodes = {};
+        var sources = {};
+        $.post('@Url.Action("GetAutoCompleteData", "DebugLog")', function (data) {
+            debugger;
+            if (data.success) {
+                systemCodes = data.systemCodes;
+                sources = data.sources;
+                $("#SystemCode").autocomplete({ source: systemCodes });
+                $("#Source").autocomplete({ source: sources });
+            }
+            else {
+                $.show_warning("提示", "初始化智能提示失败!");
+            }
+        });
+    };
 
     //刷新智能提示
     function debuglog_refresh_debuglog_tip() {

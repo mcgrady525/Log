@@ -128,6 +128,27 @@ namespace Log.Service
             return result;
         }
 
+        /// <summary>
+        /// 获取智能提示数据
+        /// </summary>
+        /// <returns></returns>
+        public ServiceResult<Tuple<List<string>, List<string>>> GetAutoCompleteData()
+        {
+            var systemCodes = new List<string>();
+            var sources = new List<string>();
+            var result = new ServiceResult<Tuple<List<string>, List<string>>> 
+            {
+                ReturnCode= ReturnCodeType.Error,
+                Content= new Tuple<List<string>,List<string>>(systemCodes, sources)
+            };
+
+            var rs = debugLogDao.GetAutoCompleteData();
+            result.ReturnCode = ReturnCodeType.Success;
+            result.Content = rs;
+
+            return result;
+        }
+
 
     }
 }

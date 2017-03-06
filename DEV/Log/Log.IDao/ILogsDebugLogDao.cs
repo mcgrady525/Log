@@ -41,5 +41,11 @@ namespace Log.IDao
         /// <returns></returns>
         bool RefreshDebugLogTip();
 
+        /// <summary>
+        /// 获取智能提示数据
+        /// </summary>
+        /// <returns></returns>
+        Tuple<List<string>, List<string>> GetAutoCompleteData();
+
     }
 }
