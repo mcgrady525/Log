@@ -1955,6 +1955,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ButtonController.cs" />
     <Compile Include="Controllers\DebugLogController.cs" />
+    <Compile Include="Controllers\ErrorLogController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
@@ -2014,6 +2015,8 @@
     <Content Include="Scripts\jquery-ui-1.9.2.custom\development-bundle\ui.menu.jquery.json" />
     <Content Include="Scripts\jquery-ui-1.9.2.custom\development-bundle\ui.position.jquery.json" />
     <Content Include="Scripts\jquery-ui-1.9.2.custom\development-bundle\ui.widget.jquery.json" />
+    <Content Include="Views\ErrorLog\Index.cshtml" />
+    <Content Include="Views\ErrorLog\Detail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
