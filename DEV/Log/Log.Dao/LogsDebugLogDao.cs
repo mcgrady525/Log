@@ -179,8 +179,8 @@ namespace Log.Dao
                     ORDER BY debugLogTips.system_code, debugLogTips.source;").ToList();
                 if (query.HasValue())
                 {
-                    systemCodes = query.Select(p => p.SystemCode).ToList();
-                    sources = query.Select(p => p.Source).ToList();
+                    systemCodes = query.Select(p => p.SystemCode).Distinct().ToList();
+                    sources = query.Select(p => p.Source).Distinct().ToList();
                 }
             }
 

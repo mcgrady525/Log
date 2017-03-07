@@ -14,13 +14,13 @@ namespace Log.Site
                         "~/Scripts/jquery-{version}.js",
                         "~/Scripts/jquery.form.js"));
 
+            //jqueryui
+            bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include("~/Scripts/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.js"));
+
             //easyui
             bundles.Add(new ScriptBundle("~/bundles/easyui").Include(
                         "~/Scripts/easyui-1.3.2/jquery.easyui.min.js",
                         "~/Scripts/easyui-1.3.2/easyui-lang-zh_CN.js"));
-
-            //jquery ui
-            bundles.Add(new ScriptBundle("~/Scripts/jquery-ui-1.12.1.custom").Include("~/Scripts/jquery-ui-1.12.1.custom/jquery-ui.min.js"));
 
             //common
             bundles.Add(new ScriptBundle("~/bundles/common").Include(
@@ -33,7 +33,7 @@ namespace Log.Site
                       "~/Content/easyui/icon.css"));
 
             //jquery ui
-            bundles.Add(new StyleBundle("~/Scripts/jquery-ui-1.12.1.custom").Include("~/Scripts/jquery-ui-1.12.1.custom/jquery-ui.min.css"));
+            bundles.Add(new StyleBundle("~/Content/jqueryui").Include("~/Content/jquery-ui-1.9.2.custom/css/base/jquery-ui-1.9.2.custom.css"));
 
             //Site
             bundles.Add(new StyleBundle("~/Content/site").Include(

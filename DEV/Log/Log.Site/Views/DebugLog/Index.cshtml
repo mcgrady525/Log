@@ -65,7 +65,7 @@
 @if (false)
 {
     <script type="text/javascript" src="~/Scripts/jquery-1.8.2.js"></script>
-    <script type="text/javascript" src="~/Scripts/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.js"></script>
 }
 
 <script type="text/javascript">
@@ -82,10 +82,9 @@
         var systemCodes = {};
         var sources = {};
         $.post('@Url.Action("GetAutoCompleteData", "DebugLog")', function (data) {
-            debugger;
             if (data.success) {
-                systemCodes = data.systemCodes;
-                sources = data.sources;
+                systemCodes = $.parseJSON(data.systemCodes);
+                sources = $.parseJSON(data.sources);
                 $("#SystemCode").autocomplete({ source: systemCodes });
                 $("#Source").autocomplete({ source: sources });
             }

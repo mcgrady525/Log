@@ -128,7 +128,7 @@ namespace Log.Site.Controllers
                 }
             }
 
-            return Json(new { success = flag, msg = msg, systemCodes= systemCodes.ToJson(), sources= sources.ToJson() }, JsonRequestBehavior.AllowGet);
+            return Json(new { success = flag, msg = msg, systemCodes = systemCodes.ToJson(), sources = sources.ToJson() }, JsonRequestBehavior.AllowGet);
         }
 
     }
