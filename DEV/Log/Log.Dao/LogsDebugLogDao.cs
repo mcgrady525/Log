@@ -101,8 +101,8 @@ namespace Log.Dao
                 WHERE   rs.RowNum BETWEEN @Start AND @End", sbSqlPaging.ToString());
             var sqlStr = string.Format("{0};{1};", sqlPaging, sbSqlTotal.ToString());
 
-            p.Add("Start", request.PageIndex, System.Data.DbType.Int32);
-            p.Add("End", request.PageSize, System.Data.DbType.Int32);
+            p.Add("Start", startIndex, System.Data.DbType.Int32);
+            p.Add("End", endIndex, System.Data.DbType.Int32);
 
             using (var conn = DapperHelper.CreateConnection())
             {
@@ -173,7 +173,7 @@ namespace Log.Dao
         {
             var systemCodes = new List<string>();
             var sources = new List<string>();
-            using (var conn= DapperHelper.CreateConnection())
+            using (var conn = DapperHelper.CreateConnection())
             {
                 var query = conn.Query<TLogsDebugLogTip>(@"SELECT debugLogTips.system_code AS SystemCode, * FROM dbo.t_logs_debug_log_tip AS debugLogTips
                     ORDER BY debugLogTips.system_code, debugLogTips.source;").ToList();
