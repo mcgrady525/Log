@@ -6,6 +6,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using Tracy.Frameworks.Common.Result;
 
 namespace Log.IService
 {
@@ -29,6 +30,21 @@ namespace Log.IService
         /// <returns></returns>
         [OperationContract]
         ServiceResult<bool> RefreshXmlLogTip();
+
+        /// <summary>
+        /// 获取所有日志(分页)
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ServiceResult<PagingResult<GetPagingXmlLogsResponse>> GetPagingXmlLogs(GetPagingXmlLogsRequest request);
+
+        /// <summary>
+        /// 获取智能提示数据源
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        ServiceResult<Tuple<List<string>, List<string>, List<string>, List<string>>> GetAutoCompleteData();
 
     }
 }

@@ -1,0 +1,217 @@
+﻿<div id="ui_xmllog_layout" class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:false, title:''">
+        <table id="ui_xmllog_dg" data-options="fit:true,border:false"></table>
+    </div>
+    <div data-options="region:'east',split:true,border:true,collapsed:true" title="多条件过滤"
+         style="width: 280px;">
+        <div id="ui_xmllog_search">
+            <table class="tableForm" style="width: 100%; height: 100%; background: #F5F5F5;">
+                <tr>
+                    <th>
+                        SystemCode：
+                    </th>
+                    <td>
+                        <input type="text" name="SystemCode" id="SystemCode" style="width: 130px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Source：
+                    </th>
+                    <td>
+                        <input type="text" name="Source" id="Source" style="width: 130px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        ClassName：
+                    </th>
+                    <td>
+                        <input type="text" name="ClassName" id="ClassName" style="width: 130px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        MethodName：
+                    </th>
+                    <td>
+                        <input type="text" name="MethodName" id="MethodName" style="width: 130px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        CreatedTime：
+                    </th>
+                    <td>
+                        <input name="CreatedTimeStart" id="CreatedTimeStart" class="easyui-datetimebox"
+                               editable="false" style="width: 140px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        至：
+                    </th>
+                    <td>
+                        <input name="CreatedTimeEnd" id="CreatedTimeEnd" class="easyui-datetimebox"
+                               editable="false" style="width: 140px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="javascript:void(0);" class="easyui-linkbutton" iconcls="icon-search" plain="true"
+                           onclick="ui_xmllog_searchdata();">搜索</a>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0);" class="easyui-linkbutton" iconcls="icon-clear" plain="true"
+                           onclick="ui_xmllog_cleardata();">清空条件</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+@if (false)
+{
+    <script type="text/javascript" src="~/Scripts/jquery-1.8.2.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.js"></script>
+}
+
+<script type="text/javascript">
+    $(function () {
+        //默认加载所有日志
+        GetAllLogs();
+
+        //智能提示
+        InitAutoComplete();
+    });
+
+    //初始化智能提示
+    function InitAutoComplete() {
+        var systemCodes = {};
+        var sources = {};
+        var classNames = {};
+        var methodNames = {};
+        $.post('@Url.Action("GetAutoCompleteData", "XmlLog")', function (data) {
+            if (data.success) {
+                systemCodes = $.parseJSON(data.systemCodes);
+                sources = $.parseJSON(data.sources);
+                classNames = $.parseJSON(data.classNames);
+                methodNames = $.parseJSON(data.methodNames);
+                $("#SystemCode").autocomplete({ source: systemCodes });
+                $("#Source").autocomplete({ source: sources });
+                $("#ClassName").autocomplete({ source: classNames });
+                $("#MethodName").autocomplete({ source: methodNames });
+            }
+            else {
+                $.show_warning("提示", "初始化智能提示失败!");
+            }
+        });
+    };
+
+    //刷新智能提示
+    function xmllog_refresh_xmllog_tip() {
+        $.post('@Url.Action("RefreshXmlLogTip", "XmlLog")', function (data) {
+            if (data.success) {
+                $.show_warning("提示", "刷新Xml日志智能提示成功!");
+            }
+            else {
+                $.show_warning("提示", "刷新Xml日志智能提示失败!");
+            }
+        });
+    };
+
+    //清空查询条件
+    function ui_xmllog_cleardata() {
+        $('#ui_xmllog_search input').val('');
+        $('#ui_xmllog_search select').val('select');
+        $('#CreatedTimeStart').datetimebox('setValue', '');
+        $('#CreatedTimeEnd').datetimebox('setValue', '');
+        $("#ui_xmllog_dg").datagrid('load', {});
+
+        $("#ui_xmllog_dg").datagrid('clearSelections').datagrid('clearChecked');//刷新并清除已选择
+    };
+
+    //查询
+    function ui_xmllog_searchdata() {
+        $("#ui_xmllog_dg").datagrid('load', {
+            SystemCode: $('#ui_xmllog_search').find("input[name='SystemCode']").val(),
+            Source: $('#ui_xmllog_search').find("input[name='Source']").val(),
+            ClassName: $('#ui_xmllog_search').find("input[name='ClassName']").val(),
+            MethodName: $('#ui_xmllog_search').find("input[name='MethodName']").val(),
+            CreatedTimeStart: $('#CreatedTimeStart').datetimebox('getValue'),
+            CreatedTimeEnd: $('#CreatedTimeEnd').datetimebox('getValue')
+        });
+        $("#ui_xmllog_dg").datagrid('clearSelections').datagrid('clearChecked');//刷新并清除已选择
+    };
+
+    //默认加载所有日志
+    function GetAllLogs() {
+        $.ajax({
+            url: '@Url.Action("GetButtonsByUserIdAndMenuCode", "Organization")',
+            type: "POST",
+            dataType: "json",
+            data: { "menuCode": "xmllog", "pageName": "xmllog" },
+            timeout: 5000,
+            success: function (data) {
+                if (data.success) {
+                    var oldSelectRoleId;
+                    var toolbar = getToolBar(data);
+                    if (data.browser) {
+                        $("#ui_xmllog_dg").datagrid({
+                            url: '@Url.Action("GetPagingXmlLogs", "XmlLog")',
+                            striped: true,
+                            rownumbers: true,
+                            pagination: true,
+                            pageSize: 20,
+                            singleSelect: true,
+                            nowrap: false,
+                            idField: 'Id',
+                            sortName: 'CreatedTime',
+                            sortOrder: 'desc',
+                            pageList: [10, 20, 40, 60, 80, 100],
+                            columns: [[
+                                        {
+                                            field: 'Id', title: 'Id', sortable: true, width: 80,
+                                            formatter: function (value, row, index) {
+                                                //生成a链接，点击打开日志详情
+                                                return '<a href="' + row.DetailUrl + '" target="_blank">' + value + '</a>';
+                                            }
+                                        },
+                                        { field: 'CreatedTime', title: 'CreatedTime', sortable: true, width: 160 },
+                                        { field: 'SystemCode', title: 'SystemCode', sortable: true, width: 100 },
+                                        { field: 'Source', title: 'Source', sortable: true, width: 120 },
+                                        { field: 'ClassName', title: 'ClassName', sortable: true, width: 120 },
+                                        { field: 'MethodName', title: 'MethodName', sortable: true, width: 120 },
+                                        { field: 'IpAddress', title: 'IpAddress', sortable: true, width: 120 },
+                                        { field: 'AppDomainName', title: 'AppDomainName', sortable: true, width: 300 },
+                                        { field: 'Remark', title: 'Remark', sortable: true, width: 300 }
+                            ]],
+                            toolbar: toolbar.length == 0 ? null : toolbar
+                        });
+                    }
+                    else {
+                        $.show_warning("提示", "无权限，请联系管理员！");
+                    }
+                } else {
+                    $.show_warning("错误", data.result);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (textStatus == "timeout") {
+                    $.show_warning("提示", "请求超时，请刷新当前页重试！");
+                }
+                else {
+                    $.show_warning("错误", textStatus + "：" + errorThrown);
+                }
+            }
+        })
+
+        //回车搜索
+        $("#ui_xmllog_search").find('input').on('keyup', function (event) {
+            if (event.keyCode == '13') {
+                ui_xmllog_searchdata();
+            }
+        })
+    };
+
+</script>

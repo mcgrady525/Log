@@ -107,6 +107,8 @@
     <Compile Include="ViewModel\GetPagingRoleUsersResponse.cs" />
     <Compile Include="ViewModel\GetPagingUsersRequest.cs" />
     <Compile Include="ViewModel\GetPagingUsersResponse.cs" />
+    <Compile Include="ViewModel\GetPagingXmlLogsRequest.cs" />
+    <Compile Include="ViewModel\GetPagingXmlLogsResponse.cs" />
     <Compile Include="ViewModel\GetRoleMenuButtonResponse.cs" />
     <Compile Include="ViewModel\SetButtonRequest.cs" />
     <Compile Include="ViewModel\SetOrgRequest.cs" />

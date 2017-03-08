@@ -1959,9 +1959,11 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
+    <Compile Include="Controllers\PerformanceLogController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\XmlLogController.cs" />
     <Compile Include="Filters\LoginAuthorizationAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -2017,6 +2019,7 @@
     <Content Include="Scripts\jquery-ui-1.9.2.custom\development-bundle\ui.widget.jquery.json" />
     <Content Include="Views\ErrorLog\Index.cshtml" />
     <Content Include="Views\ErrorLog\Detail.cshtml" />
+    <Content Include="Views\XmlLog\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2028,6 +2031,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
     <Folder Include="Views\Base\" />
+    <Folder Include="Views\PerformanceLog\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Log.Common\Log.Common.csproj">

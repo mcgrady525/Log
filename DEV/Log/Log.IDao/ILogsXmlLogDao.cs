@@ -1,9 +1,11 @@
 ﻿using Log.Entity.Db;
+using Log.Entity.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tracy.Frameworks.Common.Result;
 
 namespace Log.IDao
 {
@@ -23,5 +25,18 @@ namespace Log.IDao
         /// </summary>
         /// <returns></returns>
         bool RefreshXmlLogTip();
+
+        /// <summary>
+        /// 获取所有日志(分页)
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        PagingResult<GetPagingXmlLogsResponse> GetPagingXmlLogs(GetPagingXmlLogsRequest request);
+
+        /// <summary>
+        /// 获取智能提示数据源
+        /// </summary>
+        /// <returns></returns>
+        Tuple<List<string>, List<string>, List<string>, List<string>> GetAutoCompleteData();
     }
 }
