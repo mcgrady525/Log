@@ -38,5 +38,12 @@ namespace Log.IDao
         /// </summary>
         /// <returns></returns>
         Tuple<List<string>, List<string>, List<string>, List<string>> GetAutoCompleteData();
+
+        /// <summary>
+        /// 依id查询
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns></returns>
+        TLogsXmlLog GetById(long id);
     }
 }

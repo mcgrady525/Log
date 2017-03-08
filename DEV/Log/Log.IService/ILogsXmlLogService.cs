@@ -1,4 +1,5 @@
 ﻿using Log.Entity.Common;
+using Log.Entity.Db;
 using Log.Entity.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -45,6 +46,14 @@ namespace Log.IService
         /// <returns></returns>
         [OperationContract]
         ServiceResult<Tuple<List<string>, List<string>, List<string>, List<string>>> GetAutoCompleteData();
+
+        /// <summary>
+        /// 依据id查询
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ServiceResult<TLogsXmlLog> GetXmlLogById(long id);
 
     }
 }

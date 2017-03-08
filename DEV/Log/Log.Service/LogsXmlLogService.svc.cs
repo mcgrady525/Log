@@ -122,5 +122,28 @@ namespace Log.Service
 
             return result;
         }
+
+        /// <summary>
+        /// 依据id查询
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ServiceResult<TLogsXmlLog> GetXmlLogById(long id)
+        {
+            var result = new ServiceResult<TLogsXmlLog>
+            {
+                ReturnCode = ReturnCodeType.Error,
+                Content = new TLogsXmlLog()
+            };
+
+            var rs = xmlLogDao.GetById(id);
+            if (rs != null)
+            {
+                result.ReturnCode = ReturnCodeType.Success;
+                result.Content = rs;
+            }
+
+            return result;
+        }
     }
 }

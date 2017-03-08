@@ -1,4 +1,5 @@
 ﻿using Log.Entity.Common;
+using Log.Entity.Db;
 using Log.Entity.ViewModel;
 using Log.IService;
 using Log.Site.Filters;
@@ -25,6 +26,28 @@ namespace Log.Site.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        /// <summary>
+        /// 详情页
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [LoginAuthorization]
+        public ActionResult Detail(long id)
+        {
+            TLogsXmlLog xmlLog = null;
+            using (var factory = new ChannelFactory<ILogsXmlLogService>("*"))
+            {
+                var client = factory.CreateChannel();
+                var rs = client.GetXmlLogById(id);
+                if (rs.ReturnCode == ReturnCodeType.Success)
+                {
+                    xmlLog = rs.Content;
+                }
+            }
+
+            return View(xmlLog);
         }
 
         /// <summary>
@@ -108,8 +131,8 @@ namespace Log.Site.Controllers
                 }
             }
 
-            return Json(new { success = flag, msg = msg, systemCodes = systemCodes.ToJson(), sources = sources.ToJson(), classNames= classNames.ToJson(), methodNames= methodNames.ToJson() }, JsonRequestBehavior.AllowGet);
+            return Json(new { success = flag, msg = msg, systemCodes = systemCodes.ToJson(), sources = sources.ToJson(), classNames = classNames.ToJson(), methodNames = methodNames.ToJson() }, JsonRequestBehavior.AllowGet);
         }
 
-	}
+    }
 }

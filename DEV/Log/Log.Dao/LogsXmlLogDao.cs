@@ -173,5 +173,35 @@ namespace Log.Dao
 
             return new Tuple<List<string>, List<string>, List<string>, List<string>>(systemCodes, sources, classNames, methodNames);
         }
+
+        /// <summary>
+        /// 依id查询
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns></returns>
+        public TLogsXmlLog GetById(long id)
+        {
+            TLogsXmlLog xmlLog = null;
+
+            using (var conn = DapperHelper.CreateConnection())
+            {
+                xmlLog = conn.Query<TLogsXmlLog>(@"SELECT  xmlLogs.system_code AS SystemCode ,
+                        xmlLogs.machine_name AS MachineName ,
+                        xmlLogs.ip_address AS IpAddress ,
+                        xmlLogs.process_id AS ProcessId ,
+                        xmlLogs.process_name AS ProcessName ,
+                        xmlLogs.thread_id AS ThreadId ,
+                        xmlLogs.thread_name AS ThreadName ,
+                        xmlLogs.appdomain_name AS AppdomainName ,
+                        xmlLogs.class_name AS ClassName ,
+                        xmlLogs.method_name AS MethodName ,
+                        xmlLogs.created_time AS CreatedTime ,
+                        *
+                FROM    dbo.t_logs_xml_log AS xmlLogs
+                WHERE   xmlLogs.id = @Id;", new { @Id = id }).FirstOrDefault();
+            }
+
+            return xmlLog;
+        }
     }
 }

@@ -2020,6 +2020,7 @@
     <Content Include="Views\ErrorLog\Index.cshtml" />
     <Content Include="Views\ErrorLog\Detail.cshtml" />
     <Content Include="Views\XmlLog\Index.cshtml" />
+    <Content Include="Views\XmlLog\Detail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
