@@ -26,7 +26,7 @@ namespace Log.Site.Controllers
         }
 
         /// <summary>
-        /// 详情
+        /// 详情页
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

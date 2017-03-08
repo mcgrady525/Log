@@ -92,8 +92,7 @@ namespace Log.Service
             var rs = errorLogDao.GetPagingErrorLogs(request);
             if (rs != null && rs.Entities.HasValue())
             {
-                var errorLogs = rs.Entities;
-                foreach (var item in errorLogs)
+                foreach (var item in rs.Entities)
                 {
                     item.DetailUrl = string.Format("{0}ErrorLog/Detail/{1}", logSiteUrl, item.Id);
                 }

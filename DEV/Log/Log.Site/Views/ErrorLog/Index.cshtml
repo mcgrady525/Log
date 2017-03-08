@@ -120,9 +120,9 @@
     //查询
     function ui_errorlog_searchdata() {
         $("#ui_errorlog_dg").datagrid('load', {
-            SystemCode: $('#ui_errorlog_search').find('[name=SystemCode]').val(),
-            Source: $('#ui_errorlog_search').find('[name=Source]').val(),
-            Message: $('#ui_errorlog_search').find('[name=Message]').val(),
+            SystemCode: $('#ui_errorlog_search').find("input[name='SystemCode']").val(),
+            Source: $('#ui_errorlog_search').find("input[name='Source']").val(),
+            Message: $('#ui_errorlog_search').find("input[name='Message']").val(),
             CreatedTimeStart: $('#CreatedTimeStart').datetimebox('getValue'),
             CreatedTimeEnd: $('#CreatedTimeEnd').datetimebox('getValue')
         });
