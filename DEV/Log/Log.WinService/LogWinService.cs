@@ -27,6 +27,7 @@ namespace Log.WinService
         private static readonly ILogsDebugLogService debugLogService = new LogsDebugLogService();
         private static readonly ILogsErrorLogService errorLogService = new LogsErrorLogService();
         private static readonly ILogsXmlLogService xmlLogService = new LogsXmlLogService();
+        private static readonly ILogsPerformanceLogService perfLogService = new LogsPerformanceLogService();
 
         IConnection connection = null;
         public LogWinService()
@@ -51,7 +52,7 @@ namespace Log.WinService
                 {
                     ConsumerDebugLogMessage(connection);
                 });
-                debugLogTask.Wait();
+                //debugLogTask.Wait();
 
                 //消费error log
                 var errorLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
@@ -66,6 +67,12 @@ namespace Log.WinService
                     ConsumerXmlLogMessage(connection);
                 });
                 //xmlLogTask.Wait();
+
+                var perfLogTask = System.Threading.Tasks.Task.Factory.StartNew(() => 
+                {
+                    ConsumerPerfLogMessage(connection);
+                });
+                //perfLogTask.Wait();
 
                 LogHelper.Info(() => "LogWinService服务启动成功!");
             }
@@ -85,6 +92,43 @@ namespace Log.WinService
             }
 
             LogHelper.Info(() => "LogWinService服务已停止!");
+        }
+
+        /// <summary>
+        /// 消费性能日志消息
+        /// </summary>
+        /// <param name="connection"></param>
+        private void ConsumerPerfLogMessage(IConnection connection)
+        {
+            LogHelper.Info(() => "开始消费性能日志消息!");
+            using (var channel = connection.CreateModel())
+            {
+                //声明队列
+                channel.QueueDeclare(queue: RabbitMQQueueConst.LogPerformanceLog,
+                                 durable: true,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
+
+                //设置公平调度
+                channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+
+                //消费消息
+                //EventingBasicConsumer的Received事件无法触发
+                var consumer = new QueueingBasicConsumer(channel);
+                channel.BasicConsume(queue: RabbitMQQueueConst.LogPerformanceLog, noAck: false, consumer: consumer);
+                while (true)
+                {
+                    var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
+                    var msg = Encoding.UTF8.GetString(ea.Body);
+
+                    //反序列化并持久化到数据中
+                    var perfLog = msg.FromJson<AddPerformanceLogRequest>();
+                    perfLogService.AddPerfLog(perfLog);
+
+                    channel.BasicAck(ea.DeliveryTag, multiple: false);
+                }
+            }
         }
 
         /// <summary>

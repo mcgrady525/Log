@@ -2021,6 +2021,8 @@
     <Content Include="Views\ErrorLog\Detail.cshtml" />
     <Content Include="Views\XmlLog\Index.cshtml" />
     <Content Include="Views\XmlLog\Detail.cshtml" />
+    <Content Include="Views\PerformanceLog\Index.cshtml" />
+    <Content Include="Views\PerformanceLog\Detail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2032,7 +2034,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
     <Folder Include="Views\Base\" />
-    <Folder Include="Views\PerformanceLog\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Log.Common\Log.Common.csproj">

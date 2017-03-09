@@ -1,0 +1,52 @@
+﻿@using Tracy.Frameworks.Common.Extends;
+@using Log.Common.Helper;
+@model Log.Entity.Db.TLogsPerformanceLog
+@{
+    ViewBag.Title = "性能日志详情";
+    Layout = "~/Views/Shared/_DebugLogDetailLayout.cshtml";
+}
+
+@{
+    //创建时间
+    var createdTime = string.Empty;
+    if (Model.CreatedTime.HasValue)
+    {
+        createdTime = Model.CreatedTime.Value.ToString("yyyy-MM-dd HH:mm:ss.fff");
+    }
+
+    //duration，格式：
+    var duration = string.Empty;
+    if (Model.Duration.HasValue)
+    {
+        duration= Model.Duration.Value.ToString("N");
+    }
+}
+
+<h2>Id</h2>
+@Html.DisplayFor(p => p.Id)
+<h2>Created Time</h2>
+@Html.Raw(createdTime)
+<h2>System Code</h2>
+@Html.DisplayFor(p => p.SystemCode)
+<h2>Source</h2>
+@Html.DisplayFor(p => p.Source)
+<h2>ClassName</h2>
+@Html.DisplayFor(p => p.ClassName)
+<h2>MethodName</h2>
+@Html.DisplayFor(p => p.MethodName)
+<h2>Machine Name</h2>
+@Html.DisplayFor(p => p.MachineName)
+<h2>Ip Address</h2>
+@Html.DisplayFor(p => p.IpAddress)
+<h2>Process Id</h2>
+@Html.DisplayFor(p => p.ProcessId)
+<h2>Process Name</h2>
+@Html.DisplayFor(p => p.ProcessName)
+<h2>Thread Id</h2>
+@Html.DisplayFor(p => p.ThreadId)
+<h2>Thread Name</h2>
+@Html.DisplayFor(p => p.ThreadName)
+<h2>Duration(单位:ms)</h2>
+@Html.Raw(duration)
+<h2>Remark</h2>
+@Html.DisplayFor(p => p.Remark)

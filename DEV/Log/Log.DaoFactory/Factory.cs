@@ -15,7 +15,7 @@ namespace Log.DaoFactory
         /// </summary>
         /// <param name="daoName"></param>
         /// <returns></returns>
-        private static object GetInstance(string daoName, string directoryName= "")
+        private static object GetInstance(string daoName, string directoryName = "")
         {
             string configName = System.Configuration.ConfigurationManager.AppSettings["Log.DaoAccess"];
             if (string.IsNullOrEmpty(configName))
@@ -26,9 +26,9 @@ namespace Log.DaoFactory
             StringBuilder sbClassName = new StringBuilder(configName);
             if (!string.IsNullOrEmpty(directoryName))
             {
-                sbClassName.Append("."+ directoryName);
+                sbClassName.Append("." + directoryName);
             }
-            sbClassName.Append("."+ daoName);
+            sbClassName.Append("." + daoName);
 
             //加载程序集
             System.Reflection.Assembly assembly = System.Reflection.Assembly.Load(configName);
@@ -116,6 +116,15 @@ namespace Log.DaoFactory
         public static ILogsXmlLogDao GetLogsXmlLogDao()
         {
             return GetInstance("LogsXmlLogDao") as ILogsXmlLogDao;
+        }
+
+        /// <summary>
+        /// perf log
+        /// </summary>
+        /// <returns></returns>
+        public static ILogsPerformanceLogDao GetLogsPerformanceLogDao()
+        {
+            return GetInstance("LogsPerformanceLogDao") as ILogsPerformanceLogDao;
         }
 
     }

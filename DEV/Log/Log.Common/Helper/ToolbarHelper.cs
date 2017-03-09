@@ -61,6 +61,9 @@ namespace Log.Common.Helper
                     case "refresh_xmllog_tip"://刷新xml日志智能提示
                         sb.Append("{\"text\": \"" + dt.Rows[i]["Name"] + "\",\"iconCls\":\"" + dt.Rows[i]["Icon"] + "\",\"handler\":\"" + pageName + "_refresh_xmllog_tip();\"},");
                         break;
+                    case "refresh_perflog_tip"://刷新性能日志智能提示
+                        sb.Append("{\"text\": \"" + dt.Rows[i]["Name"] + "\",\"iconCls\":\"" + dt.Rows[i]["Icon"] + "\",\"handler\":\"" + pageName + "_refresh_perflog_tip();\"},");
+                        break;
                     default:
                         //browser不是按钮
                         break;

@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="LogsDebugLogDao.cs" />
     <Compile Include="LogsErrorLogDao.cs" />
+    <Compile Include="LogsPerformanceLogDao.cs" />
     <Compile Include="LogsXmlLogDao.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rights\RightsAccountDao.cs" />
