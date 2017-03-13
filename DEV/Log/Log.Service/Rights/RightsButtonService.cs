@@ -1,4 +1,3 @@
-using Log.DaoFactory;
 using Log.Entity.Common;
 using Log.Entity.ViewModel;
 using Log.IDao.Rights;
@@ -19,12 +18,15 @@ namespace Log.Service.Rights
     /// <summary>
     /// 按钮管理service
     /// </summary>
-    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class RightsButtonService : IRightsButtonService
     {
         //注入dao
-        private static readonly IRightsButtonDao btnDao = Factory.GetRightsButtonDao();
+        private readonly IRightsButtonDao _btnDao;
+
+        public RightsButtonService(IRightsButtonDao btnDao)
+        {
+            _btnDao = btnDao;
+        }
 
         /// <summary>
         /// 获取所有按钮(分页)
@@ -39,7 +41,7 @@ namespace Log.Service.Rights
                 Content = new PagingResult<GetPagingButtonsResponse>()
             };
 
-            var rs = btnDao.GetPagingButtons(request);
+            var rs = _btnDao.GetPagingButtons(request);
             result.ReturnCode = ReturnCodeType.Success;
             result.Content = rs;
 
@@ -59,14 +61,14 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var buttonByName = btnDao.GetButtonByName(request.Name);
+            var buttonByName = _btnDao.GetButtonByName(request.Name);
             if (buttonByName != null)
             {
                 result.Message = "已存在相同名称的按钮!";
                 return result;
             }
 
-            var buttonByCode = btnDao.GetButtonByCode(request.Code);
+            var buttonByCode = _btnDao.GetButtonByCode(request.Code);
             if (buttonByCode != null)
             {
                 result.Message = "已存在相同标识码的按钮!";
@@ -85,7 +87,7 @@ namespace Log.Service.Rights
                 LastUpdatedBy = loginInfo.Id,
                 LastUpdatedTime = currentTime
             };
-            var rs = btnDao.Insert(btn);
+            var rs = _btnDao.Insert(btn);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -108,14 +110,14 @@ namespace Log.Service.Rights
             {
                 ReturnCode = ReturnCodeType.Error
             };
-            var button = btnDao.GetButtonByName(request.Name);
+            var button = _btnDao.GetButtonByName(request.Name);
             if (request.Name != request.OriginalName && button != null)
             {
                 result.Message = "已存在相同名称的按钮!";
                 return result;
             }
 
-            var btn = btnDao.GetById(request.Id);
+            var btn = _btnDao.GetById(request.Id);
             if (btn != null)
             {
                 btn.Name = request.Name;
@@ -123,7 +125,7 @@ namespace Log.Service.Rights
                 btn.Sort = request.Sort;
                 btn.LastUpdatedBy = loginInfo.Id;
                 btn.LastUpdatedTime = DateTime.Now;
-                var rs = btnDao.Update(btn);
+                var rs = _btnDao.Update(btn);
                 if (rs == true)
                 {
                     result.ReturnCode = ReturnCodeType.Success;
@@ -150,7 +152,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var rs = btnDao.DeleteButton(request);
+            var rs = _btnDao.DeleteButton(request);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;

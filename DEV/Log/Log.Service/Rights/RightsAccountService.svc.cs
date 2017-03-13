@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Log.IDao.Rights;
-using Log.DaoFactory;
 using Log.Entity.Rights;
 
 namespace Log.Service.Rights
@@ -19,9 +18,16 @@ namespace Log.Service.Rights
     public class RightsAccountService : IRightsAccountService
     {
         //注入dao
-        private static readonly IRightsAccountDao accountDao = Factory.GetRightsAccountDao();
-        private static readonly IRightsUserDao userDao = Factory.GetRightsUserDao();
-        private static readonly IRightsRoleDao roleDao = Factory.GetRightsRoleDao();
+        private readonly IRightsAccountDao _accountDao;
+        private readonly IRightsUserDao _userDao;
+        private readonly IRightsRoleDao _roleDao;
+
+        public RightsAccountService(IRightsAccountDao accountDao, IRightsUserDao userDao, IRightsRoleDao roleDao)
+        {
+            _accountDao = accountDao;
+            _userDao = userDao;
+            _roleDao = roleDao;
+        }
 
         /// <summary>
         /// 检查登录
@@ -35,7 +41,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var user = accountDao.CheckLogin(request);
+            var user = _accountDao.CheckLogin(request);
             result.ReturnCode = ReturnCodeType.Success;
             result.Content = user;
 
@@ -56,7 +62,7 @@ namespace Log.Service.Rights
                 Content = new List<TRightsMenu>()
             };
 
-            var menus = accountDao.GetAllChildrenMenu(userId, menuParentId);
+            var menus = _accountDao.GetAllChildrenMenu(userId, menuParentId);
             result.ReturnCode = ReturnCodeType.Success;
             result.Content = menus;
 
@@ -75,7 +81,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            if (accountDao.InitUserPwd(request, loginInfo))
+            if (_accountDao.InitUserPwd(request, loginInfo))
             {
                 result.ReturnCode = ReturnCodeType.Success;
                 result.Content = true;
@@ -97,7 +103,7 @@ namespace Log.Service.Rights
                 Content = new GetMyInfoResponse()
             };
 
-            var myInfo = accountDao.GetMyInfo(id);
+            var myInfo = _accountDao.GetMyInfo(id);
             if (myInfo != null)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -119,7 +125,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            if (accountDao.ChangePwd(request, loginInfo))
+            if (_accountDao.ChangePwd(request, loginInfo))
             {
                 result.ReturnCode = ReturnCodeType.Success;
                 result.Content = true;
@@ -143,8 +149,8 @@ namespace Log.Service.Rights
                 Content = new List<GetRoleMenuButtonResponse>()
             };
 
-            var roleIds = userDao.GetRolesByUserId(userId);
-            var rs = roleDao.GetRoleMenuButton(roleIds);
+            var roleIds = _userDao.GetRolesByUserId(userId);
+            var rs = _roleDao.GetRoleMenuButton(roleIds);
             result.ReturnCode = ReturnCodeType.Success;
             result.Content = rs;
 

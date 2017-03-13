@@ -8,7 +8,6 @@ using System.ServiceModel.Activation;
 using System.ServiceModel;
 using Log.Entity.Common;
 using Log.IDao;
-using Log.DaoFactory;
 using Log.Entity.Db;
 using Log.Entity.ViewModel;
 using Nelibur.ObjectMapper;
@@ -21,12 +20,15 @@ namespace Log.Service
     /// <summary>
     /// error log服务
     /// </summary>
-    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class LogsErrorLogService : ILogsErrorLogService
     {
         //注入dao
-        private static readonly ILogsErrorLogDao errorLogDao = Factory.GetLogsErrorLogDao();
+        private readonly ILogsErrorLogDao _errorLogDao;
+
+        public LogsErrorLogService(ILogsErrorLogDao errorLogDao)
+        {
+            _errorLogDao = errorLogDao;
+        }
 
         /// <summary>
         /// 插入error log
@@ -44,7 +46,7 @@ namespace Log.Service
             TinyMapper.Bind<AddErrorLogRequest, TLogsErrorLog>();
             var item = TinyMapper.Map<TLogsErrorLog>(request);
 
-            var rs = errorLogDao.Insert(item);
+            var rs = _errorLogDao.Insert(item);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -64,7 +66,7 @@ namespace Log.Service
             {
                 ReturnCode = ReturnCodeType.Error
             };
-            var flag = errorLogDao.RefreshErrorLogTip();
+            var flag = _errorLogDao.RefreshErrorLogTip();
             if (flag)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -89,7 +91,7 @@ namespace Log.Service
 
             //处理详情页面url
             var logSiteUrl = Log.Common.Helper.ConfigHelper.LogSite;
-            var rs = errorLogDao.GetPagingErrorLogs(request);
+            var rs = _errorLogDao.GetPagingErrorLogs(request);
             if (rs != null && rs.Entities.HasValue())
             {
                 foreach (var item in rs.Entities)
@@ -117,7 +119,7 @@ namespace Log.Service
                 Content = new TLogsErrorLog()
             };
 
-            var rs = errorLogDao.GetById(id);
+            var rs = _errorLogDao.GetById(id);
             if (rs != null)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -141,7 +143,7 @@ namespace Log.Service
                 Content = new Tuple<List<string>, List<string>>(systemCodes, sources)
             };
 
-            var rs = errorLogDao.GetAutoCompleteData();
+            var rs = _errorLogDao.GetAutoCompleteData();
             result.ReturnCode = ReturnCodeType.Success;
             result.Content = rs;
 

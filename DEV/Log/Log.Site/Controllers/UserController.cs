@@ -18,6 +18,14 @@ namespace Log.Site.Controllers
     /// </summary>
     public class UserController : BaseController
     {
+        //注入service
+        private readonly IRightsUserService _userService;
+
+        public UserController(IRightsUserService userService)
+        {
+            _userService = userService;
+        }
+
         [LoginAuthorization]
         public ActionResult Index()
         {
@@ -39,14 +47,10 @@ namespace Log.Site.Controllers
             request.PageIndex = page;
             request.PageSize = rows;
 
-            using (var factory = new ChannelFactory<IRightsUserService>("*"))
+            var rs = _userService.GetPagingUsers(request);
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetPagingUsers(request);
-                if (rs.ReturnCode == ReturnCodeType.Success)
-                {
-                    result = "{\"total\": " + rs.Content.TotalCount + ",\"rows\":" + rs.Content.Entities.ToJson(dateTimeFormat: DateTimeTypeConst.DATETIME) + "}";
-                }
+                result = "{\"total\": " + rs.Content.TotalCount + ",\"rows\":" + rs.Content.Entities.ToJson(dateTimeFormat: DateTimeTypeConst.DATETIME) + "}";
             }
 
             return Content(result);
@@ -75,19 +79,15 @@ namespace Log.Site.Controllers
             request.EnableFlag = !enableFlag.IsNullOrEmpty() ? true : false;
             request.IsChangePwd = !isChangePwd.IsNullOrEmpty() ? true : false;
 
-            using (var factory = new ChannelFactory<IRightsUserService>("*"))
+            var rs = _userService.AddUser(request, loginInfo);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.AddUser(request, loginInfo);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "新增成功!";
-                }
-                else
-                {
-                    msg = rs.Message;
-                }
+                flag = true;
+                msg = "新增成功!";
+            }
+            else
+            {
+                msg = rs.Message;
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -112,19 +112,15 @@ namespace Log.Site.Controllers
             request.EnableFlag = !enableFlag.IsNullOrEmpty() ? true : false;
             request.IsChangePwd = !isChangePwd.IsNullOrEmpty() ? true : false;
 
-            using (var factory = new ChannelFactory<IRightsUserService>("*"))
+            var rs = _userService.EditUser(request, loginInfo);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.EditUser(request, loginInfo);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "修改成功!";
-                }
-                else
-                {
-                    msg = rs.Message;
-                }
+                flag = true;
+                msg = "修改成功!";
+            }
+            else
+            {
+                msg = rs.Message;
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -136,19 +132,15 @@ namespace Log.Site.Controllers
             var flag = false;
             var msg = string.Empty;
 
-            using (var factory = new ChannelFactory<IRightsUserService>("*"))
+            var rs = _userService.DeleteUser(request);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.DeleteUser(request);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "删除成功!";
-                }
-                else
-                {
-                    msg = "删除失败!";
-                }
+                flag = true;
+                msg = "删除成功!";
+            }
+            else
+            {
+                msg = "删除失败!";
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -182,19 +174,15 @@ namespace Log.Site.Controllers
                 return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
             }
 
-            using (var factory = new ChannelFactory<IRightsUserService>("*"))
+            var rs = _userService.SetOrg(request);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.SetOrg(request);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "设置机构成功!";
-                }
-                else
-                {
-                    msg = rs.Message.IsNullOrEmpty() ? "设置机构失败!" : rs.Message;
-                }
+                flag = true;
+                msg = "设置机构成功!";
+            }
+            else
+            {
+                msg = rs.Message.IsNullOrEmpty() ? "设置机构失败!" : rs.Message;
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -222,19 +210,15 @@ namespace Log.Site.Controllers
                 return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
             }
 
-            using (var factory = new ChannelFactory<IRightsUserService>("*"))
+            var rs = _userService.SetRole(request);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.SetRole(request);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "设置角色成功!";
-                }
-                else
-                {
-                    msg = rs.Message.IsNullOrEmpty() ? "设置角色失败!" : rs.Message;
-                }
+                flag = true;
+                msg = "设置角色成功!";
+            }
+            else
+            {
+                msg = rs.Message.IsNullOrEmpty() ? "设置角色失败!" : rs.Message;
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);

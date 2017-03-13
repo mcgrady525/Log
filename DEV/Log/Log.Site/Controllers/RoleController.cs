@@ -20,6 +20,14 @@ namespace Log.Site.Controllers
     /// </summary>
     public class RoleController : BaseController
     {
+        //注入service
+        private readonly IRightsRoleService _roleService;
+
+        public RoleController(IRightsRoleService roleService)
+        {
+            _roleService = roleService;
+        }
+
         [LoginAuthorization]
         public ActionResult Index()
         {
@@ -43,14 +51,10 @@ namespace Log.Site.Controllers
             request.PageIndex = page;
             request.PageSize = rows;
 
-            using (var factory = new ChannelFactory<IRightsRoleService>("*"))
+            var rs = _roleService.GetPagingRoles(request);
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetPagingRoles(request);
-                if (rs.ReturnCode == ReturnCodeType.Success)
-                {
-                    result = "{\"total\": " + rs.Content.TotalCount + ",\"rows\":" + rs.Content.Entities.ToJson(dateTimeFormat: DateTimeTypeConst.DATETIME) + "}";
-                }
+                result = "{\"total\": " + rs.Content.TotalCount + ",\"rows\":" + rs.Content.Entities.ToJson(dateTimeFormat: DateTimeTypeConst.DATETIME) + "}";
             }
 
             return Content(result);
@@ -73,14 +77,10 @@ namespace Log.Site.Controllers
             request.PageIndex = page;
             request.PageSize = rows;
 
-            using (var factory = new ChannelFactory<IRightsRoleService>("*"))
+            var rs = _roleService.GetPagingRoleUsers(request);
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetPagingRoleUsers(request);
-                if (rs.ReturnCode == ReturnCodeType.Success)
-                {
-                    result = "{\"total\": " + rs.Content.TotalCount + ",\"rows\":" + rs.Content.Entities.ToJson(dateTimeFormat: DateTimeTypeConst.DATETIME) + "}";
-                }
+                result = "{\"total\": " + rs.Content.TotalCount + ",\"rows\":" + rs.Content.Entities.ToJson(dateTimeFormat: DateTimeTypeConst.DATETIME) + "}";
             }
 
             return Content(result);
@@ -112,19 +112,15 @@ namespace Log.Site.Controllers
                 request = new AddRoleRequest();
             }
 
-            using (var factory = new ChannelFactory<IRightsRoleService>("*"))
+            var rs = _roleService.AddRole(request, loginInfo);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.AddRole(request, loginInfo);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "新增成功!";
-                }
-                else
-                {
-                    msg = rs.Message.IsNullOrEmpty() ? "新增失败!" : rs.Message;
-                }
+                flag = true;
+                msg = "新增成功!";
+            }
+            else
+            {
+                msg = rs.Message.IsNullOrEmpty() ? "新增失败!" : rs.Message;
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -146,19 +142,15 @@ namespace Log.Site.Controllers
             var flag = false;
             var msg = string.Empty;
 
-            using (var factory = new ChannelFactory<IRightsRoleService>("*"))
+            var rs = _roleService.EditRole(request, loginInfo);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.EditRole(request, loginInfo);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "修改成功!";
-                }
-                else
-                {
-                    msg = rs.Message.IsNullOrEmpty() ? "修改失败!" : rs.Message;
-                }
+                flag = true;
+                msg = "修改成功!";
+            }
+            else
+            {
+                msg = rs.Message.IsNullOrEmpty() ? "修改失败!" : rs.Message;
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -175,19 +167,15 @@ namespace Log.Site.Controllers
             var flag = false;
             var msg = string.Empty;
 
-            using (var factory = new ChannelFactory<IRightsRoleService>("*"))
+            var rs = _roleService.DeleteRole(request);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.DeleteRole(request);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "删除成功!";
-                }
-                else
-                {
-                    msg = rs.Message.IsNullOrEmpty() ? "删除失败!" : rs.Message;
-                }
+                flag = true;
+                msg = "删除成功!";
+            }
+            else
+            {
+                msg = rs.Message.IsNullOrEmpty() ? "删除失败!" : rs.Message;
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -214,19 +202,15 @@ namespace Log.Site.Controllers
             var flag = false;
             var msg = string.Empty;
 
-            using (var factory = new ChannelFactory<IRightsRoleService>("*"))
+            var rs = _roleService.AuthorizeRole(request);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.AuthorizeRole(request);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "授权成功!";
-                }
-                else
-                {
-                    msg = rs.Message.IsNullOrEmpty() ? "授权失败!" : rs.Message;
-                }
+                flag = true;
+                msg = "授权成功!";
+            }
+            else
+            {
+                msg = rs.Message.IsNullOrEmpty() ? "授权失败!" : rs.Message;
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -241,17 +225,13 @@ namespace Log.Site.Controllers
         {
             var result = string.Empty;
 
-            using (var factory = new ChannelFactory<IRightsRoleService>("*"))
+            var rs = _roleService.GetRoleMenuButton(roleId);
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetRoleMenuButton(roleId);
-                if (rs.ReturnCode == ReturnCodeType.Success)
+                var roleMenuButtons = rs.Content;
+                if (roleMenuButtons.HasValue())
                 {
-                    var roleMenuButtons = rs.Content;
-                    if (roleMenuButtons.HasValue())
-                    {
-                        result = RightsHelper.GetRoleMenuButtonStr(roleMenuButtons, roleId);
-                    }
+                    result = RightsHelper.GetRoleMenuButtonStr(roleMenuButtons, roleId);
                 }
             }
 
@@ -266,18 +246,14 @@ namespace Log.Site.Controllers
         {
             var result = string.Empty;
 
-            using (var factory = new ChannelFactory<IRightsRoleService>("*"))
+            var rs = _roleService.GetAllRole();
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetAllRole();
-                if (rs.ReturnCode == ReturnCodeType.Success)
+                result = rs.Content.Select(p => new
                 {
-                    result = rs.Content.Select(p => new
-                    {
-                        Id = p.Id,
-                        RoleName = p.Name
-                    }).ToJson();
-                }
+                    Id = p.Id,
+                    RoleName = p.Name
+                }).ToJson();
             }
 
             return Content(result);

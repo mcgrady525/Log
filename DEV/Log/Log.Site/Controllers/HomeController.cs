@@ -23,6 +23,14 @@ namespace Log.Site.Controllers
     /// </summary>
     public class HomeController : BaseController
     {
+        //注入service
+        private readonly IRightsAccountService _accountService;
+
+        public HomeController(IRightsAccountService accountService)
+        {
+            _accountService = accountService;
+        }
+
         /// <summary>
         /// 首页
         /// </summary>
@@ -71,43 +79,39 @@ namespace Log.Site.Controllers
                 return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
             }
 
-            using (var factory = new ChannelFactory<IRightsAccountService>("*"))
+            var result = _accountService.InitUserPwd(request, loginInfo);
+            if (result.ReturnCode == ReturnCodeType.Success && result.Content == true)
             {
-                var client = factory.CreateChannel();
-                var result = client.InitUserPwd(request, loginInfo);
-                if (result.ReturnCode == ReturnCodeType.Success && result.Content == true)
-                {
-                    //更新cookie
-                    FormsIdentity id = (FormsIdentity)HttpContext.User.Identity;
-                    FormsAuthenticationTicket ticketOld = id.Ticket;
-                    loginInfo.Password = newPwd;
-                    loginInfo.IsChangePwd = true;
+                //更新cookie
+                FormsIdentity id = (FormsIdentity)HttpContext.User.Identity;
+                FormsAuthenticationTicket ticketOld = id.Ticket;
+                loginInfo.Password = newPwd;
+                loginInfo.IsChangePwd = true;
 
-                    FormsAuthentication.SignOut();
-                    FormsAuthenticationTicket ticket = new FormsAuthenticationTicket
-                    (
-                        2,
-                        loginInfo.UserId,
-                        DateTime.Now,
-                        ticketOld.Expiration,
-                        false,
-                        loginInfo.ToJson()
-                    );
-                    HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket));
-                    if (ticket.Expiration != new DateTime(9999, 12, 31))
-                    {
-                        cookie.Expires = ticketOld.Expiration;
-                    }
-                    HttpContext.Response.Cookies.Add(cookie);
-
-                    flag = true;
-                    msg = "重置密码成功";
-                }
-                else
+                FormsAuthentication.SignOut();
+                FormsAuthenticationTicket ticket = new FormsAuthenticationTicket
+                (
+                    2,
+                    loginInfo.UserId,
+                    DateTime.Now,
+                    ticketOld.Expiration,
+                    false,
+                    loginInfo.ToJson()
+                );
+                HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket));
+                if (ticket.Expiration != new DateTime(9999, 12, 31))
                 {
-                    msg = "重置密码失败!";
-                    return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
+                    cookie.Expires = ticketOld.Expiration;
                 }
+                HttpContext.Response.Cookies.Add(cookie);
+
+                flag = true;
+                msg = "重置密码成功";
+            }
+            else
+            {
+                msg = "重置密码失败!";
+                return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -143,42 +147,24 @@ namespace Log.Site.Controllers
                 return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
             }
 
-            using (var factory = new ChannelFactory<IRightsAccountService>("*"))
+            request.Id = loginInfo.Id;
+            request.NewPwd = newPwd;
+            var result = _accountService.ChangePwd(request, loginInfo);
+            if (result.ReturnCode == ReturnCodeType.Success && result.Content == true)
             {
-                var client = factory.CreateChannel();
-                request.Id = loginInfo.Id;
-                request.NewPwd = newPwd;
-                var result = client.ChangePwd(request, loginInfo);
-                if (result.ReturnCode == ReturnCodeType.Success && result.Content == true)
-                {
-                    //修改成功要清除cookie然后到登录页面重写cookie
-                    FormsAuthentication.SignOut();
-                    flag = true;
-                    msg = "修改成功,正在跳转到登陆页面！";
+                //修改成功要清除cookie然后到登录页面重写cookie
+                FormsAuthentication.SignOut();
+                flag = true;
+                msg = "修改成功,正在跳转到登陆页面！";
 
-                }
-                else
-                {
-                    msg = "修改失败!";
-                }
+            }
+            else
+            {
+                msg = "修改失败!";
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
         }
-
-        ///// <summary>
-        ///// 获取该用户所拥有的菜单权限
-        ///// </summary>
-        ///// <returns></returns>
-        //public ActionResult GetUserMenu()
-        //{
-        //    using (var factory = new ChannelFactory<IWebFxsCommonService>("*"))
-        //    {
-        //        var client = factory.CreateChannel();
-        //        var result = client.GetUserMenu(LoginInfo.Id);
-        //        return Content(result.Content);
-        //    }
-        //}
 
         /// <summary>
         /// 左侧导航菜单
@@ -192,27 +178,23 @@ namespace Log.Site.Controllers
             var outPut = string.Empty;
             var leftMenus = new List<LeftMenu>();
 
-            using (var factory = new ChannelFactory<IRightsAccountService>("*"))
+            var result = _accountService.GetAllChildrenMenu(loginInfo.Id, id);
+            if (result.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var result = client.GetAllChildrenMenu(loginInfo.Id, id);
-                if (result.ReturnCode == ReturnCodeType.Success)
+                var childMenus = result.Content;
+                if (childMenus.HasValue())
                 {
-                    var childMenus = result.Content;
-                    if (childMenus.HasValue())
+                    foreach (var item in childMenus)
                     {
-                        foreach (var item in childMenus)
+                        leftMenus.Add(new LeftMenu
                         {
-                            leftMenus.Add(new LeftMenu
-                            {
-                                id = item.Id,
-                                text = item.Name,
-                                iconCls = item.Icon
-                            });
-                        }
+                            id = item.Id,
+                            text = item.Name,
+                            iconCls = item.Icon
+                        });
                     }
-                    outPut = leftMenus.ToJson();
                 }
+                outPut = leftMenus.ToJson();
             }
 
             return Content(outPut);
@@ -224,26 +206,20 @@ namespace Log.Site.Controllers
             var result = string.Empty;
             StringBuilder sb = new StringBuilder();
 
-            using (var factory = new ChannelFactory<IRightsAccountService>("*"))
+            var rs = _accountService.GetAllChildrenMenu(loginInfo.Id, id);
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetAllChildrenMenu(loginInfo.Id, id);
-                if (rs.ReturnCode == ReturnCodeType.Success)
+                var childMenus = rs.Content;
+                if (childMenus.HasValue())
                 {
-                    var childMenus = rs.Content;
-                    if (childMenus.HasValue())
-                    {
-                        sb.Append(RecursionMenu(childMenus, id));
-                        sb = sb.Remove(sb.Length - 2, 2);
-                        result = sb.ToString();
-                    }
-                    else
-                    {
-                        result = "[]";
-                    }
+                    sb.Append(RecursionMenu(childMenus, id));
+                    sb = sb.Remove(sb.Length - 2, 2);
+                    result = sb.ToString();
                 }
-
-
+                else
+                {
+                    result = "[]";
+                }
             }
 
             return Content(result);
@@ -291,19 +267,15 @@ namespace Log.Site.Controllers
             var msg = string.Empty;
             var data = new GetMyInfoResponse();
 
-            using (var factory = new ChannelFactory<IRightsAccountService>("*"))
+            var result = _accountService.GetMyInfo(base.loginInfo.Id);
+            if (result.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var result = client.GetMyInfo(base.loginInfo.Id);
-                if (result.ReturnCode == ReturnCodeType.Success)
-                {
-                    flag = true;
-                    data = result.Content;
-                }
-                else
-                {
-                    msg = result.Message;
-                }
+                flag = true;
+                data = result.Content;
+            }
+            else
+            {
+                msg = result.Message;
             }
 
             return Json(new { success = flag, msg = msg, data = data }, JsonRequestBehavior.AllowGet);
@@ -319,17 +291,13 @@ namespace Log.Site.Controllers
             //获取角色关联的角色菜单按钮信息
             var result = string.Empty;
 
-            using (var factory = new ChannelFactory<IRightsAccountService>("*"))
+            var rs = _accountService.GetMyAuthority(base.loginInfo.Id);
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetMyAuthority(base.loginInfo.Id);
-                if (rs.ReturnCode == ReturnCodeType.Success)
+                var roleMenuButtons = rs.Content;
+                if (roleMenuButtons.HasValue())
                 {
-                    var roleMenuButtons = rs.Content;
-                    if (roleMenuButtons.HasValue())
-                    {
-                        result = RightsHelper.GetRoleMenuButtonStr(roleMenuButtons);
-                    }
+                    result = RightsHelper.GetRoleMenuButtonStr(roleMenuButtons);
                 }
             }
 

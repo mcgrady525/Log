@@ -24,10 +24,10 @@ namespace Log.WinService
     public partial class LogWinService : ServiceBase
     {
         //注入service
-        private static readonly ILogsDebugLogService debugLogService = new LogsDebugLogService();
-        private static readonly ILogsErrorLogService errorLogService = new LogsErrorLogService();
-        private static readonly ILogsXmlLogService xmlLogService = new LogsXmlLogService();
-        private static readonly ILogsPerformanceLogService perfLogService = new LogsPerformanceLogService();
+        private readonly ILogsDebugLogService _debugLogService;
+        private readonly ILogsErrorLogService _errorLogService;
+        private readonly ILogsXmlLogService _xmlLogService;
+        private readonly ILogsPerformanceLogService _perfLogService;
 
         IConnection connection = null;
         public LogWinService()
@@ -124,7 +124,7 @@ namespace Log.WinService
 
                     //反序列化并持久化到数据中
                     var perfLog = msg.FromJson<AddPerformanceLogRequest>();
-                    perfLogService.AddPerfLog(perfLog);
+                    _perfLogService.AddPerfLog(perfLog);
 
                     channel.BasicAck(ea.DeliveryTag, multiple: false);
                 }
@@ -161,7 +161,7 @@ namespace Log.WinService
 
                     //反序列化并持久化到数据中
                     var xmlLog = msg.FromJson<AddXmlLogRequest>();
-                    xmlLogService.AddXmlLog(xmlLog);
+                    _xmlLogService.AddXmlLog(xmlLog);
 
                     channel.BasicAck(ea.DeliveryTag, multiple: false);
                 }
@@ -198,7 +198,7 @@ namespace Log.WinService
 
                     //反序列化并持久化到数据中
                     var errorLog = msg.FromJson<AddErrorLogRequest>();
-                    errorLogService.AddErrorLog(errorLog);
+                    _errorLogService.AddErrorLog(errorLog);
 
                     channel.BasicAck(ea.DeliveryTag, multiple: false);
                 }
@@ -235,7 +235,7 @@ namespace Log.WinService
 
                     //反序列化并持久化到数据中
                     var debugLog = msg.FromJson<AddDebugLogRequest>();
-                    debugLogService.AddDebugLog(debugLog);
+                    _debugLogService.AddDebugLog(debugLog);
 
                     channel.BasicAck(ea.DeliveryTag, multiple: false);
                 }

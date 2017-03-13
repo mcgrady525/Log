@@ -66,10 +66,6 @@
       <Project>{22fcb41e-d23e-4316-8b23-6e5abce8fc8c}</Project>
       <Name>Log.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Log.DaoFactory\Log.DaoFactory.csproj">
-      <Project>{24a06138-e585-4fd9-be9a-79f3ffcfca0f}</Project>
-      <Name>Log.DaoFactory</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Log.Entity\Log.Entity.csproj">
       <Project>{051ce919-124e-4ff6-9605-824417ad4f51}</Project>
       <Name>Log.Entity</Name>

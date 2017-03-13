@@ -7,7 +7,6 @@ using Log.IService;
 using System.ServiceModel.Activation;
 using System.ServiceModel;
 using Log.IDao;
-using Log.DaoFactory;
 using Log.Entity.Common;
 using Log.Entity.Db;
 using Log.Entity.ViewModel;
@@ -21,12 +20,15 @@ namespace Log.Service
     /// <summary>
     /// debug log服务
     /// </summary>
-    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class LogsDebugLogService : ILogsDebugLogService
     {
         //注入dao
-        private static readonly ILogsDebugLogDao debugLogDao = Factory.GetLogsDebugLogDao();
+        private readonly ILogsDebugLogDao _debugLogDao;
+
+        public LogsDebugLogService(ILogsDebugLogDao debugDao)
+        {
+            _debugLogDao = debugDao;
+        }
 
         /// <summary>
         /// 新增调试日志
@@ -44,7 +46,7 @@ namespace Log.Service
             TinyMapper.Bind<AddDebugLogRequest, TLogsDebugLog>();
             var item = TinyMapper.Map<TLogsDebugLog>(request);
 
-            var rs = debugLogDao.Insert(item);
+            var rs = _debugLogDao.Insert(item);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -69,7 +71,7 @@ namespace Log.Service
 
             //处理详情页面url
             var logSiteUrl = Log.Common.Helper.ConfigHelper.LogSite;
-            var rs = debugLogDao.GetPagingDebugLogs(request);
+            var rs = _debugLogDao.GetPagingDebugLogs(request);
             if (rs != null && rs.Entities.HasValue())
             {
                 var debugLogs = rs.Entities;
@@ -98,7 +100,7 @@ namespace Log.Service
                 Content = new TLogsDebugLog()
             };
 
-            var rs = debugLogDao.GetById(id);
+            var rs = _debugLogDao.GetById(id);
             if (rs != null)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -118,7 +120,7 @@ namespace Log.Service
             {
                 ReturnCode = ReturnCodeType.Error
             };
-            var flag = debugLogDao.RefreshDebugLogTip();
+            var flag = _debugLogDao.RefreshDebugLogTip();
             if (flag)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -142,7 +144,7 @@ namespace Log.Service
                 Content= new Tuple<List<string>,List<string>>(systemCodes, sources)
             };
 
-            var rs = debugLogDao.GetAutoCompleteData();
+            var rs = _debugLogDao.GetAutoCompleteData();
             result.ReturnCode = ReturnCodeType.Success;
             result.Content = rs;
 

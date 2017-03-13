@@ -93,6 +93,10 @@
       <Project>{051ce919-124e-4ff6-9605-824417ad4f51}</Project>
       <Name>Log.Entity</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Log.IDao\Log.IDao.csproj">
+      <Project>{ec4b60f9-6f11-4b53-9308-b833d6c6cfa4}</Project>
+      <Name>Log.IDao</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Log.IService\Log.IService.csproj">
       <Project>{096cbabd-9f64-49ed-b35b-d5a3d2978d72}</Project>
       <Name>Log.IService</Name>

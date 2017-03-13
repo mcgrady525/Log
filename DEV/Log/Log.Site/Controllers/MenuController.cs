@@ -20,6 +20,14 @@ namespace Log.Site.Controllers
     /// </summary>
     public class MenuController : BaseController
     {
+        //注入service
+        private readonly IRightsMenuService _menuService;
+
+        public MenuController(IRightsMenuService menuService)
+        {
+            _menuService = menuService;
+        }
+
         [LoginAuthorization]
         public ActionResult Index()
         {
@@ -35,23 +43,19 @@ namespace Log.Site.Controllers
             var result = string.Empty;
             StringBuilder sb = new StringBuilder();
 
-            using (var factory = new ChannelFactory<IRightsMenuService>("*"))
+            var rs = _menuService.GetAll();
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetAll();
-                if (rs.ReturnCode == ReturnCodeType.Success)
+                var menus = rs.Content;
+                if (menus.HasValue())
                 {
-                    var menus = rs.Content;
-                    if (menus.HasValue())
-                    {
-                        sb.Append(RecursionMenu(menus, 0));
-                        sb = sb.Remove(sb.Length - 2, 2);
-                        result = sb.ToString();
-                    }
-                    else
-                    {
-                        result = "[]";
-                    }
+                    sb.Append(RecursionMenu(menus, 0));
+                    sb = sb.Remove(sb.Length - 2, 2);
+                    result = sb.ToString();
+                }
+                else
+                {
+                    result = "[]";
                 }
             }
 
@@ -79,19 +83,15 @@ namespace Log.Site.Controllers
             var flag = false;
             var msg = string.Empty;
 
-            using (var factory = new ChannelFactory<IRightsMenuService>("*"))
+            var rs = _menuService.AddMenu(request, loginInfo);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.AddMenu(request, loginInfo);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "新增成功!";
-                }
-                else
-                {
-                    msg = "新增失败!";
-                }
+                flag = true;
+                msg = "新增成功!";
+            }
+            else
+            {
+                msg = "新增失败!";
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -113,19 +113,15 @@ namespace Log.Site.Controllers
             var flag = false;
             var msg = string.Empty;
 
-            using (var factory = new ChannelFactory<IRightsMenuService>("*"))
+            var rs = _menuService.EditMenu(request, loginInfo);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.EditMenu(request, loginInfo);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "修改成功!";
-                }
-                else
-                {
-                    msg = "修改失败!";
-                }
+                flag = true;
+                msg = "修改成功!";
+            }
+            else
+            {
+                msg = "修改失败!";
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -137,19 +133,15 @@ namespace Log.Site.Controllers
             var flag = false;
             var msg = string.Empty;
 
-            using (var factory = new ChannelFactory<IRightsMenuService>("*"))
+            var rs = _menuService.DeleteMenu(request);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.DeleteMenu(request);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "删除成功!";
-                }
-                else
-                {
-                    msg = "删除失败!";
-                }
+                flag = true;
+                msg = "删除成功!";
+            }
+            else
+            {
+                msg = "删除失败!";
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -176,19 +168,15 @@ namespace Log.Site.Controllers
             var flag = false;
             var msg = string.Empty;
 
-            using (var factory = new ChannelFactory<IRightsMenuService>("*"))
+            var rs = _menuService.SetButton(request);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.SetButton(request);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "分配按钮成功!";
-                }
-                else
-                {
-                    msg = "分配按钮失败!";
-                }
+                flag = true;
+                msg = "分配按钮成功!";
+            }
+            else
+            {
+                msg = "分配按钮失败!";
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -203,14 +191,10 @@ namespace Log.Site.Controllers
         public ActionResult GetButton(string menuId)
         {
             var result = string.Empty;
-            using (var factory = new ChannelFactory<IRightsMenuService>("*"))
+            var rs = _menuService.GetButton(menuId);
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetButton(menuId);
-                if (rs.ReturnCode == ReturnCodeType.Success)
-                {
-                    result = rs.Content.ToJson();
-                }
+                result = rs.Content.ToJson();
             }
 
             return Content(result);

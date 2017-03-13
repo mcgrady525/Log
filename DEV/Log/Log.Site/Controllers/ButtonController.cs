@@ -18,6 +18,14 @@ namespace Log.Site.Controllers
     /// </summary>
     public class ButtonController : BaseController
     {
+        //注入service
+        private readonly IRightsButtonService _buttonService;
+
+        public ButtonController(IRightsButtonService buttonService)
+        {
+            _buttonService = buttonService;
+        }
+
         [LoginAuthorization]
         public ActionResult Index()
         {
@@ -38,14 +46,10 @@ namespace Log.Site.Controllers
             request.PageIndex = page;
             request.PageSize = rows;
 
-            using (var factory = new ChannelFactory<IRightsButtonService>("*"))
+            var rs = _buttonService.GetPagingButtons(request);
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetPagingButtons(request);
-                if (rs.ReturnCode == ReturnCodeType.Success)
-                {
-                    result = "{\"total\": " + rs.Content.TotalCount + ",\"rows\":" + rs.Content.Entities.ToJson(dateTimeFormat: DateTimeTypeConst.DATETIME) + "}";
-                }
+                result = "{\"total\": " + rs.Content.TotalCount + ",\"rows\":" + rs.Content.Entities.ToJson(dateTimeFormat: DateTimeTypeConst.DATETIME) + "}";
             }
 
             return Content(result);
@@ -68,19 +72,15 @@ namespace Log.Site.Controllers
                 request = new AddButtonRequest();
             }
 
-            using (var factory = new ChannelFactory<IRightsButtonService>("*"))
+            var rs = _buttonService.AddButton(request, loginInfo);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.AddButton(request, loginInfo);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "新增成功!";
-                }
-                else
-                {
-                    msg = rs.Message.IsNullOrEmpty() ? "新增失败!" : rs.Message;
-                }
+                flag = true;
+                msg = "新增成功!";
+            }
+            else
+            {
+                msg = rs.Message.IsNullOrEmpty() ? "新增失败!" : rs.Message;
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -107,19 +107,15 @@ namespace Log.Site.Controllers
                 request = new EditButtonRequest();
             }
 
-            using (var factory = new ChannelFactory<IRightsButtonService>("*"))
+            var rs = _buttonService.EditButton(request, loginInfo);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.EditButton(request, loginInfo);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "修改成功!";
-                }
-                else
-                {
-                    msg = rs.Message.IsNullOrEmpty() ? "修改失败!" : rs.Message;
-                }
+                flag = true;
+                msg = "修改成功!";
+            }
+            else
+            {
+                msg = rs.Message.IsNullOrEmpty() ? "修改失败!" : rs.Message;
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -141,23 +137,19 @@ namespace Log.Site.Controllers
                 request = new DeleteButtonRequest();
             }
 
-            using (var factory = new ChannelFactory<IRightsButtonService>("*"))
+            var rs = _buttonService.DeleteButton(request);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.DeleteButton(request);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "删除成功!";
-                }
-                else
-                {
-                    msg = rs.Message.IsNullOrEmpty() ? "删除失败!" : rs.Message;
-                }
+                flag = true;
+                msg = "删除成功!";
+            }
+            else
+            {
+                msg = rs.Message.IsNullOrEmpty() ? "删除失败!" : rs.Message;
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
         }
 
-	}
+    }
 }

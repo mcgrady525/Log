@@ -10,7 +10,6 @@ using Log.Entity.Common;
 using Tracy.Frameworks.Common.Result;
 using Log.Entity.ViewModel;
 using Log.IDao.Rights;
-using Log.DaoFactory;
 using Log.Entity.Db;
 
 namespace Log.Service.Rights
@@ -18,11 +17,14 @@ namespace Log.Service.Rights
     /// <summary>
     /// 角色管理service
     /// </summary>
-    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class RightsRoleService : IRightsRoleService
     {
-        private static readonly IRightsRoleDao roleDao = Factory.GetRightsRoleDao();
+        private readonly IRightsRoleDao _roleDao;
+
+        public RightsRoleService(IRightsRoleDao roleDao)
+        {
+            _roleDao = roleDao;
+        }
 
         /// <summary>
         /// 角色列表(分页)
@@ -37,7 +39,7 @@ namespace Log.Service.Rights
                 Content = new PagingResult<GetPagingRolesResponse>()
             };
 
-            var rs = roleDao.GetPagingRoles(request);
+            var rs = _roleDao.GetPagingRoles(request);
             result.ReturnCode = ReturnCodeType.Success;
             result.Content = rs;
 
@@ -57,7 +59,7 @@ namespace Log.Service.Rights
                 Content = new PagingResult<GetPagingRoleUsersResponse>()
             };
 
-            var rs = roleDao.GetPagingRoleUsers(request);
+            var rs = _roleDao.GetPagingRoleUsers(request);
             result.ReturnCode = ReturnCodeType.Success;
             result.Content = rs;
 
@@ -78,7 +80,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var role = roleDao.GetRoleByName(request.Name);
+            var role = _roleDao.GetRoleByName(request.Name);
             if (role != null)
             {
                 result.Message = "已存在相同名称的角色!";
@@ -96,7 +98,7 @@ namespace Log.Service.Rights
                 LastUpdatedBy = loginInfo.Id,
                 LastUpdatedTime = currentTime
             };
-            var rs = roleDao.Insert(item);
+            var rs = _roleDao.Insert(item);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -120,14 +122,14 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var role = roleDao.GetRoleByName(request.NewName);
+            var role = _roleDao.GetRoleByName(request.NewName);
             if (request.NewName != request.OriginalName && role != null)
             {
                 result.Message = "已存在相同名称的角色!";
                 return result;
             }
 
-            var item = roleDao.GetById(request.Id);
+            var item = _roleDao.GetById(request.Id);
             if (item != null)
             {
                 item.Name = request.NewName;
@@ -136,7 +138,7 @@ namespace Log.Service.Rights
                 item.LastUpdatedBy = loginInfo.Id;
                 item.LastUpdatedTime = DateTime.Now;
 
-                var rs = roleDao.Update(item);
+                var rs = _roleDao.Update(item);
                 if (rs == true)
                 {
                     result.ReturnCode = ReturnCodeType.Success;
@@ -163,7 +165,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var rs = roleDao.DeleteRole(request);
+            var rs = _roleDao.DeleteRole(request);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -185,7 +187,7 @@ namespace Log.Service.Rights
                 Content = new List<TRightsRole>()
             };
 
-            var rs = roleDao.GetAll();
+            var rs = _roleDao.GetAll();
             result.ReturnCode = ReturnCodeType.Success;
             result.Content = rs;
 
@@ -205,7 +207,7 @@ namespace Log.Service.Rights
                 Content = new List<GetRoleMenuButtonResponse>()
             };
 
-            var rs = roleDao.GetRoleMenuButton(new List<int> { roleId });
+            var rs = _roleDao.GetRoleMenuButton(new List<int> { roleId });
             result.ReturnCode = ReturnCodeType.Success;
             result.Content = rs;
 
@@ -226,7 +228,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var rs = roleDao.AuthorizeRole(request);
+            var rs = _roleDao.AuthorizeRole(request);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;

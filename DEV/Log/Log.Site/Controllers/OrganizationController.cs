@@ -21,6 +21,14 @@ namespace Log.Site.Controllers
     /// </summary>
     public class OrganizationController : BaseController
     {
+        //注入service
+        private readonly IRightsOrganizationService _orgService;
+
+        public OrganizationController(IRightsOrganizationService orgService)
+        {
+            _orgService = orgService;
+        }
+
         [LoginAuthorization]
         public ActionResult Index()
         {
@@ -39,23 +47,19 @@ namespace Log.Site.Controllers
             var result = string.Empty;
             StringBuilder sb = new StringBuilder();
 
-            using (var factory = new ChannelFactory<IRightsOrganizationService>("*"))
+            var rs = _orgService.GetAll();
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetAll();
-                if (rs.ReturnCode == ReturnCodeType.Success)
+                var orgs = rs.Content;
+                if (orgs.HasValue())
                 {
-                    var orgs = rs.Content;
-                    if (orgs.HasValue())
-                    {
-                        sb.Append(RecursionOrg(orgs, 0));
-                        sb = sb.Remove(sb.Length - 2, 2);
-                        result = sb.ToString();
-                    }
-                    else
-                    {
-                        result = "[]";
-                    }
+                    sb.Append(RecursionOrg(orgs, 0));
+                    sb = sb.Remove(sb.Length - 2, 2);
+                    result = sb.ToString();
+                }
+                else
+                {
+                    result = "[]";
                 }
             }
 
@@ -81,15 +85,11 @@ namespace Log.Site.Controllers
             }
 
             var result = string.Empty;
-            using (var factory = new ChannelFactory<IRightsOrganizationService>("*"))
+            var rs = _orgService.GetButtonsByUserIdAndMenuCode(menuCode, loginInfo.Id);
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetButtonsByUserIdAndMenuCode(menuCode, loginInfo.Id);
-                if (rs.ReturnCode == ReturnCodeType.Success)
-                {
-                    var dt = rs.Content.ToDataTable();
-                    result = ToolbarHelper.GetToolBar(dt, pageName);
-                }
+                var dt = rs.Content.ToDataTable();
+                result = ToolbarHelper.GetToolBar(dt, pageName);
             }
 
             return Content(result);
@@ -106,21 +106,17 @@ namespace Log.Site.Controllers
             //然后递归生成JSON数据
             var result = string.Empty;
 
-            using (var factory = new ChannelFactory<IRightsOrganizationService>("*"))
+            var rs = _orgService.GetChildrenOrgs(orgId);
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetChildrenOrgs(orgId);
-                if (rs.ReturnCode == ReturnCodeType.Success)
+                var orgs = rs.Content;
+                if (orgs.HasValue())
                 {
-                    var orgs = rs.Content;
-                    if (orgs.HasValue())
-                    {
-                        result = CreateChildrenOrgStr(orgs, orgId);
-                    }
-                    else
-                    {
-                        result = "[]";
-                    }
+                    result = CreateChildrenOrgStr(orgs, orgId);
+                }
+                else
+                {
+                    result = "[]";
                 }
             }
 
@@ -143,21 +139,16 @@ namespace Log.Site.Controllers
             var flag = false;
             var msg = string.Empty;
 
-            using (var factory = new ChannelFactory<IRightsOrganizationService>("*"))
+            var rs = _orgService.AddOrganization(request, loginInfo);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.AddOrganization(request, loginInfo);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "新增成功!";
-                }
-                else
-                {
-                    msg = "新增失败!";
-                }
+                flag = true;
+                msg = "新增成功!";
             }
-
+            else
+            {
+                msg = "新增失败!";
+            }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
         }
@@ -174,19 +165,15 @@ namespace Log.Site.Controllers
             var flag = false;
             var msg = string.Empty;
 
-            using (var factory = new ChannelFactory<IRightsOrganizationService>("*"))
+            var rs = _orgService.EditOrganization(request, loginInfo);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.EditOrganization(request, loginInfo);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "修改成功!";
-                }
-                else
-                {
-                    msg = "修改失败!";
-                }
+                flag = true;
+                msg = "修改成功!";
+            }
+            else
+            {
+                msg = "修改失败!";
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -203,19 +190,15 @@ namespace Log.Site.Controllers
             var flag = false;
             var msg = string.Empty;
 
-            using (var factory = new ChannelFactory<IRightsOrganizationService>("*"))
+            var rs = _orgService.DeleteOrganization(request);
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.DeleteOrganization(request);
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                    msg = "删除成功!";
-                }
-                else
-                {
-                    msg = "删除失败!";
-                }
+                flag = true;
+                msg = "删除成功!";
+            }
+            else
+            {
+                msg = "删除失败!";
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);

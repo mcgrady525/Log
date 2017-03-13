@@ -18,6 +18,14 @@ namespace Log.Site.Controllers
     /// </summary>
     public class PerformanceLogController : BaseController
     {
+        //注入service
+        private readonly ILogsPerformanceLogService _perfLogService;
+
+        public PerformanceLogController(ILogsPerformanceLogService perfLogService)
+        {
+            _perfLogService = perfLogService;
+        }
+
         /// <summary>
         /// 列表页
         /// </summary>
@@ -38,14 +46,10 @@ namespace Log.Site.Controllers
         {
             TLogsPerformanceLog model = null;
 
-            using (var factory = new ChannelFactory<ILogsPerformanceLogService>("*"))
+            var rs = _perfLogService.GetPerfLogById(id);
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetPerfLogById(id);
-                if (rs.ReturnCode == ReturnCodeType.Success)
-                {
-                    model = rs.Content;
-                }
+                model = rs.Content;
             }
 
             return View(model);
@@ -68,14 +72,10 @@ namespace Log.Site.Controllers
             request.PageIndex = page;
             request.PageSize = rows;
 
-            using (var factory = new ChannelFactory<ILogsPerformanceLogService>("*"))
+            var rs = _perfLogService.GetPagingPerformanceLogs(request);
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetPagingPerformanceLogs(request);
-                if (rs.ReturnCode == ReturnCodeType.Success)
-                {
-                    result = "{\"total\": " + rs.Content.TotalCount + ",\"rows\":" + rs.Content.Entities.ToJson(dateTimeFormat: "yyyy-MM-dd HH:mm:ss.fff") + "}";
-                }
+                result = "{\"total\": " + rs.Content.TotalCount + ",\"rows\":" + rs.Content.Entities.ToJson(dateTimeFormat: "yyyy-MM-dd HH:mm:ss.fff") + "}";
             }
 
             return Content(result);
@@ -91,14 +91,10 @@ namespace Log.Site.Controllers
             var flag = false;
             var msg = string.Empty;
 
-            using (var factory = new ChannelFactory<ILogsPerformanceLogService>("*"))
+            var rs = _perfLogService.RefreshPerfLogTip();
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.RefreshPerfLogTip();
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                }
+                flag = true;
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -118,18 +114,14 @@ namespace Log.Site.Controllers
             var classNames = new List<string>();
             var methodNames = new List<string>();
 
-            using (var factory = new ChannelFactory<ILogsPerformanceLogService>("*"))
+            var rs = _perfLogService.GetAutoCompleteData();
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetAutoCompleteData();
-                if (rs.ReturnCode == ReturnCodeType.Success)
-                {
-                    systemCodes = rs.Content.Item1;
-                    sources = rs.Content.Item2;
-                    classNames = rs.Content.Item3;
-                    methodNames = rs.Content.Item4;
-                    flag = true;
-                }
+                systemCodes = rs.Content.Item1;
+                sources = rs.Content.Item2;
+                classNames = rs.Content.Item3;
+                methodNames = rs.Content.Item4;
+                flag = true;
             }
 
             return Json(new { success = flag, msg = msg, systemCodes = systemCodes.ToJson(), sources = sources.ToJson(), classNames = classNames.ToJson(), methodNames = methodNames.ToJson() }, JsonRequestBehavior.AllowGet);

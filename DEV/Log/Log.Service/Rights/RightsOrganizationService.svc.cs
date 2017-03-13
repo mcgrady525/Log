@@ -8,7 +8,6 @@ using System.ServiceModel.Activation;
 using System.ServiceModel;
 using Log.Entity.Db;
 using Log.IDao.Rights;
-using Log.DaoFactory;
 using Log.Entity.Common;
 using Tracy.Frameworks.Common.Extends;
 using Log.Entity.ViewModel;
@@ -18,11 +17,14 @@ namespace Log.Service.Rights
     /// <summary>
     /// 组织机构service
     /// </summary>
-    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class RightsOrganizationService : IRightsOrganizationService
     {
-        private static readonly IRightsOrganizationDao orgDao = Factory.GetRightsOrganizationDao();
+        private readonly IRightsOrganizationDao _orgDao;
+
+        public RightsOrganizationService(IRightsOrganizationDao orgDao)
+        {
+            _orgDao = orgDao;
+        }
 
         /// <summary>
         /// 插入机构
@@ -35,7 +37,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var rs = orgDao.Insert(item);
+            var rs = _orgDao.Insert(item);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -57,7 +59,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var rs = orgDao.Update(item);
+            var rs = _orgDao.Update(item);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -79,7 +81,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var rs = orgDao.Delete(id);
+            var rs = _orgDao.Delete(id);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -102,7 +104,7 @@ namespace Log.Service.Rights
                 Content = new TRightsOrganization()
             };
 
-            var rs = orgDao.GetById(id);
+            var rs = _orgDao.GetById(id);
             if (rs != null)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -124,7 +126,7 @@ namespace Log.Service.Rights
                 Content = new List<TRightsOrganization>()
             };
 
-            var rs = orgDao.GetAll();
+            var rs = _orgDao.GetAll();
             if (rs.HasValue())
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -149,7 +151,7 @@ namespace Log.Service.Rights
                 Content = new List<TRightsButton>()
             };
 
-            var rs = orgDao.GetButtonsByUserIdAndMenuCode(menuCode, userId);
+            var rs = _orgDao.GetButtonsByUserIdAndMenuCode(menuCode, userId);
             if (rs.HasValue())
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -172,7 +174,7 @@ namespace Log.Service.Rights
                 Content = new List<TRightsOrganization>()
             };
 
-            var rs = orgDao.GetChildrenOrgs(orgId);
+            var rs = _orgDao.GetChildrenOrgs(orgId);
             result.Content = rs;
             result.ReturnCode = ReturnCodeType.Success;
 
@@ -204,7 +206,7 @@ namespace Log.Service.Rights
                 LastUpdatedBy = loginInfo.Id,
                 LastUpdatedTime = currentTime
             };
-            var rs = orgDao.Insert(item);
+            var rs = _orgDao.Insert(item);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -228,7 +230,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var org = orgDao.GetById(request.Id);
+            var org = _orgDao.GetById(request.Id);
             if (org != null)
             {
                 org.Id = request.Id;
@@ -237,7 +239,7 @@ namespace Log.Service.Rights
                 org.ParentId = request.ParentId;
                 org.LastUpdatedBy = loginInfo.Id;
                 org.LastUpdatedTime = DateTime.Now;
-                var rs = orgDao.Update(org);
+                var rs = _orgDao.Update(org);
                 if (rs == true)
                 {
                     result.ReturnCode = ReturnCodeType.Success;
@@ -262,7 +264,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var rs = orgDao.DeleteOrganization(request);
+            var rs = _orgDao.DeleteOrganization(request);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;

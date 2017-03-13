@@ -15,6 +15,14 @@ namespace Log.Site.Controllers
 {
     public class ErrorLogController : BaseController
     {
+        //注入service
+        private readonly ILogsErrorLogService _errorLogService;
+
+        public ErrorLogController(ILogsErrorLogService errorLogService)
+        {
+            _errorLogService = errorLogService;
+        }
+
         /// <summary>
         /// 列表页
         /// </summary>
@@ -34,14 +42,10 @@ namespace Log.Site.Controllers
         public ActionResult Detail(int id)
         {
             TLogsErrorLog errorLog = null;
-            using (var factory = new ChannelFactory<ILogsErrorLogService>("*"))
+            var rs = _errorLogService.GetErrorLogById(id);
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetErrorLogById(id);
-                if (rs.ReturnCode == ReturnCodeType.Success)
-                {
-                    errorLog = rs.Content;
-                }
+                errorLog = rs.Content;
             }
 
             return View(errorLog);
@@ -64,14 +68,10 @@ namespace Log.Site.Controllers
             request.PageIndex = page;
             request.PageSize = rows;
 
-            using (var factory = new ChannelFactory<ILogsErrorLogService>("*"))
+            var rs = _errorLogService.GetPagingErrorLogs(request);
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetPagingErrorLogs(request);
-                if (rs.ReturnCode == ReturnCodeType.Success)
-                {
-                    result = "{\"total\": " + rs.Content.TotalCount + ",\"rows\":" + rs.Content.Entities.ToJson(dateTimeFormat: "yyyy-MM-dd HH:mm:ss.fff") + "}";
-                }
+                result = "{\"total\": " + rs.Content.TotalCount + ",\"rows\":" + rs.Content.Entities.ToJson(dateTimeFormat: "yyyy-MM-dd HH:mm:ss.fff") + "}";
             }
 
             return Content(result);
@@ -87,14 +87,10 @@ namespace Log.Site.Controllers
             var flag = false;
             var msg = string.Empty;
 
-            using (var factory = new ChannelFactory<ILogsErrorLogService>("*"))
+            var rs = _errorLogService.RefreshErrorLogTip();
+            if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
-                var client = factory.CreateChannel();
-                var rs = client.RefreshErrorLogTip();
-                if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
-                {
-                    flag = true;
-                }
+                flag = true;
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -112,20 +108,16 @@ namespace Log.Site.Controllers
             var systemCodes = new List<string>();
             var sources = new List<string>();
 
-            using (var factory = new ChannelFactory<ILogsErrorLogService>("*"))
+            var rs = _errorLogService.GetAutoCompleteData();
+            if (rs.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var rs = client.GetAutoCompleteData();
-                if (rs.ReturnCode == ReturnCodeType.Success)
-                {
-                    systemCodes = rs.Content.Item1;
-                    sources = rs.Content.Item2;
-                    flag = true;
-                }
+                systemCodes = rs.Content.Item1;
+                sources = rs.Content.Item2;
+                flag = true;
             }
 
             return Json(new { success = flag, msg = msg, systemCodes = systemCodes.ToJson(), sources = sources.ToJson() }, JsonRequestBehavior.AllowGet);
         }
 
-	}
+    }
 }

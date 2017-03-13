@@ -10,11 +10,15 @@ using Log.Entity.Db;
 using Log.Entity.Common;
 using Log.IService.Rights;
 using Log.Entity.ViewModel;
+using Autofac;
 
 namespace Log.Site.Filters
 {
     public class LoginAuthorizationAttribute : AuthorizeAttribute
     {
+        //注入service
+        public IRightsAccountService AccountService { get; set; }
+
         /// <summary>
         /// 授权失败时呈现的视图
         /// </summary>
@@ -49,49 +53,45 @@ namespace Log.Site.Filters
             FormsIdentity id = (FormsIdentity)httpContext.User.Identity;
             FormsAuthenticationTicket oldTicket = id.Ticket;
             var userFromCookie = oldTicket.UserData.FromJson<TRightsUser>();
-            using (var factory = new ChannelFactory<IRightsAccountService>("*"))
+            var result = AccountService.CheckLogin(new CheckLoginRequest { loginId = userFromCookie.UserId, loginPwd = userFromCookie.Password });
+            if (result.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var result = client.CheckLogin(new CheckLoginRequest { loginId = userFromCookie.UserId, loginPwd = userFromCookie.Password });
-                if (result.ReturnCode == ReturnCodeType.Success)
+                var userFromDB = result.Content;
+                if (userFromDB == null)
                 {
-                    var userFromDB = result.Content;
-                    if (userFromDB == null)
+                    FormsAuthentication.SignOut();
+                    return false;
+                }
+                else if (userFromDB.EnableFlag.Value == false)
+                {
+                    FormsAuthentication.SignOut();
+                    return false;
+                }
+                else if (userFromCookie.IsChangePwd != userFromDB.IsChangePwd || userFromCookie.UserName != userFromDB.UserName)//校验是否修改了IfChangePwd字段或真实名
+                {
+                    //更新cookie
+                    FormsAuthentication.SignOut();
+                    FormsAuthenticationTicket newTicket = new FormsAuthenticationTicket
+                    (
+                        2,
+                        userFromDB.UserId,
+                        DateTime.Now,
+                        oldTicket.Expiration,
+                        false,
+                        userFromDB.ToJson()
+                    );
+                    HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(newTicket));
+                    if (oldTicket.Expiration != new DateTime(9999, 12, 31))
                     {
-                        FormsAuthentication.SignOut();
-                        return false;
+                        cookie.Expires = oldTicket.Expiration;
                     }
-                    else if (userFromDB.EnableFlag.Value == false)
-                    {
-                        FormsAuthentication.SignOut();
-                        return false;
-                    }
-                    else if (userFromCookie.IsChangePwd != userFromDB.IsChangePwd || userFromCookie.UserName != userFromDB.UserName)//校验是否修改了IfChangePwd字段或真实名
-                    {
-                        //更新cookie
-                        FormsAuthentication.SignOut();
-                        FormsAuthenticationTicket newTicket = new FormsAuthenticationTicket
-                        (
-                            2,
-                            userFromDB.UserId,
-                            DateTime.Now,
-                            oldTicket.Expiration,
-                            false,
-                            userFromDB.ToJson()
-                        );
-                        HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(newTicket));
-                        if (oldTicket.Expiration != new DateTime(9999, 12, 31))
-                        {
-                            cookie.Expires = oldTicket.Expiration;
-                        }
-                        httpContext.Response.Cookies.Add(cookie);
+                    httpContext.Response.Cookies.Add(cookie);
 
-                        return false;
-                    }
-                    else
-                    {
-                        //...
-                    }
+                    return false;
+                }
+                else
+                {
+                    //...
                 }
             }
 
@@ -111,7 +111,7 @@ namespace Log.Site.Filters
             {
                 throw new ArgumentNullException("filterContext");
             }
-            
+
             //跳转到登录页(非登录页才跳转否则死循环了)
             string controllerName = filterContext.RouteData.Values["controller"].ToString().ToLower();
             string actionName = filterContext.RouteData.Values["action"].ToString().ToLower();

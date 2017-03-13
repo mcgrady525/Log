@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Log.IService;
 using Log.Entity.Common;
 using Log.IDao;
-using Log.DaoFactory;
 using Log.Entity.Db;
 using Log.Entity.ViewModel;
 using Nelibur.ObjectMapper;
@@ -18,12 +17,18 @@ using Tracy.Frameworks.Common.Extends;
 
 namespace Log.Service
 {
-    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Multiple)]
+    /// <summary>
+    /// xml日志service
+    /// </summary>
     public class LogsXmlLogService : ILogsXmlLogService
     {
         //注入dao
-        private static readonly ILogsXmlLogDao xmlLogDao = Factory.GetLogsXmlLogDao();
+        private readonly ILogsXmlLogDao _xmlLogDao;
+
+        public LogsXmlLogService(ILogsXmlLogDao xmlLogDao)
+        {
+            _xmlLogDao = xmlLogDao;
+        }
 
         /// <summary>
         /// 插入xml log
@@ -41,7 +46,7 @@ namespace Log.Service
             TinyMapper.Bind<AddXmlLogRequest, TLogsXmlLog>();
             var item = TinyMapper.Map<TLogsXmlLog>(request);
 
-            var rs = xmlLogDao.Insert(item);
+            var rs = _xmlLogDao.Insert(item);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -61,7 +66,7 @@ namespace Log.Service
             {
                 ReturnCode = ReturnCodeType.Error
             };
-            var flag = xmlLogDao.RefreshXmlLogTip();
+            var flag = _xmlLogDao.RefreshXmlLogTip();
             if (flag)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -86,7 +91,7 @@ namespace Log.Service
 
             //处理详情页面url
             var logSiteUrl = Log.Common.Helper.ConfigHelper.LogSite;
-            var rs = xmlLogDao.GetPagingXmlLogs(request);
+            var rs = _xmlLogDao.GetPagingXmlLogs(request);
             if (rs != null && rs.Entities.HasValue())
             {
                 foreach (var item in rs.Entities)
@@ -116,7 +121,7 @@ namespace Log.Service
                 Content = new Tuple<List<string>, List<string>, List<string>, List<string>>(systemCodes, sources, classNames, methodNames)
             };
 
-            var rs = xmlLogDao.GetAutoCompleteData();
+            var rs = _xmlLogDao.GetAutoCompleteData();
             result.ReturnCode = ReturnCodeType.Success;
             result.Content = rs;
 
@@ -136,7 +141,7 @@ namespace Log.Service
                 Content = new TLogsXmlLog()
             };
 
-            var rs = xmlLogDao.GetById(id);
+            var rs = _xmlLogDao.GetById(id);
             if (rs != null)
             {
                 result.ReturnCode = ReturnCodeType.Success;

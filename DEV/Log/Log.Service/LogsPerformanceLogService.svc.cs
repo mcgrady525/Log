@@ -1,5 +1,4 @@
-﻿using Log.DaoFactory;
-using Log.Entity.Common;
+﻿using Log.Entity.Common;
 using Log.Entity.Db;
 using Log.Entity.ViewModel;
 using Log.IDao;
@@ -20,13 +19,15 @@ namespace Log.Service
     /// <summary>
     /// 性能日志service
     /// </summary>
-    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class LogsPerformanceLogService : ILogsPerformanceLogService
     {
         //注入dao
-        private static readonly ILogsPerformanceLogDao perfLogDao = Factory.GetLogsPerformanceLogDao();
+        private readonly ILogsPerformanceLogDao _perfLogDao;
 
+        public LogsPerformanceLogService(ILogsPerformanceLogDao perfLogDao)
+        {
+            _perfLogDao = perfLogDao;
+        }
 
         /// <summary>
         /// 插入perf log
@@ -44,7 +45,7 @@ namespace Log.Service
             TinyMapper.Bind<AddPerformanceLogRequest, TLogsPerformanceLog>();
             var item = TinyMapper.Map<TLogsPerformanceLog>(request);
 
-            var rs = perfLogDao.Insert(item);
+            var rs = _perfLogDao.Insert(item);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -69,7 +70,7 @@ namespace Log.Service
 
             //处理详情页面url
             var logSiteUrl = Log.Common.Helper.ConfigHelper.LogSite;
-            var rs = perfLogDao.GetPagingPerformanceLogs(request);
+            var rs = _perfLogDao.GetPagingPerformanceLogs(request);
             if (rs != null && rs.Entities.HasValue())
             {
                 foreach (var item in rs.Entities)
@@ -94,7 +95,7 @@ namespace Log.Service
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var rs = perfLogDao.RefreshPerfLogTip();
+            var rs = _perfLogDao.RefreshPerfLogTip();
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -120,7 +121,7 @@ namespace Log.Service
                 Content = new Tuple<List<string>, List<string>, List<string>, List<string>>(systemCodes, sources, classNames, methodNames)
             };
 
-            var rs = perfLogDao.GetAutoCompleteData();
+            var rs = _perfLogDao.GetAutoCompleteData();
             result.ReturnCode = ReturnCodeType.Success;
             result.Content = rs;
 
@@ -140,7 +141,7 @@ namespace Log.Service
                 Content = new TLogsPerformanceLog()
             };
 
-            var rs = perfLogDao.GetById(id);
+            var rs = _perfLogDao.GetById(id);
             if (rs != null)
             {
                 result.ReturnCode = ReturnCodeType.Success;

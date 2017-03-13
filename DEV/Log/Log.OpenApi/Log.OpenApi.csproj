@@ -121,10 +121,6 @@
       <Project>{051ce919-124e-4ff6-9605-824417ad4f51}</Project>
       <Name>Log.Entity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Log.IService\Log.IService.csproj">
-      <Project>{096cbabd-9f64-49ed-b35b-d5a3d2978d72}</Project>
-      <Name>Log.IService</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -9,7 +9,6 @@ using System.ServiceModel;
 using Log.Entity.Db;
 using Log.Entity.Common;
 using Log.IDao.Rights;
-using Log.DaoFactory;
 using Tracy.Frameworks.Common.Extends;
 using Log.Entity.ViewModel;
 
@@ -18,13 +17,17 @@ namespace Log.Service.Rights
     /// <summary>
     /// 菜单管理service
     /// </summary>
-    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class RightsMenuService : IRightsMenuService
     {
         //注入dao
-        private static readonly IRightsMenuDao menuDao = Factory.GetRightsMenuDao();
-        private static readonly IRightsButtonDao buttonDao = Factory.GetRightsButtonDao();
+        private readonly IRightsMenuDao _menuDao;
+        private readonly IRightsButtonDao _buttonDao;
+
+        public RightsMenuService(IRightsMenuDao menuDao, IRightsButtonDao buttonDao)
+        {
+            _menuDao = menuDao;
+            _buttonDao = buttonDao;
+        }
 
         /// <summary>
         /// 获取所有菜单
@@ -38,7 +41,7 @@ namespace Log.Service.Rights
                 Content = new List<TRightsMenu>()
             };
 
-            var rs = menuDao.GetAll();
+            var rs = _menuDao.GetAll();
             result.ReturnCode = ReturnCodeType.Success;
             result.Content = rs;
 
@@ -72,7 +75,7 @@ namespace Log.Service.Rights
                 LastUpdatedBy = loginInfo.Id,
                 LastUpdatedTime = currentTime
             };
-            var rs = menuDao.Insert(menu);
+            var rs = _menuDao.Insert(menu);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -95,7 +98,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var menu = menuDao.GetById(request.Id);
+            var menu = _menuDao.GetById(request.Id);
             if (menu != null)
             {
                 menu.Name = request.Name;
@@ -104,7 +107,7 @@ namespace Log.Service.Rights
                 menu.Sort = request.Sort;
                 menu.LastUpdatedBy = loginInfo.Id;
                 menu.LastUpdatedTime = DateTime.Now;
-                var rs = menuDao.Update(menu);
+                var rs = _menuDao.Update(menu);
                 if (rs == true)
                 {
                     result.ReturnCode = ReturnCodeType.Success;
@@ -131,7 +134,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var rs = menuDao.DeleteMenu(request);
+            var rs = _menuDao.DeleteMenu(request);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -156,8 +159,8 @@ namespace Log.Service.Rights
                 Content = new List<GetButtonResponse>()
             };
 
-            var allButtons = buttonDao.GetAll();
-            var menuButtons = menuDao.GetButtonsByMenuId(menuId.ToInt());
+            var allButtons = _buttonDao.GetAll();
+            var menuButtons = _menuDao.GetButtonsByMenuId(menuId.ToInt());
             if (allButtons.HasValue())
             {
                 foreach (var item in allButtons)
@@ -197,7 +200,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var rs = menuDao.SetButton(request);
+            var rs = _menuDao.SetButton(request);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;

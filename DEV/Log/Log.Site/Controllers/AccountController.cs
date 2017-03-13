@@ -16,6 +16,14 @@ namespace Log.Site.Controllers
 {
     public class AccountController : BaseController
     {
+        //注入service
+        private readonly IRightsAccountService _accountService;
+
+        public AccountController(IRightsAccountService accountService)
+        {
+            _accountService = accountService;
+        }
+
         public ActionResult Login()
         {
             return View();
@@ -32,45 +40,41 @@ namespace Log.Site.Controllers
             var flag = false;
             var msg = string.Empty;
 
-            using (var factory = new ChannelFactory<IRightsAccountService>("*"))
+            request.loginPwd = EncryptHelper.MD5With32bit(request.loginPwd);
+            var result = _accountService.CheckLogin(request);
+            if (result.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                request.loginPwd = EncryptHelper.MD5With32bit(request.loginPwd);
-                var result = client.CheckLogin(request);
-                if (result.ReturnCode == ReturnCodeType.Success)
+                var user = result.Content;
+                if (user == null)
                 {
-                    var user = result.Content;
-                    if (user == null)
-                    {
-                        msg = "用户名或密码错误!";
-                        return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
-                    }
-                    if (user.EnableFlag.Value == false)
-                    {
-                        msg = "该用户已被禁用,请联系系统管理员!";
-                        return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
-                    }
-
-                    //登录成功要保存(更新)cookie
-                    DateTime dateCookieExpires = GetCookieExpires(request);
-                    FormsAuthenticationTicket ticket = new FormsAuthenticationTicket
-                    (
-                        2,
-                        user.UserId,
-                        DateTime.Now,
-                        dateCookieExpires,
-                        false,
-                        user.ToJson()
-                    );
-                    HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket));
-                    if (dateCookieExpires != new DateTime(9999, 12, 31))
-                    {
-                        cookie.Expires = dateCookieExpires;
-                    }
-                    Response.Cookies.Add(cookie);
-
-                    flag = true;
+                    msg = "用户名或密码错误!";
+                    return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
                 }
+                if (user.EnableFlag.Value == false)
+                {
+                    msg = "该用户已被禁用,请联系系统管理员!";
+                    return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
+                }
+
+                //登录成功要保存(更新)cookie
+                DateTime dateCookieExpires = GetCookieExpires(request);
+                FormsAuthenticationTicket ticket = new FormsAuthenticationTicket
+                (
+                    2,
+                    user.UserId,
+                    DateTime.Now,
+                    dateCookieExpires,
+                    false,
+                    user.ToJson()
+                );
+                HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket));
+                if (dateCookieExpires != new DateTime(9999, 12, 31))
+                {
+                    cookie.Expires = dateCookieExpires;
+                }
+                Response.Cookies.Add(cookie);
+
+                flag = true;
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -95,29 +99,25 @@ namespace Log.Site.Controllers
             var id = (FormsIdentity)HttpContext.User.Identity;
             var ticket = id.Ticket;
             var userFromCookie = ticket.UserData.FromJson<TRightsUser>();
-            using (var factory = new ChannelFactory<IRightsAccountService>("*"))
+            var result = _accountService.CheckLogin(new CheckLoginRequest() { loginId = userFromCookie.UserId, loginPwd = userFromCookie.Password });
+            if (result.ReturnCode == ReturnCodeType.Success)
             {
-                var client = factory.CreateChannel();
-                var result = client.CheckLogin(new CheckLoginRequest() { loginId = userFromCookie.UserId, loginPwd = userFromCookie.Password });
-                if (result.ReturnCode == ReturnCodeType.Success)
+                var userFromDB = result.Content;
+                if (userFromDB == null)
                 {
-                    var userFromDB = result.Content;
-                    if (userFromDB == null)
-                    {
-                        FormsAuthentication.SignOut();
-                        msg = "用户名或密码错误!";
-                        return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
-                    }
-                    if (userFromDB.EnableFlag.Value == false)
-                    {
-                        FormsAuthentication.SignOut();
-                        msg = "该用户已被禁用,请联系系统管理员!";
-                        return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
-                    }
-
-                    flag = true;//已登录过并且cookie在有效期内
-                    msg = "已登录过,正在为你跳转,请稍后!";
+                    FormsAuthentication.SignOut();
+                    msg = "用户名或密码错误!";
+                    return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
                 }
+                if (userFromDB.EnableFlag.Value == false)
+                {
+                    FormsAuthentication.SignOut();
+                    msg = "该用户已被禁用,请联系系统管理员!";
+                    return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
+                }
+
+                flag = true;//已登录过并且cookie在有效期内
+                msg = "已登录过,正在为你跳转,请稍后!";
             }
 
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
@@ -166,5 +166,5 @@ namespace Log.Site.Controllers
             return dateCookieExpires;
         }
         #endregion
-	}
+    }
 }

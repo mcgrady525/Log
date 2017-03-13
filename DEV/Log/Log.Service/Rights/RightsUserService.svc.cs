@@ -10,7 +10,6 @@ using Log.Entity.Common;
 using Tracy.Frameworks.Common.Result;
 using Log.Entity.ViewModel;
 using Log.IDao.Rights;
-using Log.DaoFactory;
 using Log.Entity.Db;
 using Tracy.Frameworks.Common.Extends;
 using Tracy.Frameworks.Common.Helpers;
@@ -20,11 +19,14 @@ namespace Log.Service.Rights
     /// <summary>
     /// 用户管理service
     /// </summary>
-    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class RightsUserService : IRightsUserService
     {
-        private static readonly IRightsUserDao userDao = Factory.GetRightsUserDao();
+        private readonly IRightsUserDao _userDao;
+
+        public RightsUserService(IRightsUserDao userDao)
+        {
+            _userDao = userDao;
+        }
 
         /// <summary>
         /// 获取用户列表(分页)
@@ -41,7 +43,7 @@ namespace Log.Service.Rights
                 Content = new PagingResult<GetPagingUsersResponse>()
             };
 
-            var rs = userDao.GetPagingUsers(request);
+            var rs = _userDao.GetPagingUsers(request);
             result.ReturnCode = ReturnCodeType.Success;
             result.Content = rs;
 
@@ -62,7 +64,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var existUser = userDao.GetByUserId(request.UserId);
+            var existUser = _userDao.GetByUserId(request.UserId);
             if (existUser != null)
             {
                 result.Message = "已存在该用户,请更换其它用户id!";
@@ -82,7 +84,7 @@ namespace Log.Service.Rights
                 LastUpdatedBy = loginInfo.Id,
                 LastUpdatedTime = currentTime
             };
-            var rs = userDao.Insert(item);
+            var rs = _userDao.Insert(item);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -106,14 +108,14 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var user = userDao.GetByUserId(request.NewUserId);
+            var user = _userDao.GetByUserId(request.NewUserId);
             if (request.NewUserId != request.OriginalUserId && user != null)
             {
                 result.Message = "已存在该用户,请更换其它用户id!";
                 return result;
             }
 
-            var item = userDao.GetById(request.Id);
+            var item = _userDao.GetById(request.Id);
             if (item != null)
             {
                 item.UserId = request.NewUserId;
@@ -123,7 +125,7 @@ namespace Log.Service.Rights
                 item.LastUpdatedBy = loginInfo.Id;
                 item.LastUpdatedTime = DateTime.Now;
 
-                var rs = userDao.Update(item);
+                var rs = _userDao.Update(item);
                 if (rs == true)
                 {
                     result.ReturnCode = ReturnCodeType.Success;
@@ -150,7 +152,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var rs = userDao.DeleteUser(request);
+            var rs = _userDao.DeleteUser(request);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -174,7 +176,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var rs = userDao.SetOrg(request);
+            var rs = _userDao.SetOrg(request);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
@@ -198,7 +200,7 @@ namespace Log.Service.Rights
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var rs = userDao.SetRole(request);
+            var rs = _userDao.SetRole(request);
             if (rs == true)
             {
                 result.ReturnCode = ReturnCodeType.Success;
