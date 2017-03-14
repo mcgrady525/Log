@@ -18,18 +18,16 @@ using Log.Common.Helper;
 using Tracy.Frameworks.Configurations;
 using System.Configuration;
 using Log.Entity.ViewModel;
+using Autofac;
+using System.Reflection;
 
 namespace Log.WinService
 {
     public partial class LogWinService : ServiceBase
     {
-        //注入service
-        private readonly ILogsDebugLogService _debugLogService;
-        private readonly ILogsErrorLogService _errorLogService;
-        private readonly ILogsXmlLogService _xmlLogService;
-        private readonly ILogsPerformanceLogService _perfLogService;
-
         IConnection connection = null;
+        Autofac.IContainer Container { get; set; }
+
         public LogWinService()
         {
             InitializeComponent();
@@ -39,6 +37,16 @@ namespace Log.WinService
         {
             try
             {
+                //Autofac初始化
+                var builder = new ContainerBuilder();
+                var iDao = Assembly.Load("Log.IDao");
+                var dao = Assembly.Load("Log.Dao");
+                var iService = Assembly.Load("Log.IService");
+                var service = Assembly.Load("Log.Service");
+                builder.RegisterAssemblyTypes(iDao, dao).Where(t => t.Name.EndsWith("Dao")).AsImplementedInterfaces();
+                builder.RegisterAssemblyTypes(iService, service).Where(t => t.Name.EndsWith("Service")).AsImplementedInterfaces();
+                Container = builder.Build();
+
                 //用多线程去分别消费各队列的消息
                 //共用connection，各线程单独创建channel
                 //windows服务默认的是后台线程
@@ -101,6 +109,12 @@ namespace Log.WinService
         private void ConsumerPerfLogMessage(IConnection connection)
         {
             LogHelper.Info(() => "开始消费性能日志消息!");
+            ILogsPerformanceLogService _perfLogService;
+            using (var scope = Container.BeginLifetimeScope())
+            {
+                _perfLogService = scope.Resolve<ILogsPerformanceLogService>();
+            }
+
             using (var channel = connection.CreateModel())
             {
                 //声明队列
@@ -138,6 +152,12 @@ namespace Log.WinService
         private void ConsumerXmlLogMessage(IConnection connection)
         {
             LogHelper.Info(() => "开始消费Xml日志消息!");
+            ILogsXmlLogService _xmlLogService;
+            using (var scope = Container.BeginLifetimeScope())
+            {
+                _xmlLogService = scope.Resolve<ILogsXmlLogService>();
+            }
+
             using (var channel = connection.CreateModel())
             {
                 //声明队列
@@ -175,6 +195,12 @@ namespace Log.WinService
         private void ConsumerErrorLogMessage(IConnection connection)
         {
             LogHelper.Info(() => "开始消费错误日志消息!");
+            ILogsErrorLogService _errorLogService;
+            using (var scope = Container.BeginLifetimeScope())
+            {
+                _errorLogService = scope.Resolve<ILogsErrorLogService>();
+            }
+
             using (var channel = connection.CreateModel())
             {
                 //声明队列
@@ -212,6 +238,12 @@ namespace Log.WinService
         private void ConsumerDebugLogMessage(IConnection connection)
         {
             LogHelper.Info(() => "开始消费调试日志消息!");
+            ILogsDebugLogService _debugLogService;
+            using (var scope = Container.BeginLifetimeScope())
+            {
+                _debugLogService = scope.Resolve<ILogsDebugLogService>();
+            }
+
             using (var channel = connection.CreateModel())
             {
                 //声明队列
