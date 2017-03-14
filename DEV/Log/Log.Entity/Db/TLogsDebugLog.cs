@@ -91,13 +91,6 @@ namespace Log.Entity.Db
 		public string AppdomainName { get; set; }
 		
 		/// <summary>
-		/// message
-		/// </summary>
-		[DataMember]
-		[Column("message")] 
-		public string Message { get; set; }
-		
-		/// <summary>
 		/// created_time
 		/// </summary>
 		[DataMember]
@@ -110,6 +103,13 @@ namespace Log.Entity.Db
 		[DataMember]
 		[Column("detail")] 
 		public byte[] Detail { get; set; }
+		
+		/// <summary>
+		/// message
+		/// </summary>
+		[DataMember]
+		[Column("message")] 
+		public byte[] Message { get; set; }
 		
 	}
 }

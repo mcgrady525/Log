@@ -59,7 +59,7 @@ namespace Log.Entity.ViewModel
         /// <summary>
         /// message
         /// </summary>
-        public string Message { get; set; }
+        public byte[] Message { get; set; }
 
         /// <summary>
         /// created_time
