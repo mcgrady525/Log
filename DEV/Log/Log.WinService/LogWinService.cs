@@ -51,7 +51,7 @@ namespace Log.WinService
                 //windows服务默认的是后台线程
                 LogHelper.Info(() => "开始启动LogWinService服务!");
                 var rabbitMQConfig = ConfigurationManager.GetSection("rabbitMQ") as RabbitMQConfigurationSection;
-                var factory = new ConnectionFactory() { HostName = rabbitMQConfig.HostName, Port = rabbitMQConfig.Port, UserName = rabbitMQConfig.UserName, Password = rabbitMQConfig.Password };
+                var factory = new ConnectionFactory() { HostName = rabbitMQConfig.HostName, Port = rabbitMQConfig.Port, UserName = rabbitMQConfig.UserName, Password = rabbitMQConfig.Password, VirtualHost = rabbitMQConfig.VHost};
                 connection = factory.CreateConnection();
 
                 //消费debug log
