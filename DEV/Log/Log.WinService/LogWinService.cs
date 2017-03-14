@@ -10,7 +10,6 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
-using Log.Service;
 using Tracy.Frameworks.Common.Extends;
 using Log.IService;
 using Tracy.Frameworks.Common.Consts;
@@ -98,6 +97,8 @@ namespace Log.WinService
                 connection.Close();
                 connection.Dispose();
             }
+
+            Container = null;
 
             LogHelper.Info(() => "LogWinService服务已停止!");
         }
