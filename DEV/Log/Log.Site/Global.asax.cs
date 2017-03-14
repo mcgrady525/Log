@@ -1,5 +1,4 @@
-using Autofac;
-using Autofac.Integration.Mvc;
+using Log.Site.Helpers;
 using StackExchange.Profiling;
 using System;
 using System.Collections.Generic;
@@ -24,34 +23,20 @@ namespace Log.Site
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             //Autofac初始化
-            var builder = new ContainerBuilder();
-
-            //Controller注册(通过构造函数)
-            builder.RegisterControllers(Assembly.GetExecutingAssembly());
-            builder.RegisterAssemblyTypes(typeof(Log.Dao.LogsDebugLogDao).Assembly).Where(t => t.Name.EndsWith("Dao")).AsImplementedInterfaces();
-            builder.RegisterAssemblyTypes(typeof(Log.Service.LogsDebugLogService).Assembly).Where(t => t.Name.EndsWith("Service")).AsImplementedInterfaces();
-
-            //Filter注册(通过属性)
-            builder.RegisterType<Log.Service.Rights.RightsAccountService>().As<Log.IService.Rights.IRightsAccountService>();
-            builder.RegisterFilterProvider();
-
-            var container = builder.Build();
-            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
-
-            //其它...
+            AutofacHelper.Init();
 
         }
 
         protected void Application_BeginRequest(Object source, EventArgs e)
         {
             //开启MiniProfiler
-            MiniProfiler.Start();
+            //MiniProfiler.Start();
         }
 
         protected void Application_EndRequest()
         {
             //停止MiniProfiler
-            MiniProfiler.Stop();
+            //MiniProfiler.Stop();
         }
     }
 }
