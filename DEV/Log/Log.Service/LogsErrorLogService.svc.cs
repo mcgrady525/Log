@@ -97,6 +97,12 @@ namespace Log.Service
                 foreach (var item in rs.Entities)
                 {
                     item.DetailUrl = string.Format("{0}ErrorLog/Detail/{1}", logSiteUrl, item.Id);
+
+                    //处理message
+                    if (item.Message != null && item.Message.Length > 0)
+                    {
+                        item.MessageDetail = item.Message.LZ4Decompress();
+                    }
                 }
             }
 
@@ -122,6 +128,18 @@ namespace Log.Service
             var rs = _errorLogDao.GetById(id);
             if (rs != null)
             {
+                //处理message
+                if (rs.Message != null && rs.Message.Length > 0)
+                {
+                    rs.MessageDetail = rs.Message.LZ4Decompress();
+                }
+
+                //处理detail
+                if (rs.Detail != null && rs.Detail.Length > 0)
+                {
+                    rs.LogDetail = rs.Detail.LZ4Decompress();
+                }
+
                 result.ReturnCode = ReturnCodeType.Success;
                 result.Content = rs;
             }

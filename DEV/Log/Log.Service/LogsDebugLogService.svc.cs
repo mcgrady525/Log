@@ -78,6 +78,12 @@ namespace Log.Service
                 foreach (var item in debugLogs)
                 {
                     item.DetailUrl = string.Format("{0}DebugLog/Detail/{1}", logSiteUrl, item.Id);
+
+                    //处理message
+                    if (item.Message != null && item.Message.Length > 0)
+                    {
+                        item.MessageDetail = item.Message.LZ4Decompress();
+                    }
                 }
             }
 
@@ -103,6 +109,18 @@ namespace Log.Service
             var rs = _debugLogDao.GetById(id);
             if (rs != null)
             {
+                //处理message
+                if (rs.Message != null && rs.Message.Length > 0)
+                {
+                    rs.MessageDetail = rs.Message.LZ4Decompress();
+                }
+
+                //处理detail
+                if (rs.Detail != null && rs.Detail.Length > 0)
+                {
+                    rs.LogDetail = rs.Detail.LZ4Decompress();
+                }
+
                 result.ReturnCode = ReturnCodeType.Success;
                 result.Content = rs;
             }
@@ -138,10 +156,10 @@ namespace Log.Service
         {
             var systemCodes = new List<string>();
             var sources = new List<string>();
-            var result = new ServiceResult<Tuple<List<string>, List<string>>> 
+            var result = new ServiceResult<Tuple<List<string>, List<string>>>
             {
-                ReturnCode= ReturnCodeType.Error,
-                Content= new Tuple<List<string>,List<string>>(systemCodes, sources)
+                ReturnCode = ReturnCodeType.Error,
+                Content = new Tuple<List<string>, List<string>>(systemCodes, sources)
             };
 
             var rs = _debugLogDao.GetAutoCompleteData();

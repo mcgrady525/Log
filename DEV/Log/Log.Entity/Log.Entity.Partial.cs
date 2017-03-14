@@ -32,4 +32,35 @@ namespace Log.Entity.Db
         public bool Checked { get; set; }
     }
 
+    public partial class TLogsDebugLog
+    {
+        /// <summary>
+        /// Message字段解压
+        /// </summary>
+        [DataMember]
+        public string MessageDetail { get; set; }
+
+        /// <summary>
+        /// Detail字段解压
+        /// </summary>
+        [DataMember]
+        public string LogDetail { get; set; }
+
+    }
+
+    public partial class TLogsErrorLog
+    {
+        /// <summary>
+        /// Message字段解压
+        /// </summary>
+        [DataMember]
+        public string MessageDetail { get; set; }
+
+        /// <summary>
+        /// Detail字段解压
+        /// </summary>
+        [DataMember]
+        public string LogDetail { get; set; }
+
+    }
 }

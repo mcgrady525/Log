@@ -38,7 +38,9 @@ namespace Log.Entity.ViewModel
         /// <summary>
         /// Message
         /// </summary>
-        public string Message { get; set; }
+        public byte[] Message { get; set; }
+
+        public string MessageDetail { get; set; }
 
         /// <summary>
         /// 创建时间

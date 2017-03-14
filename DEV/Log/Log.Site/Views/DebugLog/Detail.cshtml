@@ -13,14 +13,6 @@
     {
         createdTime = Model.CreatedTime.Value.ToString("yyyy-MM-dd HH:mm:ss.fff");
     }
-
-    //日志详情
-    var logDetail = string.Empty;
-    if (Model.Detail != null && Model.Detail.Length > 0)
-    {
-        logDetail = Model.Detail.LZ4Decompress();
-    }
-
 }
 
 <h2>Id</h2>
@@ -46,9 +38,9 @@
 <h2>Appdomain Name</h2>
 @Html.DisplayFor(p => p.AppdomainName)
 <h2>Message</h2>
-@Html.DisplayFor(p => p.Message)
+@Html.DisplayFor(p => p.MessageDetail)
 <h2>Detail</h2>
-@Html.Raw(logDetail)
+@Html.DisplayFor(p => p.LogDetail)
 
 
 
