@@ -1821,6 +1821,7 @@
     <Content Include="Content\jquery-ui-1.9.2.custom\development-bundle\ui.menu.jquery.json" />
     <Content Include="Content\jquery-ui-1.9.2.custom\development-bundle\ui.position.jquery.json" />
     <Content Include="Content\jquery-ui-1.9.2.custom\development-bundle\ui.widget.jquery.json" />
+    <None Include="Properties\PublishProfiles\deploy_Log.pubxml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
