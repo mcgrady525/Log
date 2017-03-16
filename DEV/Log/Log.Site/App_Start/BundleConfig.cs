@@ -26,17 +26,18 @@ namespace Log.Site
             bundles.Add(new ScriptBundle("~/bundles/common").Include(
                         "~/Scripts/common.js"));
 
+            //http://www.cnblogs.com/OpenCoder/p/5180325.html
             //css
             //easyui
-            bundles.Add(new StyleBundle("~/Content/easyui/bootstrap").Include(
+            bundles.Add(new StyleBundle("~/Content/Css/bootstrap").Include(
                       "~/Content/easyui/bootstrap/easyui.css",
                       "~/Content/easyui/icon.css"));
 
             //jquery ui
-            bundles.Add(new StyleBundle("~/Content/jqueryui").Include("~/Content/jquery-ui-1.9.2.custom/css/base/jquery-ui-1.9.2.custom.css"));
+            bundles.Add(new StyleBundle("~/Content/Css/jqueryui").Include("~/Content/jquery-ui-1.9.2.custom/css/base/jquery-ui-1.9.2.custom.css"));
 
             //Site
-            bundles.Add(new StyleBundle("~/Content/site").Include(
+            bundles.Add(new StyleBundle("~/Content/Css/site").Include(
                         "~/Content/Site.css"));
         }
     }
