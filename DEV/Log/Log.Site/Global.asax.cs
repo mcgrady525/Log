@@ -19,9 +19,6 @@ namespace Log.Site
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            //注册静态资源
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
-
             //Autofac初始化
             AutofacHelper.Init();
 
