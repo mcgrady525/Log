@@ -32,7 +32,7 @@ namespace Log.Common.Helper
         }
 
         /// <summary>
-        /// 写调试日志
+        /// 写调试日志，写到本地文本文件(VLogs目录下)
         /// </summary>
         /// <param name="action"></param>
         public static void Debug(Func<string> action)
@@ -44,7 +44,7 @@ namespace Log.Common.Helper
         }
 
         /// <summary>
-        /// 写Info日志
+        /// 写Info日志，写到本地文本文件(VLogs目录下)
         /// </summary>
         /// <param name="action"></param>
         public static void Info(Func<string> action)
@@ -56,7 +56,7 @@ namespace Log.Common.Helper
         }
 
         /// <summary>
-        /// 写错误日志
+        /// 写错误日志，写到本地文本文件(VLogs目录下)
         /// </summary>
         /// <param name="action"></param>
         public static void Error(Func<string> action)

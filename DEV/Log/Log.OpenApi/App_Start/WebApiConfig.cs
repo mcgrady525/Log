@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Log.OpenApi.Filters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
@@ -19,6 +20,9 @@ namespace Log.OpenApi
                 routeTemplate: "api/{controller}/{action}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            //未处理异常
+            config.Filters.Add(new GlobalHandleErrorAttribute());
         }
     }
 }

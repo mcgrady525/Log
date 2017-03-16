@@ -1,3 +1,4 @@
+using Log.Site.Filters;
 using Log.Site.Helpers;
 using StackExchange.Profiling;
 using System;
@@ -21,6 +22,9 @@ namespace Log.Site
 
             //Autofac初始化
             AutofacHelper.Init();
+
+            //未处理异常
+            GlobalFilters.Filters.Add(new GlobalHandleErrorAttribute());
 
         }
 
