@@ -47,6 +47,14 @@ namespace Log.Entity.ViewModel
         /// </summary>
         public long Duration { get; set; }
 
+        public string DurationToStringN
+        {
+            get 
+            {
+                return Duration.ToString("N0");
+            }
+        }
+
         /// <summary>
         /// 备注
         /// </summary>
