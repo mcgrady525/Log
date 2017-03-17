@@ -13,18 +13,6 @@
     {
         createdTime = Model.CreatedTime.Value.ToString("yyyy-MM-dd HH:mm:ss.fff");
     }
-
-    //rq,rs
-    var rq = string.Empty;
-    var rs = string.Empty;
-    if (Model.Rq != null && Model.Rq.Length > 0)
-    {
-        rq = Model.Rq.LZ4Decompress();
-    }
-    if (Model.Rs != null && Model.Rs.Length > 0)
-    {
-        rs = Model.Rs.LZ4Decompress();
-    }
 }
 
 <h2>Id</h2>
@@ -54,8 +42,8 @@
 <h2>Appdomain Name</h2>
 @Html.DisplayFor(p => p.AppdomainName)
 <h2>RQ</h2>
-@Html.Raw(rq)
+@Html.DisplayFor(p=> p.RQXml)
 <h2>RS</h2>
-@Html.Raw(rs)
+@Html.DisplayFor(p=> p.RSXml)
 <h2>Remark</h2>
 @Html.DisplayFor(p => p.Remark)

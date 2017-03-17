@@ -144,6 +144,16 @@ namespace Log.Service
             var rs = _xmlLogDao.GetById(id);
             if (rs != null)
             {
+                //处理RQ,RS
+                if (rs.Rq != null && rs.Rq.Length > 0)
+                {
+                    rs.RQXml = rs.Rq.LZ4Decompress();
+                }
+                if (rs.Rs != null && rs.Rs.Length > 0)
+                {
+                    rs.RSXml = rs.Rs.LZ4Decompress();
+                }
+
                 result.ReturnCode = ReturnCodeType.Success;
                 result.Content = rs;
             }

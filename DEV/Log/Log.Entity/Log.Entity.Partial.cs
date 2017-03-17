@@ -63,4 +63,21 @@ namespace Log.Entity.Db
         public string LogDetail { get; set; }
 
     }
+
+    public partial class TLogsXmlLog
+    {
+        /// <summary>
+        /// RQ字段解压
+        /// </summary>
+        [DataMember]
+        public string RQXml { get; set; }
+
+        /// <summary>
+        /// RS字段解压
+        /// </summary>
+        [DataMember]
+        public string RSXml { get; set; }
+
+    }
+
 }
