@@ -167,7 +167,16 @@
                                         { field: 'Source', title: 'Source', sortable: true, width: 120 },
                                         { field: 'IpAddress', title: 'IpAddress', sortable: true, width: 120 },
                                         { field: 'AppDomainName', title: 'AppDomainName', sortable: true, width: 300 },
-                                        { field: 'MessageDetail', title: 'Message', sortable: true, width: 300 }
+                                        {
+                                            field: 'MessageDetail', title: 'Message', sortable: true, width: 300,
+                                            formatter: function (value, row, index) {
+                                                //当超过100个字符时以'...'代替
+                                                if (row.MessageDetail!= null && row.MessageDetail.length> 100) {
+                                                    return row.MessageDetail.substr(0, 100) + "...";
+                                                }
+                                                return row.MessageDetail;
+                                            }
+                                        }
                             ]],
                             toolbar: toolbar.length == 0 ? null : toolbar
                         });
