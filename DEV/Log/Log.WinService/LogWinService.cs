@@ -39,6 +39,9 @@ namespace Log.WinService
         {
             try
             {
+                tasks = new List<Task>();
+                cancelToken = new CancellationTokenSource();
+
                 //Autofac初始化
                 var builder = new ContainerBuilder();
                 var iDao = Assembly.Load("Log.IDao");
