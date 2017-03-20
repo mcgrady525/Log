@@ -11,7 +11,7 @@
                         SystemCode：
                     </th>
                     <td>
-                        <input type="text" name="SystemCode" id="SystemCode" style="width: 130px;" />
+                        <input type="text" name="ui_perflog_systemCode" id="ui_perflog_systemCode" style="width: 130px;" />
                     </td>
                 </tr>
                 <tr>
@@ -19,7 +19,7 @@
                         Source：
                     </th>
                     <td>
-                        <input type="text" name="Source" id="Source" style="width: 130px;" />
+                        <input type="text" name="ui_perflog_source" id="ui_perflog_source" style="width: 130px;" />
                     </td>
                 </tr>
                 <tr>
@@ -27,7 +27,7 @@
                         ClassName：
                     </th>
                     <td>
-                        <input type="text" name="ClassName" id="ClassName" style="width: 130px;" />
+                        <input type="text" name="ui_perflog_className" id="ui_perflog_className" style="width: 130px;" />
                     </td>
                 </tr>
                 <tr>
@@ -35,7 +35,7 @@
                         MethodName：
                     </th>
                     <td>
-                        <input type="text" name="MethodName" id="MethodName" style="width: 130px;" />
+                        <input type="text" name="ui_perflog_methodName" id="ui_perflog_methodName" style="width: 130px;" />
                     </td>
                 </tr>
                 <tr>
@@ -43,7 +43,7 @@
                         CreatedTime：
                     </th>
                     <td>
-                        <input name="CreatedTimeStart" id="CreatedTimeStart" class="easyui-datetimebox"
+                        <input name="ui_perflog_createdTimeStart" id="ui_perflog_createdTimeStart" class="easyui-datetimebox"
                                editable="false" style="width: 140px;" />
                     </td>
                 </tr>
@@ -52,7 +52,7 @@
                         至：
                     </th>
                     <td>
-                        <input name="CreatedTimeEnd" id="CreatedTimeEnd" class="easyui-datetimebox"
+                        <input name="ui_perflog_createdTimeEnd" id="ui_perflog_createdTimeEnd" class="easyui-datetimebox"
                                editable="false" style="width: 140px;" />
                     </td>
                 </tr>
@@ -97,10 +97,10 @@
                 sources = $.parseJSON(data.sources);
                 classNames = $.parseJSON(data.classNames);
                 methodNames = $.parseJSON(data.methodNames);
-                $("#SystemCode").autocomplete({ source: systemCodes });
-                $("#Source").autocomplete({ source: sources });
-                $("#ClassName").autocomplete({ source: classNames });
-                $("#MethodName").autocomplete({ source: methodNames });
+                $("#ui_perflog_systemCode").autocomplete({ source: systemCodes });
+                $("#ui_perflog_source").autocomplete({ source: sources });
+                $("#ui_perflog_className").autocomplete({ source: classNames });
+                $("#ui_perflog_methodName").autocomplete({ source: methodNames });
             }
             else {
                 $.show_warning("提示", "初始化智能提示失败!");
@@ -134,12 +134,12 @@
     //查询
     function ui_perflog_searchdata() {
         $("#ui_perflog_dg").datagrid('load', {
-            SystemCode: $('#ui_perflog_search').find("input[name='SystemCode']").val(),
-            Source: $('#ui_perflog_search').find("input[name='Source']").val(),
-            ClassName: $('#ui_perflog_search').find("input[name='ClassName']").val(),
-            MethodName: $('#ui_perflog_search').find("input[name='MethodName']").val(),
-            CreatedTimeStart: $('#CreatedTimeStart').datetimebox('getValue'),
-            CreatedTimeEnd: $('#CreatedTimeEnd').datetimebox('getValue')
+            SystemCode: $('#ui_perflog_search').find("input[name='ui_perflog_systemCode']").val(),
+            Source: $('#ui_perflog_search').find("input[name='ui_perflog_source']").val(),
+            ClassName: $('#ui_perflog_search').find("input[name='ui_perflog_className']").val(),
+            MethodName: $('#ui_perflog_search').find("input[name='ui_perflog_methodName']").val(),
+            CreatedTimeStart: $('#ui_perflog_createdTimeStart').datetimebox('getValue'),
+            CreatedTimeEnd: $('#ui_perflog_createdTimeEnd').datetimebox('getValue')
         });
         $("#ui_perflog_dg").datagrid('clearSelections').datagrid('clearChecked');//刷新并清除已选择
     };

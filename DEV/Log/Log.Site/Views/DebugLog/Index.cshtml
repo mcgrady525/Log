@@ -11,7 +11,7 @@
                         SystemCode：
                     </th>
                     <td>
-                        <input type="text" name="SystemCode" id="SystemCode" style="width: 130px;" />
+                        <input type="text" name="ui_debuglog_systemCode" id="ui_debuglog_systemCode" style="width: 130px;" />
                     </td>
                 </tr>
                 <tr>
@@ -19,7 +19,7 @@
                         Source：
                     </th>
                     <td>
-                        <input type="text" name="Source" id="Source" style="width: 130px;" />
+                        <input type="text" name="ui_debuglog_source" id="ui_debuglog_source" style="width: 130px;" />
                     </td>
                 </tr>
                 <tr>
@@ -27,7 +27,7 @@
                         Message：
                     </th>
                     <td>
-                        <input type="text" name="Message" autocomplete="off" style="width: 130px;" />
+                        <input type="text" name="ui_debuglog_message" autocomplete="off" style="width: 130px;" />
                     </td>
                 </tr>
                 <tr>
@@ -35,7 +35,7 @@
                         CreatedTime：
                     </th>
                     <td>
-                        <input name="CreatedTimeStart" id="CreatedTimeStart" class="easyui-datetimebox"
+                        <input name="ui_debuglog_createdTimeStart" id="ui_debuglog_createdTimeStart" class="easyui-datetimebox"
                                editable="false" style="width: 140px;" />
                     </td>
                 </tr>
@@ -44,7 +44,7 @@
                         至：
                     </th>
                     <td>
-                        <input name="CreatedTimeEnd" id="CreatedTimeEnd" class="easyui-datetimebox"
+                        <input name="ui_debuglog_createdTimeEnd" id="ui_debuglog_createdTimeEnd" class="easyui-datetimebox"
                                editable="false" style="width: 140px;" />
                     </td>
                 </tr>
@@ -85,8 +85,8 @@
             if (data.success) {
                 systemCodes = $.parseJSON(data.systemCodes);
                 sources = $.parseJSON(data.sources);
-                $("#SystemCode").autocomplete({ source: systemCodes });
-                $("#Source").autocomplete({ source: sources });
+                $("#ui_debuglog_systemCode").autocomplete({ source: systemCodes });
+                $("#ui_debuglog_source").autocomplete({ source: sources });
             }
             else {
                 $.show_warning("提示", "初始化智能提示失败!");
@@ -120,11 +120,11 @@
     //查询
     function ui_debuglog_searchdata() {
         $("#ui_debuglog_dg").datagrid('load', {
-            SystemCode: $('#ui_debuglog_search').find('[name=SystemCode]').val(),
-            Source: $('#ui_debuglog_search').find('[name=Source]').val(),
-            Message: $('#ui_debuglog_search').find('[name=Message]').val(),
-            CreatedTimeStart: $('#CreatedTimeStart').datetimebox('getValue'),
-            CreatedTimeEnd: $('#CreatedTimeEnd').datetimebox('getValue')
+            SystemCode: $('#ui_debuglog_search').find('[name=ui_debuglog_systemCode]').val(),
+            Source: $('#ui_debuglog_search').find('[name=ui_debuglog_source]').val(),
+            Message: $('#ui_debuglog_search').find('[name=ui_debuglog_message]').val(),
+            CreatedTimeStart: $('#ui_debuglog_createdTimeStart').datetimebox('getValue'),
+            CreatedTimeEnd: $('#ui_debuglog_createdTimeEnd').datetimebox('getValue')
         });
         $("#ui_debuglog_dg").datagrid('clearSelections').datagrid('clearChecked');//刷新并清除已选择
     };
