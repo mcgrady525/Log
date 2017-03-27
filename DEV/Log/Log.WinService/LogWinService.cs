@@ -98,20 +98,20 @@ namespace Log.WinService
 
         protected override void OnStop()
         {
-            //关闭rabbitMQ服务器连接
-            if (connection != null)
-            {
-                connection.Close();
-                connection.Dispose();
-            }
-
-            //重置Autofac容器
-            container = null;
-
-            //协作停止异步线程任务
             cancelToken.Cancel();
+            Task.WhenAll(tasks).ContinueWith(t => 
+            {
+                //关闭rabbitMQ服务器连接
+                if (connection != null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
 
-            LogHelper.Info(() => "LogWinService服务已停止!");
+                //重置Autofac容器
+                container = null;
+                LogHelper.Info(() => "LogWinService服务已停止!");
+            });
         }
 
         /// <summary>
