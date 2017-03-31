@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Tracy.Frameworks.RabbitMQ;
 
 namespace Log.Entity.ViewModel
 {
@@ -9,6 +10,7 @@ namespace Log.Entity.ViewModel
     /// 新增debug log request
     /// DTO
     /// </summary>
+    [RabbitMQQueue("Log.Queue.DebugLog", ExchangeName = "Log.Exchange.DebugLog", IsProperties = true)]
     public class AddDebugLogRequest
     {
         /// <summary>

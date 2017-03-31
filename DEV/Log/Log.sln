@@ -38,6 +38,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log.Task", "Log.Task\Log.Ta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log.WinService", "Log.WinService\Log.WinService.csproj", "{97FFFC43-E8AB-4B11-859F-9A5B5ED30DEB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log.WinServices", "Log.WinServices\Log.WinServices.csproj", "{2620D07D-396A-4A29-84D6-9A9B254788B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,10 @@ Global
 		{97FFFC43-E8AB-4B11-859F-9A5B5ED30DEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97FFFC43-E8AB-4B11-859F-9A5B5ED30DEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97FFFC43-E8AB-4B11-859F-9A5B5ED30DEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2620D07D-396A-4A29-84D6-9A9B254788B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2620D07D-396A-4A29-84D6-9A9B254788B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2620D07D-396A-4A29-84D6-9A9B254788B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2620D07D-396A-4A29-84D6-9A9B254788B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,5 +115,6 @@ Global
 		{D7A023F6-5748-4FCE-ADF4-67DA63E842D0} = {9E471DFE-851D-4C93-BAEF-F51818BF5BA2}
 		{08FCBA97-6D48-4A55-AD8F-AB6C803C12BC} = {6C3012CA-430D-4D27-B286-3AAF5D2BF5D4}
 		{97FFFC43-E8AB-4B11-859F-9A5B5ED30DEB} = {6C3012CA-430D-4D27-B286-3AAF5D2BF5D4}
+		{2620D07D-396A-4A29-84D6-9A9B254788B7} = {6C3012CA-430D-4D27-B286-3AAF5D2BF5D4}
 	EndGlobalSection
 EndGlobal

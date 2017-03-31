@@ -20,6 +20,7 @@ using Log.Entity.ViewModel;
 using Autofac;
 using System.Reflection;
 using System.Threading;
+using Tracy.Frameworks.RabbitMQ;
 
 namespace Log.WinService
 {
@@ -57,8 +58,8 @@ namespace Log.WinService
                 //windows服务默认的是后台线程
                 LogHelper.Info(() => "开始启动LogWinService服务!");
                 var rabbitMQConfig = ConfigurationManager.GetSection("rabbitMQ") as RabbitMQConfigurationSection;
-                var factory = new ConnectionFactory() { HostName = rabbitMQConfig.HostName, Port = rabbitMQConfig.Port, UserName = rabbitMQConfig.UserName, Password = rabbitMQConfig.Password, VirtualHost = rabbitMQConfig.VHost };
-                connection = factory.CreateConnection();
+                //var factory = new ConnectionFactory() { HostName = rabbitMQConfig.HostName, Port = rabbitMQConfig.Port, UserName = rabbitMQConfig.UserName, Password = rabbitMQConfig.Password, VirtualHost = rabbitMQConfig.VHost };
+                //connection = factory.CreateConnection();
 
                 //消费debug log
                 var debugLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
@@ -98,20 +99,24 @@ namespace Log.WinService
 
         protected override void OnStop()
         {
-            cancelToken.Cancel();
-            Task.WhenAll(tasks).ContinueWith(t => 
-            {
-                //关闭rabbitMQ服务器连接
-                if (connection != null)
-                {
-                    connection.Close();
-                    connection.Dispose();
-                }
+            //cancelToken.Cancel();
+            //Task.WhenAll(tasks).ContinueWith(t => 
+            //{
+            //    //关闭rabbitMQ服务器连接
+            //    if (connection != null)
+            //    {
+            //        connection.Close();
+            //        connection.Dispose();
+            //    }
 
-                //重置Autofac容器
-                container = null;
-                LogHelper.Info(() => "LogWinService服务已停止!");
-            });
+            //    //重置Autofac容器
+            //    container = null;
+            //    LogHelper.Info(() => "LogWinService服务已停止!");
+            //});
+
+            //重置Autofac容器
+            container = null;
+            LogHelper.Info(() => "LogWinService服务已停止!");
         }
 
         /// <summary>
@@ -294,39 +299,24 @@ namespace Log.WinService
                     _debugLogService = scope.Resolve<ILogsDebugLogService>();
                 }
 
-                using (var channel = connection.CreateModel())
-                {
-                    //声明队列
-                    channel.QueueDeclare(queue: RabbitMQQueueConst.LogDebugLog,
-                                     durable: true,
-                                     exclusive: false,
-                                     autoDelete: false,
-                                     arguments: null);
+                //var rabbitMQConfig = ConfigurationManager.GetSection("rabbitMQ") as RabbitMQConfigurationSection;
+                ////使用发布订阅模式消费消息
+                //var rabbitMqProxy = new RabbitMQWrapper(new RabbitMQConfig
+                //{
+                //    Host = rabbitMQConfig.HostName,
+                //    VirtualHost = rabbitMQConfig.VHost,
+                //    UserName = rabbitMQConfig.UserName,
+                //    Password = rabbitMQConfig.Password,
+                //    HeartBeat = 60,
+                //    AutomaticRecoveryEnabled = true,
+                //    NetworkRecoveryInterval = new TimeSpan(60),
+                //});
 
-                    //设置公平调度，每次处理一条
-                    channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
-
-                    //消费消息
-                    //EventingBasicConsumer的Received事件无法触发
-                    var consumer = new QueueingBasicConsumer(channel);
-                    channel.BasicConsume(queue: RabbitMQQueueConst.LogDebugLog, noAck: false, consumer: consumer);
-                    while (true)
-                    {
-                        if (cancelToken.IsCancellationRequested)
-                        {
-                            break;
-                        }
-
-                        var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
-                        var msg = Encoding.UTF8.GetString(ea.Body);
-
-                        //反序列化并持久化到数据中
-                        var debugLog = msg.FromJson<AddDebugLogRequest>();
-                        _debugLogService.AddDebugLog(debugLog);
-
-                        channel.BasicAck(ea.DeliveryTag, multiple: false);
-                    }
-                }
+                //rabbitMqProxy.Subscribe<AddDebugLogRequest>(item => 
+                //{
+                //    //持久化到数据库
+                //    _debugLogService.AddDebugLog(item);
+                //});
             }
             catch (Exception ex)
             {

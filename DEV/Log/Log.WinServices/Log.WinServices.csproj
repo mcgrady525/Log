@@ -4,16 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{22FCB41E-D23E-4316-8B23-6E5ABCE8FC8C}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{2620D07D-396A-4A29-84D6-9A9B254788B7}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Log.Common</RootNamespace>
-    <AssemblyName>Log.Common</AssemblyName>
+    <RootNamespace>Log.WinServices</RootNamespace>
+    <AssemblyName>Log.WinServices</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -21,23 +22,23 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MiniProfiler">
-      <HintPath>..\packages\MiniProfiler.3.2.0.157\lib\net40\MiniProfiler.dll</HintPath>
+    <Reference Include="Autofac">
+      <HintPath>..\packages\Autofac.4.4.0\lib\net45\Autofac.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.4.1\lib\net45\NLog.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="RabbitMQ.Client">
       <HintPath>..\packages\RabbitMQ.Client.3.5.7\lib\net40\RabbitMQ.Client.dll</HintPath>
@@ -50,35 +51,55 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Topshelf, Version=3.2.150.0, Culture=neutral, PublicKeyToken=b800c4cfcdeea87b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\DLL\Topshelf.dll</HintPath>
+    </Reference>
     <Reference Include="Tracy.Frameworks.Common">
       <HintPath>..\..\..\DLL\Tracy.Frameworks.Common.dll</HintPath>
     </Reference>
     <Reference Include="Tracy.Frameworks.Configurations">
       <HintPath>..\..\..\DLL\Tracy.Frameworks.Configurations.dll</HintPath>
     </Reference>
-    <Reference Include="Tracy.Frameworks.RabbitMQ, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Tracy.Frameworks.RabbitMQ">
       <HintPath>..\..\..\DLL\Tracy.Frameworks.RabbitMQ.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helper\ConfigHelper.cs" />
-    <Compile Include="Helper\ConfigHelper.Paths.cs" />
-    <Compile Include="Helper\DapperHelper.cs" />
-    <Compile Include="Helper\LogHelper.cs" />
-    <Compile Include="Helper\RabbitMQHelper.cs" />
-    <Compile Include="Helper\RightsHelper.cs" />
-    <Compile Include="Helper\ToolbarHelper.cs" />
+    <Compile Include="MainService.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
+    <None Include="CreateVConfigs.cmd" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Log.Common\Log.Common.csproj">
+      <Project>{22fcb41e-d23e-4316-8b23-6e5abce8fc8c}</Project>
+      <Name>Log.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Log.Dao\Log.Dao.csproj">
+      <Project>{0d753218-c0a3-4bc7-8575-1160fa61c05f}</Project>
+      <Name>Log.Dao</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Log.Entity\Log.Entity.csproj">
       <Project>{051ce919-124e-4ff6-9605-824417ad4f51}</Project>
       <Name>Log.Entity</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\Log.IDao\Log.IDao.csproj">
+      <Project>{ec4b60f9-6f11-4b53-9308-b833d6c6cfa4}</Project>
+      <Name>Log.IDao</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Log.IService\Log.IService.csproj">
+      <Project>{096cbabd-9f64-49ed-b35b-d5a3d2978d72}</Project>
+      <Name>Log.IService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Log.Service\Log.Service.csproj">
+      <Project>{0decfd77-920f-4f8a-baf0-b2c741ca4631}</Project>
+      <Name>Log.Service</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
