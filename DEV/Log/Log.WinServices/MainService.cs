@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Tracy.Frameworks.Configurations;
 using Tracy.Frameworks.Common.Extends;
 using Tracy.Frameworks.RabbitMQ;
+using Log.Entity.RabbitMQ;
 
 namespace Log.WinServices
 {

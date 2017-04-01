@@ -14,6 +14,7 @@ using Nelibur.ObjectMapper;
 using Nelibur.ObjectMapper.Bindings;
 using Tracy.Frameworks.Common.Result;
 using Tracy.Frameworks.Common.Extends;
+using Log.Entity.RabbitMQ;
 
 namespace Log.Service
 {

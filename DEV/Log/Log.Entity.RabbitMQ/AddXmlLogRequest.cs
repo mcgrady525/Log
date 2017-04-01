@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Tracy.Frameworks.RabbitMQ;
 
-namespace Log.Entity.ViewModel
+namespace Log.Entity.RabbitMQ
 {
     /// <summary>
     /// 新增xml log request
     /// DTO
     /// </summary>
+    [RabbitMQQueue("Log.Queue.XmlLog", ExchangeName = "Log.Exchange.XmlLog", IsProperties = true)]
     public class AddXmlLogRequest
     {
         /// <summary>

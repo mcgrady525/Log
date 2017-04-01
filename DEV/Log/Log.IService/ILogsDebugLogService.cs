@@ -5,6 +5,7 @@ using Tracy.Frameworks.Common.Result;
 using Log.Entity.Db;
 using System;
 using System.Collections.Generic;
+using Log.Entity.RabbitMQ;
 
 namespace Log.IService
 {

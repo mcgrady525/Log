@@ -13,6 +13,7 @@ using Tracy.Frameworks.Configurations;
 using Log.Entity.ViewModel;
 using Tracy.Frameworks.RabbitMQ;
 using Log.Common.Helper;
+using Log.Entity.RabbitMQ;
 
 namespace Log.OpenApi.Controllers
 {

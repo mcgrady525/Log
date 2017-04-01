@@ -42,9 +42,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tracy.Frameworks.RabbitMQ">
-      <HintPath>..\..\..\DLL\Tracy.Frameworks.RabbitMQ.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\ColumnAttribute.cs" />
@@ -76,14 +73,10 @@
     <Compile Include="Rights\GetMyInfoResponse.cs" />
     <Compile Include="Rights\LeftMenu.cs" />
     <Compile Include="ViewModel\AddButtonRequest.cs" />
-    <Compile Include="ViewModel\AddDebugLogRequest.cs" />
-    <Compile Include="ViewModel\AddErrorLogRequest.cs" />
     <Compile Include="ViewModel\AddMenuRequest.cs" />
     <Compile Include="ViewModel\AddOrganizationRequest.cs" />
-    <Compile Include="ViewModel\AddPerformanceLogRequest.cs" />
     <Compile Include="ViewModel\AddRoleRequest.cs" />
     <Compile Include="ViewModel\AddUserRequest.cs" />
-    <Compile Include="ViewModel\AddXmlLogRequest.cs" />
     <Compile Include="ViewModel\AuthorizeRoleRequest.cs" />
     <Compile Include="ViewModel\ChangePwdRequest.cs" />
     <Compile Include="ViewModel\CheckLoginRequest.cs" />

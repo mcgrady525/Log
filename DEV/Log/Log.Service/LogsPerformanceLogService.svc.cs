@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tracy.Frameworks.Common.Result;
 using Tracy.Frameworks.Common.Extends;
+using Log.Entity.RabbitMQ;
 
 namespace Log.Service
 {

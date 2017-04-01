@@ -1,5 +1,6 @@
 ﻿using Log.Entity.Common;
 using Log.Entity.Db;
+using Log.Entity.RabbitMQ;
 using Log.Entity.ViewModel;
 using System;
 using System.Collections.Generic;

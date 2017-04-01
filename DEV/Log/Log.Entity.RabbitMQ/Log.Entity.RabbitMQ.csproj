@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{096CBABD-9F64-49ED-B35B-D5A3D2978D72}</ProjectGuid>
+    <ProjectGuid>{C0FBA858-2D48-4098-B11C-F8D3684AC5B8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Log.IService</RootNamespace>
-    <AssemblyName>Log.IService</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <RootNamespace>Log.Entity.RabbitMQ</RootNamespace>
+    <AssemblyName>Log.Entity.RabbitMQ</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,45 +28,34 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tracy.Frameworks.Common">
-      <HintPath>..\..\..\DLL\Tracy.Frameworks.Common.dll</HintPath>
+    <Reference Include="Tracy.Frameworks.RabbitMQ">
+      <HintPath>..\..\..\DLL\Tracy.Frameworks.RabbitMQ.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ILogsDebugLogService.cs" />
-    <Compile Include="ILogsErrorLogService.cs" />
-    <Compile Include="ILogsPerformanceLogService.cs" />
-    <Compile Include="ILogsXmlLogService.cs" />
+    <Compile Include="AddDebugLogRequest.cs" />
+    <Compile Include="AddErrorLogRequest.cs" />
+    <Compile Include="AddPerformanceLogRequest.cs" />
+    <Compile Include="AddXmlLogRequest.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rights\IRightsAccountService.cs" />
-    <Compile Include="Rights\IRightsButtonService.cs" />
-    <Compile Include="Rights\IRightsMenuService.cs" />
-    <Compile Include="Rights\IRightsOrganizationService.cs" />
-    <Compile Include="Rights\IRightsRoleService.cs" />
-    <Compile Include="Rights\IRightsUserService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Log.Entity.RabbitMQ\Log.Entity.RabbitMQ.csproj">
-      <Project>{c0fba858-2d48-4098-b11c-f8d3684ac5b8}</Project>
-      <Name>Log.Entity.RabbitMQ</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Log.Entity\Log.Entity.csproj">
-      <Project>{051ce919-124e-4ff6-9605-824417ad4f51}</Project>
-      <Name>Log.Entity</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

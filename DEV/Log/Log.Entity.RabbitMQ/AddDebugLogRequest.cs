@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Tracy.Frameworks.RabbitMQ;
 
-namespace Log.Entity.ViewModel
+namespace Log.Entity.RabbitMQ
 {
     /// <summary>
-    /// 新增性能log request
+    /// 新增debug log request
     /// DTO
     /// </summary>
-    public class AddPerformanceLogRequest
+    [RabbitMQQueue("Log.Queue.DebugLog", ExchangeName = "Log.Exchange.DebugLog", IsProperties = true)]
+    public class AddDebugLogRequest
     {
         /// <summary>
         /// system_code
@@ -57,28 +59,18 @@ namespace Log.Entity.ViewModel
         public string AppdomainName { get; set; }
 
         /// <summary>
-        /// class_name
+        /// message
         /// </summary>
-        public string ClassName { get; set; }
-
-        /// <summary>
-        /// method_name
-        /// </summary>
-        public string MethodName { get; set; }
-
-        /// <summary>
-        /// 耗时，单位：ms
-        /// </summary>
-        public long Duration { get; set; }
-
-        /// <summary>
-        /// remark
-        /// </summary>
-        public string Remark { get; set; }
+        public byte[] Message { get; set; }
 
         /// <summary>
         /// created_time
         /// </summary>
         public DateTime? CreatedTime { get; set; }
+
+        /// <summary>
+        /// detail
+        /// </summary>
+        public byte[] Detail { get; set; }
     }
 }

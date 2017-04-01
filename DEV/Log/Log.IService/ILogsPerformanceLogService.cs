@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tracy.Frameworks.Common.Result;
 using Log.Entity.Db;
+using Log.Entity.RabbitMQ;
 
 namespace Log.IService
 {

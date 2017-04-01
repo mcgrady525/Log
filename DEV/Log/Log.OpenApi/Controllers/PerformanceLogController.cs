@@ -1,4 +1,6 @@
-﻿using Log.Entity.ViewModel;
+﻿using Log.Common.Helper;
+using Log.Entity.RabbitMQ;
+using Log.Entity.ViewModel;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
@@ -11,6 +13,7 @@ using System.Web.Http;
 using Tracy.Frameworks.Common.Consts;
 using Tracy.Frameworks.Common.Extends;
 using Tracy.Frameworks.Configurations;
+using Tracy.Frameworks.RabbitMQ;
 
 namespace Log.OpenApi.Controllers
 {
@@ -20,6 +23,9 @@ namespace Log.OpenApi.Controllers
     [RoutePrefix("api/performancelog")]
     public class PerformanceLogController : BaseController
     {
+        private static IConnection rabbitMQConn = RabbitMQHelper.CreateConnection();
+        private static IRabbitMQWrapper _rabbitMQProxy;
+
         /// <summary>
         /// 添加日志
         /// </summary>
@@ -34,41 +40,11 @@ namespace Log.OpenApi.Controllers
                 return BadRequest();//返回400错误
             }
 
-            //将数据放到rabbitMQ消息队列中
-            var rabbitMQConfig = ConfigurationManager.GetSection("rabbitMQ") as RabbitMQConfigurationSection;
-            var factory = new ConnectionFactory() { HostName = rabbitMQConfig.HostName, Port = rabbitMQConfig.Port, UserName = rabbitMQConfig.UserName, Password = rabbitMQConfig.Password, VirtualHost = rabbitMQConfig.VHost};
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
+            using (var channel = rabbitMQConn.CreateModel())
             {
-                //声明交换机
-                channel.ExchangeDeclare(exchange: RabbitMQExchangeConst.LogPerformanceLog, type: ExchangeType.Direct, durable: true);
-
-                //声明队列
-                channel.QueueDeclare(queue: RabbitMQQueueConst.LogPerformanceLog,
-                                     durable: true,
-                                     exclusive: false,
-                                     autoDelete: false,
-                                     arguments: null);
-
-                //绑定
-                channel.QueueBind(queue: RabbitMQQueueConst.LogPerformanceLog,
-                                  exchange: RabbitMQExchangeConst.LogPerformanceLog,
-                                  routingKey: RabbitMQQueueConst.LogPerformanceLog);
-
-                //持久化
-                var props = channel.CreateBasicProperties();
-                props.Persistent = true;
-
-                //发送消息
-                //将批量转成单条发送
                 foreach (var item in list)
                 {
-                    var msg = item.ToJson();
-                    var body = Encoding.UTF8.GetBytes(msg);
-                    channel.BasicPublish(exchange: RabbitMQExchangeConst.LogPerformanceLog,
-                                         routingKey: RabbitMQQueueConst.LogPerformanceLog,
-                                         basicProperties: props,
-                                         body: body);
+                    _rabbitMQProxy.Publish(item, channel);
                 }
             }
 

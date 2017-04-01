@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using Tracy.Frameworks.RabbitMQ;
 
-namespace Log.Entity.ViewModel
+namespace Log.Entity.RabbitMQ
 {
     /// <summary>
-    /// 新增debug log request
+    /// 新增error log request
     /// DTO
     /// </summary>
-    [RabbitMQQueue("Log.Queue.DebugLog", ExchangeName = "Log.Exchange.DebugLog", IsProperties = true)]
-    public class AddDebugLogRequest
+    [RabbitMQQueue("Log.Queue.ErrorLog", ExchangeName = "Log.Exchange.ErrorLog", IsProperties = true)]
+    public class AddErrorLogRequest
     {
         /// <summary>
         /// system_code

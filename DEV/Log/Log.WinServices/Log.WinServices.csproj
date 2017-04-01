@@ -88,6 +88,10 @@
       <Project>{0d753218-c0a3-4bc7-8575-1160fa61c05f}</Project>
       <Name>Log.Dao</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Log.Entity.RabbitMQ\Log.Entity.RabbitMQ.csproj">
+      <Project>{c0fba858-2d48-4098-b11c-f8d3684ac5b8}</Project>
+      <Name>Log.Entity.RabbitMQ</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Log.Entity\Log.Entity.csproj">
       <Project>{051ce919-124e-4ff6-9605-824417ad4f51}</Project>
       <Name>Log.Entity</Name>
