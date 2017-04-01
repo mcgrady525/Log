@@ -40,6 +40,7 @@ namespace Log.WinServices
             builder.RegisterAssemblyTypes(iService, service).Where(t => t.Name.EndsWith("Service")).AsImplementedInterfaces();
             container = builder.Build();
 
+            //rabbitMQ初始化
             var config = System.Configuration.ConfigurationManager.GetSection("rabbitMQ") as RabbitMQConfigurationSection;
             rabbitMQProxy = new RabbitMQWrapper(new RabbitMQConfig
             {
@@ -55,7 +56,7 @@ namespace Log.WinServices
         public bool Start()
         {
             //用多线程去分别消费各队列的消息
-            LogHelper.Info(() => "开始启动LogWinService服务!");
+            LogHelper.Info(() => "开始启动LogWinServices服务!");
 
             //消费debug log
             var debugLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
@@ -85,7 +86,7 @@ namespace Log.WinServices
             }, TaskCreationOptions.LongRunning);
             tasks.Add(perfLogTask);
 
-            LogHelper.Info(() => "LogWinService服务启动成功!");
+            LogHelper.Info(() => "LogWinServices服务启动成功!");
 
             return true;
         }
@@ -94,7 +95,7 @@ namespace Log.WinServices
         {
             //重置Autofac容器
             container = null;
-            LogHelper.Info(() => "LogWinService服务已停止!");
+            LogHelper.Info(() => "LogWinServices服务已停止!");
 
             //rabbitMQ资源释放
             rabbitMQProxy.Dispose();
@@ -117,6 +118,7 @@ namespace Log.WinServices
                     _perfLogService = scope.Resolve<ILogsPerformanceLogService>();
                 }
 
+                //使用发布/订阅模式消费消息
                 rabbitMQProxy.Subscribe<AddPerformanceLogRequest>(item =>
                 {
                     _perfLogService.AddPerfLog(item);
@@ -143,6 +145,7 @@ namespace Log.WinServices
                     _xmlLogService = scope.Resolve<ILogsXmlLogService>();
                 }
 
+                //使用发布/订阅模式消费消息
                 rabbitMQProxy.Subscribe<AddXmlLogRequest>(item =>
                 {
                     _xmlLogService.AddXmlLog(item);
@@ -169,6 +172,7 @@ namespace Log.WinServices
                     _errorLogService = scope.Resolve<ILogsErrorLogService>();
                 }
 
+                //使用发布/订阅模式消费消息
                 rabbitMQProxy.Subscribe<AddErrorLogRequest>(item =>
                 {
                     _errorLogService.AddErrorLog(item);

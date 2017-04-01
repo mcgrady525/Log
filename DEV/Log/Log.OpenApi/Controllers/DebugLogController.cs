@@ -22,8 +22,14 @@ namespace Log.OpenApi.Controllers
     [RoutePrefix("api/debuglog")]
     public class DebugLogController : BaseController
     {
-        //rabbitMQ连接
-        private static readonly IConnection rabbitMQConn = RabbitMQHelper.CreateConnection();
+        private static IConnection rabbitMQConn = RabbitMQHelper.CreateConnection();
+        private static IRabbitMQWrapper _rabbitMQProxy;
+
+        public DebugLogController(IRabbitMQWrapper rabbitMQProxy)
+        {
+            _rabbitMQProxy = rabbitMQProxy;
+        }
+
         /// <summary>
         /// 添加日志
         /// </summary>
@@ -42,7 +48,7 @@ namespace Log.OpenApi.Controllers
             {
                 foreach (var item in list)
                 {
-                    RabbitMQHelper.Publish(channel, item);
+                    _rabbitMQProxy.Publish(item, channel);
                 }
             }
 

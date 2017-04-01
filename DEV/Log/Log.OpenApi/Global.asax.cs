@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Routing;
 using Log.Common.Helper;
+using Log.OpenApi.Helpers;
 
 namespace Log.OpenApi
 {
@@ -14,6 +15,9 @@ namespace Log.OpenApi
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
+
+            //autofac初始化
+            AutofacHelper.Init();
         }
 
         protected void Application_End(object sender, EventArgs e)

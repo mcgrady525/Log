@@ -23,39 +23,15 @@ namespace Log.Common.Helper
         public static IConnection CreateConnection()
         {
             var config = System.Configuration.ConfigurationManager.GetSection("rabbitMQ") as RabbitMQConfigurationSection;
-            var factory = new ConnectionFactory()
+            return new RabbitMQWrapper().CreateConnection(new RabbitMQConfig
             {
-                //设置主机名
-                HostName = config.HostName,
-
-                //设置VirtualHost
-                VirtualHost = config.VHost.IsNullOrEmpty() ? "/" : config.VHost,
-
-                //设置心跳时间
-                RequestedHeartbeat = 60,
-
-                //设置自动重连
+                Host = config.HostName,
+                VirtualHost = config.VHost,
+                HeartBeat = 60,
                 AutomaticRecoveryEnabled = true,
-
-                //用户名
                 UserName = config.UserName,
-
-                //密码
                 Password = config.Password
-            };
-
-            return factory.CreateConnection();
-        }
-
-        /// <summary>
-        /// 发布消息
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="channel"></param>
-        /// <param name="command"></param>
-        public static void Publish<T>(IModel channel, T command) where T : class
-        {
-            new RabbitMQWrapper().Publish(channel, command);
+            });
         }
 
     }
