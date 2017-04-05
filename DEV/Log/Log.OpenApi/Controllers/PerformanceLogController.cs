@@ -26,6 +26,11 @@ namespace Log.OpenApi.Controllers
         private static IConnection rabbitMQConn = RabbitMQHelper.CreateConnection();
         private static IRabbitMQWrapper _rabbitMQProxy;
 
+        public PerformanceLogController(IRabbitMQWrapper rabbitMQProxy)
+        {
+            _rabbitMQProxy = rabbitMQProxy;
+        }
+
         /// <summary>
         /// 添加日志
         /// </summary>
