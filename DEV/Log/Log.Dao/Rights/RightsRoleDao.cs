@@ -15,6 +15,8 @@ namespace Log.Dao.Rights
 {
     public class RightsRoleDao : IRightsRoleDao
     {
+        private static readonly RightsMenuDao menuDao = new RightsMenuDao();
+
         /// <summary>
         /// 插入
         /// </summary>
@@ -383,15 +385,43 @@ namespace Log.Dao.Rights
             var menuButtons = request.MenuButtonId.Trim(new char[] { '|' }).Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList();
             if (menuButtons.HasValue())
             {
+                //如果有父节点和根节点要添加，否则登录后无法显示菜单
+                List<int> parentMenuIds = new List<int>();
+
                 foreach (var menuButton in menuButtons)
                 {
                     var menuButtonArr = menuButton.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                    var menuId = menuButtonArr[0].ToInt();
+                    var buttonId = menuButtonArr[1].ToInt();
                     addRoleMenuButtons.Add(new TRightsRoleMenuButton
                     {
                         RoleId = request.RoleId,
-                        MenuId = menuButtonArr[0].ToInt(),
-                        ButtonId = menuButtonArr[1].ToInt()
+                        MenuId = menuId,
+                        ButtonId = buttonId
                     });
+
+                    var parentMenus = GetParentMenus(menuId);
+                    foreach (var parentMenu in parentMenus)
+                    {
+                        if (!parentMenuIds.Contains(parentMenu.Id))
+                        {
+                            parentMenuIds.Add(parentMenu.Id);
+                        }
+                    }
+                }
+
+                if (parentMenuIds.HasValue())
+                {
+                    parentMenuIds = parentMenuIds.OrderBy(p => p).ToList();
+                    foreach (var parentMenuId in parentMenuIds)
+                    {
+                        addRoleMenuButtons.Add(new TRightsRoleMenuButton
+                        {
+                            RoleId = request.RoleId,
+                            MenuId = parentMenuId,
+                            ButtonId = 0
+                        });
+                    }
                 }
 
                 using (var conn = DapperHelper.CreateConnection())
@@ -400,8 +430,8 @@ namespace Log.Dao.Rights
 
                     try
                     {
-                        //先删除(不能删除buttonId=0的记录，否则登陆后无法访问顶级菜单)
-                        conn.Execute(@"DELETE FROM dbo.t_rights_role_menu_button WHERE role_id= @RoleId AND button_id! = 0;", new { @RoleId = request.RoleId }, trans);
+                        //先删除
+                        conn.Execute(@"DELETE FROM dbo.t_rights_role_menu_button WHERE role_id= @RoleId;", new { @RoleId = request.RoleId }, trans);
 
                         //后添加
                         conn.Execute(@"INSERT INTO dbo.t_rights_role_menu_button VALUES  ( @RoleId,@MenuId,@ButtonId);", addRoleMenuButtons, trans);
@@ -415,6 +445,27 @@ namespace Log.Dao.Rights
                     }
                 }
             }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 获取当前菜单的所有父菜单(包括根菜单)
+        /// </summary>
+        /// <param name="menuId"></param>
+        /// <returns></returns>
+        private List<TRightsMenu> GetParentMenus(int menuId)
+        {
+            var result = new List<TRightsMenu>();
+
+            var menus = new List<TRightsMenu>();
+            var menu = menuDao.GetById(menuId);
+            while (menu != null)
+            {
+                menus.Add(menu);
+                menu = menuDao.GetById(menu.ParentId);
+            }
+            result = menus.Where(p => p.Id != menuId).ToList();
 
             return result;
         }
