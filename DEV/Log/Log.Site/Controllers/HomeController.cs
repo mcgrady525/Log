@@ -319,7 +319,7 @@ namespace Log.Site.Controllers
                     var childMenuStr = RecursionMenu(list, childMenus[i].Id);
                     if (!childMenuStr.IsNullOrEmpty())
                     {
-                        sb.Append("{\"id\":\"" + childMenus[i].Id.ToString() + "\",\"text\":\"" + childMenus[i].Name + "\",\"iconCls\":\"" + childMenus[i].Icon + "\",\"state\":\"closed\",\"children\":");
+                        sb.Append("{\"id\":\"" + childMenus[i].Id.ToString() + "\",\"text\":\"" + childMenus[i].Name + "\",\"iconCls\":\"" + childMenus[i].Icon + "\",\"state\":\"open\",\"children\":");
                         sb.Append(childMenuStr);
                     }
                     else
