@@ -50,7 +50,6 @@
     <Compile Include="AddErrorLogRequest.cs" />
     <Compile Include="AddPerformanceLogRequest.cs" />
     <Compile Include="AddXmlLogRequest.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

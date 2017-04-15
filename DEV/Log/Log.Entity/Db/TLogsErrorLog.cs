@@ -111,5 +111,12 @@ namespace Log.Entity.Db
 		[Column("message")] 
 		public byte[] Message { get; set; }
 		
+		/// <summary>
+		/// client_ip
+		/// </summary>
+		[DataMember]
+		[Column("client_ip")] 
+		public string ClientIp { get; set; }
+		
 	}
 }

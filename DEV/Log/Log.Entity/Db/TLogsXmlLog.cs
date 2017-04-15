@@ -132,5 +132,19 @@ namespace Log.Entity.Db
 		[Column("rs")] 
 		public byte[] Rs { get; set; }
 		
+		/// <summary>
+		/// client_ip
+		/// </summary>
+		[DataMember]
+		[Column("client_ip")] 
+		public string ClientIp { get; set; }
+		
+		/// <summary>
+		/// method_cname
+		/// </summary>
+		[DataMember]
+		[Column("method_cname")] 
+		public string MethodCname { get; set; }
+		
 	}
 }

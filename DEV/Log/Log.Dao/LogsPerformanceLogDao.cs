@@ -40,7 +40,9 @@ namespace Log.Dao
                           method_name ,
                           duration ,
                           remark ,
-                          created_time
+                          created_time,
+                          client_ip,
+                          method_cname
                         )
                 VALUES  ( @SystemCode ,
                           @Source ,
@@ -54,7 +56,9 @@ namespace Log.Dao
                           @MethodName ,
                           @Duration ,
                           @Remark ,
-                          @CreatedTime
+                          @CreatedTime,
+                          @ClientIp,
+                          @MethodCname
                         );", item);
                 if (effectRows > 0)
                 {
@@ -85,8 +89,10 @@ namespace Log.Dao
                         perfLogs.system_code AS SystemCode ,
                         perfLogs.class_name AS ClassName ,
                         perfLogs.method_name AS MethodName ,
+                        perfLogs.method_cname AS MethodCName ,
                         perfLogs.machine_name AS MachineName ,
                         perfLogs.ip_address AS IpAddress ,
+                        perfLogs.client_ip AS ClientIp ,
                         *
                 FROM    dbo.t_logs_performance_log (NOLOCK) AS perfLogs
                 WHERE   1 = 1");
@@ -219,12 +225,14 @@ namespace Log.Dao
                 perfLog = conn.Query<TLogsPerformanceLog>(@"SELECT  perfLogs.system_code AS SystemCode ,
                         perfLogs.machine_name AS MachineName ,
                         perfLogs.ip_address AS IpAddress ,
+                        perfLogs.client_ip AS ClientIp ,
                         perfLogs.process_id AS ProcessId ,
                         perfLogs.process_name AS ProcessName ,
                         perfLogs.thread_id AS ThreadId ,
                         perfLogs.thread_name AS ThreadName ,
                         perfLogs.class_name AS ClassName ,
                         perfLogs.method_name AS MethodName ,
+                        perfLogs.method_cname AS MethodCname ,
                         perfLogs.created_time AS CreatedTime ,
                         *
                 FROM    dbo.t_logs_performance_log (NOLOCK) AS perfLogs

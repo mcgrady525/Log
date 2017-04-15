@@ -82,5 +82,15 @@ namespace Log.Entity.RabbitMQ
         /// created_time
         /// </summary>
         public DateTime? CreatedTime { get; set; }
+
+        /// <summary>
+        /// client_ip
+        /// </summary>
+        public string ClientIp { get; set; }
+
+        /// <summary>
+        /// method_cname
+        /// </summary>
+        public string MethodCName { get; set; }
     }
 }

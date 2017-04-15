@@ -24,7 +24,7 @@ namespace Log.Dao
         {
             using (var conn = DapperHelper.CreateConnection())
             {
-                var effectRows = conn.Execute(@"INSERT INTO dbo.t_logs_xml_log VALUES (@SystemCode ,@Source ,@MachineName ,@IpAddress ,@ProcessId ,@ProcessName ,@ThreadId ,@ThreadName ,@AppdomainName ,@ClassName ,@MethodName ,@Remark ,@CreatedTime,@Rq ,@Rs);", item);
+                var effectRows = conn.Execute(@"INSERT INTO dbo.t_logs_xml_log VALUES (@SystemCode ,@Source ,@MachineName ,@IpAddress ,@ProcessId ,@ProcessName ,@ThreadId ,@ThreadName ,@AppdomainName ,@ClassName ,@MethodName ,@Remark ,@CreatedTime,@Rq ,@Rs, @ClientIp, @MethodCname);", item);
                 if (effectRows > 0)
                 {
                     return true;
@@ -75,7 +75,9 @@ namespace Log.Dao
                         xmlLogs.system_code AS SystemCode ,
                         xmlLogs.class_name AS ClassName ,
                         xmlLogs.method_name AS MethodName ,
+                        xmlLogs.method_cname AS MethodCName,
                         xmlLogs.ip_address AS IpAddress ,
+                        xmlLogs.client_ip AS ClientIp,
                         xmlLogs.appdomain_name AS AppDomainName ,
                         *
                 FROM    dbo.t_logs_xml_log(NOLOCK) AS xmlLogs
@@ -188,6 +190,7 @@ namespace Log.Dao
                 xmlLog = conn.Query<TLogsXmlLog>(@"SELECT  xmlLogs.system_code AS SystemCode ,
                         xmlLogs.machine_name AS MachineName ,
                         xmlLogs.ip_address AS IpAddress ,
+                        xmlLogs.client_ip AS ClientIp,
                         xmlLogs.process_id AS ProcessId ,
                         xmlLogs.process_name AS ProcessName ,
                         xmlLogs.thread_id AS ThreadId ,
@@ -195,6 +198,7 @@ namespace Log.Dao
                         xmlLogs.appdomain_name AS AppdomainName ,
                         xmlLogs.class_name AS ClassName ,
                         xmlLogs.method_name AS MethodName ,
+                        xmlLogs.method_cname AS MethodCname,
                         xmlLogs.created_time AS CreatedTime ,
                         *
                 FROM    dbo.t_logs_xml_log AS xmlLogs

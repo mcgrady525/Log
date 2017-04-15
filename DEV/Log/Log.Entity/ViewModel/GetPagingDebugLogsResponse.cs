@@ -26,7 +26,7 @@ namespace Log.Entity.ViewModel
         public string Source { get; set; }
 
         /// <summary>
-        /// ip
+        /// 服务器IP
         /// </summary>
         public string IpAddress { get; set; }
 
@@ -51,6 +51,11 @@ namespace Log.Entity.ViewModel
         /// 日志详情url，格式：http://localhost.dev.ssharing.com:8080/LogSite/DebugLog/detail/1
         /// </summary>
         public string DetailUrl { get; set; }
+
+        /// <summary>
+        /// 客户端IP
+        /// </summary>
+        public string ClientIp { get; set; }
 
     }
 }

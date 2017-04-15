@@ -87,5 +87,15 @@ namespace Log.Entity.RabbitMQ
         /// rs
         /// </summary>
         public byte[] Rs { get; set; }
+
+        /// <summary>
+        /// client_ip
+        /// </summary>
+        public string ClientIp { get; set; }
+
+        /// <summary>
+        /// method_cname
+        /// </summary>
+        public string MethodCName { get; set; }
     }
 }

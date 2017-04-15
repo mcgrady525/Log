@@ -27,7 +27,7 @@ namespace Log.Dao
         {
             using (var conn = DapperHelper.CreateConnection())
             {
-                var effectRows = conn.Execute(@"INSERT INTO dbo.t_logs_debug_log VALUES (@SystemCode ,@Source ,@MachineName ,@IpAddress ,@ProcessId ,@ProcessName ,@ThreadId,@ThreadName ,@AppdomainName ,@CreatedTime ,@Detail ,@Message);", item);
+                var effectRows = conn.Execute(@"INSERT INTO dbo.t_logs_debug_log VALUES (@SystemCode ,@Source ,@MachineName ,@IpAddress ,@ProcessId ,@ProcessName ,@ThreadId,@ThreadName ,@AppdomainName ,@CreatedTime ,@Detail ,@Message, @ClientIp);", item);
                 if (effectRows > 0)
                 {
                     return true;
@@ -56,6 +56,7 @@ namespace Log.Dao
                                         debugLogs.created_time AS CreatedTime ,
                                         debugLogs.system_code AS SystemCode ,
                                         debugLogs.ip_address AS IpAddress ,
+                                        debugLogs.client_ip AS ClientIp,
                                         debugLogs.appdomain_name AS AppDomainName ,
                                         *
                                 FROM    dbo.t_logs_debug_log AS debugLogs
@@ -130,6 +131,7 @@ namespace Log.Dao
                 result = conn.Query<TLogsDebugLog>(@"SELECT  debugLogs.system_code AS SystemCode ,
                             debugLogs.machine_name AS MachineName ,
                             debugLogs.ip_address AS IpAddress ,
+                            debugLogs.client_ip AS ClientIp,
                             debugLogs.process_id AS ProcessId ,
                             debugLogs.process_name AS ProcessName ,
                             debugLogs.thread_id AS ThreadId ,
