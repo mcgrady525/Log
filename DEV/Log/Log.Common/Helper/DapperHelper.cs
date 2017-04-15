@@ -25,7 +25,7 @@ namespace Log.Common.Helper
             var connStr = ConfigHelper.GetConnectionString("LogDB");
             conn = new SqlConnection(connStr);
 
-            var isMiniProfilerEnabled = ConfigHelper.GetAppSetting("IsMiniProfilerEnabled").ToBool();
+            var isMiniProfilerEnabled = ConfigHelper.GetAppSetting("Log.IsMiniProfilerEnabled").ToBool();
             if (isMiniProfilerEnabled)
             {
                 conn = new ProfiledDbConnection(new SqlConnection(connStr), MiniProfiler.Current);

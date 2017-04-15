@@ -1,5 +1,9 @@
-﻿@{
+﻿
+@using Log.Common.Helper;
+@using Tracy.Frameworks.Common.Extends;
+@{
     Layout = null;
+    var environment = ConfigHelper.GetAppSetting("Environment");
 }
 
 <!DOCTYPE html>
@@ -16,7 +20,7 @@
     <script src="@Url.Content("~/Scripts/easyui-1.3.2/jquery.easyui.min.js")"></script>
     <script src="@Url.Content("~/Scripts/easyui-1.3.2/easyui-lang-zh_CN.js")"></script>
     <script src="@Url.Content("~/Scripts/common.js")"></script>
-    <title>登录</title>
+    <title>登录日志系统(@environment)</title>
     <style type="text/css">
         .code {
             background-color: White;
