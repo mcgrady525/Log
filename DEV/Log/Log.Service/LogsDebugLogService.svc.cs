@@ -83,7 +83,13 @@ namespace Log.Service
                     //处理message
                     if (item.Message != null && item.Message.Length > 0)
                     {
-                        item.MessageDetail = item.Message.LZ4Decompress();
+                        try
+                        {
+                            item.MessageDetail = item.Message.LZ4Decompress();
+                        }
+                        catch
+                        {
+                        }
                     }
                 }
             }
@@ -113,13 +119,25 @@ namespace Log.Service
                 //处理message
                 if (rs.Message != null && rs.Message.Length > 0)
                 {
-                    rs.MessageDetail = rs.Message.LZ4Decompress();
+                    try
+                    {
+                        rs.MessageDetail = rs.Message.LZ4Decompress();
+                    }
+                    catch
+                    {
+                    }
                 }
 
                 //处理detail
                 if (rs.Detail != null && rs.Detail.Length > 0)
                 {
-                    rs.LogDetail = rs.Detail.LZ4Decompress();
+                    try
+                    {
+                        rs.LogDetail = rs.Detail.LZ4Decompress();
+                    }
+                    catch
+                    {
+                    }
                 }
 
                 result.ReturnCode = ReturnCodeType.Success;

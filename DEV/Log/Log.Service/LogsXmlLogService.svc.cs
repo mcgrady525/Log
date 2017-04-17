@@ -148,11 +148,23 @@ namespace Log.Service
                 //处理RQ,RS
                 if (rs.Rq != null && rs.Rq.Length > 0)
                 {
-                    rs.RQXml = rs.Rq.LZ4Decompress();
+                    try
+                    {
+                        rs.RQXml = rs.Rq.LZ4Decompress();
+                    }
+                    catch
+                    {
+                    }
                 }
                 if (rs.Rs != null && rs.Rs.Length > 0)
                 {
-                    rs.RSXml = rs.Rs.LZ4Decompress();
+                    try
+                    {
+                        rs.RSXml = rs.Rs.LZ4Decompress();
+                    }
+                    catch
+                    {
+                    }
                 }
 
                 result.ReturnCode = ReturnCodeType.Success;
