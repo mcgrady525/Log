@@ -43,7 +43,10 @@ namespace Log.Service
             };
 
             //TinyMapper对象映射
-            TinyMapper.Bind<AddPerformanceLogRequest, TLogsPerformanceLog>();
+            TinyMapper.Bind<AddPerformanceLogRequest, TLogsPerformanceLog>(config => 
+            {
+                config.Bind(x => x.MethodCName, y => y.MethodCname);
+            });
             var item = TinyMapper.Map<TLogsPerformanceLog>(request);
 
             var rs = _perfLogDao.Insert(item);

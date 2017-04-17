@@ -44,7 +44,10 @@ namespace Log.Service
             };
 
             //TinyMapper对象映射
-            TinyMapper.Bind<AddXmlLogRequest, TLogsXmlLog>();
+            TinyMapper.Bind<AddXmlLogRequest, TLogsXmlLog>(config =>
+            {
+                config.Bind(x => x.MethodCName, y => y.MethodCname);
+            });
             var item = TinyMapper.Map<TLogsXmlLog>(request);
 
             var rs = _xmlLogDao.Insert(item);
