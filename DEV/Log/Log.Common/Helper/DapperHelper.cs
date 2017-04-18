@@ -22,7 +22,17 @@ namespace Log.Common.Helper
         public static IDbConnection CreateConnection()
         {
             IDbConnection conn = null;
-            var connStr = ConfigHelper.GetConnectionString("LogDB");
+            var defaultDb = "LogDB";
+            if (ConfigHelper.GetAppSetting("Environment") == "UAT")
+            {
+                defaultDb = "LogDB_Uat";
+            }
+            if (ConfigHelper.GetAppSetting("Environment") == "PROD")
+            {
+                defaultDb = "LogDB_Prod";
+            }
+
+            var connStr = ConfigHelper.GetConnectionString(defaultDb);
             conn = new SqlConnection(connStr);
 
             var isMiniProfilerEnabled = ConfigHelper.GetAppSetting("Log.IsMiniProfilerEnabled").ToBool();
