@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Topshelf;
+using Tracy.Frameworks.Common.Helpers;
 
 namespace Log.WinServices
 {
@@ -13,9 +14,10 @@ namespace Log.WinServices
         {
             HostFactory.Run(config =>
             {
-                config.SetServiceName("LogWinServices");
-                config.SetDisplayName("LogWinServices");
-                config.SetDescription("Log系统服务平台");
+                var environment = ConfigHelper.GetAppSetting("Environment");
+                config.SetServiceName(string.Format("LogWinServices_{0}", environment));
+                config.SetDisplayName(string.Format("LogWinServices_{0}", environment));
+                config.SetDescription(string.Format("Log系统Windows服务_{0}", environment));
 
                 config.Service<MainService>(ser =>
                 {
