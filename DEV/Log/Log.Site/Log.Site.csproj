@@ -1675,7 +1675,7 @@
     <Content Include="Content\easyui-1.3.2\icon\zoom_in.png" />
     <Content Include="Content\easyui-1.3.2\icon\zoom_out.png" />
     <Content Include="Content\images\favicon.png" />
-    <Content Include="Content\images\logo.png" />
+    <Content Include="Content\images\logo01.png" />
     <Content Include="Content\images\topbg.gif" />
     <Content Include="Content\images\topleft.jpg" />
     <Content Include="Content\images\topright.jpg" />
