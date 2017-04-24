@@ -14,10 +14,12 @@ namespace Log.WinServices
         {
             HostFactory.Run(config =>
             {
+                //加上时间戳
+                var timeStamp = Guid.NewGuid().ToString("N");
                 var environment = ConfigHelper.GetAppSetting("Environment");
-                config.SetServiceName(string.Format("LogWinServices_{0}", environment));
-                config.SetDisplayName(string.Format("LogWinServices_{0}", environment));
-                config.SetDescription(string.Format("Log系统Windows服务_{0}", environment));
+                config.SetServiceName(string.Format("LogWinServices_{0}_{1}", environment, timeStamp));
+                config.SetDisplayName(string.Format("LogWinServices_{0}_{1}", environment, timeStamp));
+                config.SetDescription(string.Format("Log系统Windows服务_{0}_{1}", environment, timeStamp));
 
                 config.Service<MainService>(ser =>
                 {
