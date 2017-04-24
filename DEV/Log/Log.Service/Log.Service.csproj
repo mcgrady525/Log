@@ -49,6 +49,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LogsDebugLogBlackListService.cs" />
     <Compile Include="LogsDebugLogService.svc.cs" />
     <Compile Include="LogsErrorLogService.svc.cs" />
     <Compile Include="LogsPerformanceLogService.svc.cs" />

@@ -45,6 +45,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ILogsDebugLogBlackListDao.cs" />
     <Compile Include="ILogsDebugLogDao.cs" />
     <Compile Include="ILogsErrorLogDao.cs" />
     <Compile Include="ILogsPerformanceLogDao.cs" />
