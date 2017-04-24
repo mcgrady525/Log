@@ -35,15 +35,17 @@
             </h1>
         </div>
     </noscript>
-    <div data-options="region:'north',border:false" style="background: url(content/images/topbg.gif) repeat-x;font-size: xx-large;">
-        <div class="topLeft" style="background: url(content/images/topleft.jpg) no-repeat; width: 320px; height: 68px;">
+    <div data-options="region:'north',border:false" style="background: url(content/images/topbg.gif) repeat-x;font-size: xx-large;height:68px;">
+        <div class="topLeft" style="background: url(content/images/topleft.jpg) no-repeat left; width: 320px; height: 68px; float: left;">
             <a href="#" target="_self"><img src="content/images/logo01.png" title="日志系统" /></a>
         </div>
-        <div style="position: absolute; right: 5px; top: 10px; color: #FFFFFF; opacity: 0.9;" id="div_welcome"></div>
-        <div style="position: absolute; right: 0px; bottom: 0px;">
-            <a href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-boss'" style="color: #FFFFFF; opacity:0.9;" onclick="searchMyInfo();">我的信息</a>
-            <a href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-set1'" style="color: #FFFFFF; opacity:0.9;" onclick="changePwd();">修改密码</a>
-            <a href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-stop'" style="color: #FFFFFF; opacity:0.9;" onclick="loginOut();">退出系统</a>
+        <div class="topRight" style="background: url(content/images/topright.jpg) no-repeat right; width: 320px;height:68px;float: right;">
+            <div style="position: absolute; right: 5px; top: 10px; color: #FFFFFF; opacity: 0.9;" id="div_welcome"></div>
+            <div style="position: absolute; right: 0px; bottom: 0px;">
+                <a href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-boss'" style="color: #FFFFFF; opacity:0.9;" onclick="searchMyInfo();">我的信息</a>
+                <a href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-set1'" style="color: #FFFFFF; opacity:0.9;" onclick="changePwd();">修改密码</a>
+                <a href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-stop'" style="color: #FFFFFF; opacity:0.9;" onclick="loginOut();">退出系统</a>
+            </div>
         </div>
     </div>
     <div data-options="region:'west',split:true,title:'功能导航'" style="width: 180px;">
