@@ -15,6 +15,7 @@ using Nelibur.ObjectMapper.Bindings;
 using Tracy.Frameworks.Common.Result;
 using Tracy.Frameworks.Common.Extends;
 using Log.Entity.RabbitMQ;
+using Log.Common.Helper;
 
 namespace Log.Service
 {
@@ -25,10 +26,12 @@ namespace Log.Service
     {
         //注入dao
         private readonly ILogsDebugLogDao _debugLogDao;
+        private readonly ILogsDebugLogBlackListDao _debugLogBlackListDao;
 
-        public LogsDebugLogService(ILogsDebugLogDao debugDao)
+        public LogsDebugLogService(ILogsDebugLogDao debugDao, ILogsDebugLogBlackListDao debugLogBlackListDao)
         {
             _debugLogDao = debugDao;
+            _debugLogBlackListDao = debugLogBlackListDao;
         }
 
         /// <summary>
@@ -38,10 +41,31 @@ namespace Log.Service
         /// <returns></returns>
         public ServiceResult<bool> AddDebugLog(AddDebugLogRequest request)
         {
+            //增加黑名单功能
             var result = new ServiceResult<bool>
             {
                 ReturnCode = ReturnCodeType.Error
             };
+
+            //如果包含在黑名单中的，直接扔掉不写入db
+            List<TLogsDebugLogBlackList> debugLogBlackList = null;
+            if (CacheHelper.Get("DebugLogBlackList") == null)
+            {
+                debugLogBlackList = _debugLogBlackListDao.GetAll();
+                CacheHelper.Set("DebugLogBlackList", debugLogBlackList);
+            }
+
+            if (debugLogBlackList.HasValue())
+            {
+                var message = request.Message.LZ4Decompress();
+                var isInBlackList = debugLogBlackList.Count(p => message.Contains(p.Content)) > 0;
+                if (isInBlackList)
+                {
+                    result.ReturnCode = ReturnCodeType.Success;
+                    result.Content = true;
+                    return result;
+                }
+            }
 
             //TinyMapper对象映射
             TinyMapper.Bind<AddDebugLogRequest, TLogsDebugLog>();
