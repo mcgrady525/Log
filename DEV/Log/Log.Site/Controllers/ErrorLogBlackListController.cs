@@ -1,25 +1,25 @@
-﻿using Log.Site.Filters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Log.IService;
-using Log.Entity.Common;
-using Tracy.Frameworks.Common.Consts;
+using Log.Site.Filters;
 using Log.Entity.ViewModel;
+using Tracy.Frameworks.Common.Consts;
+using Log.Entity.Common;
 using Tracy.Frameworks.Common.Extends;
 
 namespace Log.Site.Controllers
 {
-    public class DebugLogBlackListController : BaseController
+    public class ErrorLogBlackListController : BaseController
     {
         //注入service
-        private ILogsDebugLogBlackListService _debugLogBlackListService;
+        private ILogsErrorLogBlackListService _errorLogBlackListService;
 
-        public DebugLogBlackListController(ILogsDebugLogBlackListService debugLogBlackListService)
+        public ErrorLogBlackListController(ILogsErrorLogBlackListService errorLogBlackListService)
         {
-            _debugLogBlackListService = debugLogBlackListService;
+            _errorLogBlackListService = errorLogBlackListService;
         }
 
         /// <summary>
@@ -40,17 +40,17 @@ namespace Log.Site.Controllers
         /// <param name="rows"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetPagingBlackList(GetPagingDebugLogBlackListRequest request, int page, int rows)
+        public ActionResult GetPagingBlackList(GetPagingErrorLogBlackListRequest request, int page, int rows)
         {
             var result = string.Empty;
             if (request == null)
             {
-                request = new GetPagingDebugLogBlackListRequest();
+                request = new GetPagingErrorLogBlackListRequest();
             }
             request.PageIndex = page;
             request.PageSize = rows;
 
-            var rs = _debugLogBlackListService.GetPagingBlackList(request);
+            var rs = _errorLogBlackListService.GetPagingBlackList(request);
             if (rs.ReturnCode == ReturnCodeType.Success)
             {
                 result = "{\"total\": " + rs.Content.TotalCount + ",\"rows\":" + rs.Content.Entities.ToJson(dateTimeFormat: DateTimeTypeConst.DATETIME) + "}";
@@ -60,7 +60,7 @@ namespace Log.Site.Controllers
         }
 
         /// <summary>
-        /// 增加黑名单
+        /// 添加黑名单
         /// </summary>
         /// <returns></returns>
         [LoginAuthorization]
@@ -70,19 +70,18 @@ namespace Log.Site.Controllers
         }
 
         /// <summary>
-        /// 增加黑名单(post)
+        /// 添加黑名单(post)
         /// </summary>
-        /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Add(InsertDebugLogBlackListRequest request)
+        public ActionResult Add(InsertErrorLogBlackListRequest request)
         {
             var flag = false;
             var msg = string.Empty;
 
             if (request == null)
             {
-                request = new InsertDebugLogBlackListRequest();
+                request = new InsertErrorLogBlackListRequest();
             }
 
             //校验
@@ -92,7 +91,7 @@ namespace Log.Site.Controllers
                 return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
             }
 
-            var rs = _debugLogBlackListService.Insert(request, loginInfo);
+            var rs = _errorLogBlackListService.Insert(request, loginInfo);
             if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
                 flag = true;
@@ -107,22 +106,22 @@ namespace Log.Site.Controllers
         }
 
         /// <summary>
-        /// 删除黑名单
+        /// 删除黑名单(post)
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Delete(DeleteDebugLogBlackListRequest request)
+        public ActionResult Delete(DeleteErrorLogBlackListRequest request)
         {
             var flag = false;
             var msg = string.Empty;
 
             if (request == null)
             {
-                request = new DeleteDebugLogBlackListRequest();
+                request = new DeleteErrorLogBlackListRequest();
             }
 
-            var rs = _debugLogBlackListService.DeleteDebugLogBlackList(request);
+            var rs = _errorLogBlackListService.DeleteBlackList(request);
             if (rs.ReturnCode == ReturnCodeType.Success && rs.Content == true)
             {
                 flag = true;
@@ -136,5 +135,5 @@ namespace Log.Site.Controllers
             return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
         }
 
-    }
+	}
 }

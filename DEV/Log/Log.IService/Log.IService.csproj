@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="ILogsDebugLogBlackListService.cs" />
     <Compile Include="ILogsDebugLogService.cs" />
+    <Compile Include="ILogsErrorLogBlackListService.cs" />
     <Compile Include="ILogsErrorLogService.cs" />
     <Compile Include="ILogsPerformanceLogService.cs" />
     <Compile Include="ILogsXmlLogService.cs" />

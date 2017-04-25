@@ -75,7 +75,10 @@
     <Compile Include="Rights\GetMyInfoResponse.cs" />
     <Compile Include="Rights\LeftMenu.cs" />
     <Compile Include="ViewModel\AddButtonRequest.cs" />
+    <Compile Include="ViewModel\DeleteErrorLogBlackListRequest.cs" />
     <Compile Include="ViewModel\GetPagingDebugLogBlackListResponse.cs" />
+    <Compile Include="ViewModel\GetPagingErrorLogBlackListRequest.cs" />
+    <Compile Include="ViewModel\GetPagingErrorLogBlackListResponse.cs" />
     <Compile Include="ViewModel\InsertDebugLogBlackListRequest.cs" />
     <Compile Include="ViewModel\AddMenuRequest.cs" />
     <Compile Include="ViewModel\AddOrganizationRequest.cs" />
@@ -91,6 +94,7 @@
     <Compile Include="ViewModel\DeleteRoleRequest.cs" />
     <Compile Include="ViewModel\DeleteUserRequest.cs" />
     <Compile Include="ViewModel\EditButtonRequest.cs" />
+    <Compile Include="ViewModel\InsertErrorLogBlackListRequest.cs" />
     <Compile Include="ViewModel\UpdateDebugLogBlackListRequest.cs" />
     <Compile Include="ViewModel\EditMenuRequest.cs" />
     <Compile Include="ViewModel\EditOrganizationRequest.cs" />

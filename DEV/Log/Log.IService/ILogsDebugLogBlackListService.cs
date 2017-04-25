@@ -36,7 +36,7 @@ namespace Log.IService
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        ServiceResult<bool> Delete(DeleteDebugLogBlackListRequest request);
+        ServiceResult<bool> DeleteDebugLogBlackList(DeleteDebugLogBlackListRequest request);
 
         /// <summary>
         /// 获取黑名单列表(分页)

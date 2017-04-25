@@ -94,7 +94,7 @@ namespace Log.Service
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public ServiceResult<bool> Delete(DeleteDebugLogBlackListRequest request)
+        public ServiceResult<bool> DeleteDebugLogBlackList(DeleteDebugLogBlackListRequest request)
         {
             var result = new ServiceResult<bool>
             {

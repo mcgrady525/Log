@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="ILogsDebugLogBlackListDao.cs" />
     <Compile Include="ILogsDebugLogDao.cs" />
+    <Compile Include="ILogsErrorLogBlackListDao.cs" />
     <Compile Include="ILogsErrorLogDao.cs" />
     <Compile Include="ILogsPerformanceLogDao.cs" />
     <Compile Include="ILogsXmlLogDao.cs" />
