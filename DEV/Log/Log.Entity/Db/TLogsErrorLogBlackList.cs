@@ -28,11 +28,60 @@ namespace Log.Entity.Db
 		public long Id { get; set; }
 		
 		/// <summary>
-		/// content
+		/// system_code
 		/// </summary>
 		[DataMember]
-		[Column("content")] 
-		public string Content { get; set; }
+		[Column("system_code")] 
+		public string SystemCode { get; set; }
+		
+		/// <summary>
+		/// source
+		/// </summary>
+		[DataMember]
+		[Column("source")] 
+		public string Source { get; set; }
+		
+		/// <summary>
+		/// machine_name
+		/// </summary>
+		[DataMember]
+		[Column("machine_name")] 
+		public string MachineName { get; set; }
+		
+		/// <summary>
+		/// ip_address
+		/// </summary>
+		[DataMember]
+		[Column("ip_address")] 
+		public string IpAddress { get; set; }
+		
+		/// <summary>
+		/// client_ip
+		/// </summary>
+		[DataMember]
+		[Column("client_ip")] 
+		public string ClientIp { get; set; }
+		
+		/// <summary>
+		/// appdomain_name
+		/// </summary>
+		[DataMember]
+		[Column("appdomain_name")] 
+		public string AppdomainName { get; set; }
+		
+		/// <summary>
+		/// message
+		/// </summary>
+		[DataMember]
+		[Column("message")] 
+		public string Message { get; set; }
+		
+		/// <summary>
+		/// is_regex
+		/// </summary>
+		[DataMember]
+		[Column("is_regex")] 
+		public bool? IsRegex { get; set; }
 		
 		/// <summary>
 		/// 创建人id

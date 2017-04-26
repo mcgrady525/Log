@@ -75,7 +75,7 @@ namespace Log.Site.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Add(InsertDebugLogBlackListRequest request)
+        public ActionResult Add(InsertDebugLogBlackListRequest request, string isRegex)
         {
             var flag = false;
             var msg = string.Empty;
@@ -85,10 +85,19 @@ namespace Log.Site.Controllers
                 request = new InsertDebugLogBlackListRequest();
             }
 
+            request.IsRegex = !isRegex.IsNullOrEmpty() ? true : false;
+
             //校验
-            if (request.KeyWord.IsNullOrEmpty())
+            //1，不能全部为空
+            //2，IsRegex勾选时Message不能为空
+            if (request.SystemCode.IsNullOrEmpty() && request.Source.IsNullOrEmpty() && request.MachineName.IsNullOrEmpty() && request.IpAddress.IsNullOrEmpty() && request.ClientIp.IsNullOrEmpty() && request.AppdomainName.IsNullOrEmpty() && request.Message.IsNullOrEmpty())
             {
-                msg = "关键字不能为空!";
+                msg = "不能全部为空!";
+                return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
+            }
+            if (request.IsRegex.HasValue && request.IsRegex.Value && request.Message.IsNullOrEmpty())
+            {
+                msg = "IsRegex勾选时Message不能为空!";
                 return Json(new { success = flag, msg = msg }, JsonRequestBehavior.AllowGet);
             }
 

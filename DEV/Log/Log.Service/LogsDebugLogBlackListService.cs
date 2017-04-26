@@ -41,7 +41,14 @@ namespace Log.Service
             var currentTime = DateTime.Now;
             var item = new TLogsDebugLogBlackList
             {
-                Content = request.KeyWord,
+                SystemCode = request.SystemCode,
+                Source = request.Source,
+                MachineName = request.MachineName,
+                IpAddress = request.IpAddress,
+                ClientIp = request.ClientIp,
+                AppdomainName = request.AppdomainName,
+                Message = request.Message,
+                IsRegex = request.IsRegex,
                 CreatedBy = loginInfo.Id,
                 CreatedTime = currentTime,
                 LastUpdatedBy = loginInfo.Id,
@@ -52,38 +59,6 @@ namespace Log.Service
             {
                 result.ReturnCode = ReturnCodeType.Success;
                 result.Content = true;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// 修改
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="loginInfo"></param>
-        /// <returns></returns>
-        public ServiceResult<bool> Update(UpdateDebugLogBlackListRequest request, TRightsUser loginInfo)
-        {
-            var result = new ServiceResult<bool>
-            {
-                ReturnCode = ReturnCodeType.Error
-            };
-
-            var currentTime = DateTime.Now;
-            var item = _debugLogBlackListDao.GetById(request.Id);
-            if (item != null)
-            {
-                item.Content = request.Content;
-                item.LastUpdatedBy = loginInfo.Id;
-                item.LastUpdatedTime = DateTime.Now;
-
-                var rs = _debugLogBlackListDao.Update(item);
-                if (rs == true)
-                {
-                    result.ReturnCode = ReturnCodeType.Success;
-                    result.Content = true;
-                }
             }
 
             return result;

@@ -61,7 +61,14 @@ namespace Log.Service
             var currentTime = DateTime.Now;
             var item = new TLogsErrorLogBlackList
             {
-                Content = request.KeyWord,
+                SystemCode = request.SystemCode,
+                Source = request.Source,
+                MachineName = request.MachineName,
+                IpAddress = request.IpAddress,
+                ClientIp = request.ClientIp,
+                AppdomainName = request.AppdomainName,
+                Message = request.Message,
+                IsRegex = request.IsRegex,
                 CreatedBy = loginInfo.Id,
                 CreatedTime = currentTime,
                 LastUpdatedBy = loginInfo.Id,

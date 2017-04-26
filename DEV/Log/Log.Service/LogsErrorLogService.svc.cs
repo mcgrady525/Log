@@ -16,6 +16,7 @@ using Tracy.Frameworks.Common.Result;
 using Tracy.Frameworks.Common.Extends;
 using Log.Entity.RabbitMQ;
 using Tracy.Frameworks.Common.Helpers;
+using System.Text.RegularExpressions;
 
 namespace Log.Service
 {
@@ -57,9 +58,8 @@ namespace Log.Service
 
             if (errorLogBlackList.HasValue())
             {
-                var message = request.Message.LZ4Decompress();
-                var isInBlackList = errorLogBlackList.Count(p => message.Contains(p.Content)) > 0;
-                if (isInBlackList)
+                var isMatchBlackList = IsMatchErrorLogBlackList(request, errorLogBlackList);
+                if (isMatchBlackList)
                 {
                     result.ReturnCode = ReturnCodeType.Success;
                     result.Content = true;
@@ -79,6 +79,75 @@ namespace Log.Service
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// 是否匹配黑名单
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        private bool IsMatchErrorLogBlackList(AddErrorLogRequest request, List<TLogsErrorLogBlackList> errorLogBlackList)
+        {
+            //只要任意一个条件匹配即为true
+            foreach (var item in errorLogBlackList)
+            {
+                //SystemCode
+                if (!item.SystemCode.IsNullOrEmpty() && request.SystemCode.EqualsIgnoreCase(item.SystemCode))
+                {
+                    return true;
+                }
+
+                //Source
+                if (!item.Source.IsNullOrEmpty() && request.Source.EqualsIgnoreCase(item.Source))
+                {
+                    return true;
+                }
+
+                //MachineName
+                if (!item.MachineName.IsNullOrEmpty() && request.MachineName.EqualsIgnoreCase(item.MachineName))
+                {
+                    return true;
+                }
+
+                //IpAddress
+                if (!item.IpAddress.IsNullOrEmpty() && request.IpAddress.Contains(item.IpAddress))
+                {
+                    return true;
+                }
+
+                //ClientIp
+                if (!item.ClientIp.IsNullOrEmpty() && request.ClientIp.Contains(item.ClientIp))
+                {
+                    return true;
+                }
+
+                //AppdomainName
+                if (!item.AppdomainName.IsNullOrEmpty() && item.AppdomainName.EqualsIgnoreCase(request.AppdomainName))
+                {
+                    return true;
+                }
+
+                //Message
+                //正则模式
+                var message = request.Message.LZ4Decompress();
+                if (item.IsRegex.HasValue && item.IsRegex.Value && !item.Message.IsNullOrEmpty())
+                {
+                    if (Regex.IsMatch(message, item.Message))
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    //普通模式
+                    if (!item.Message.IsNullOrEmpty() && message.ToLower().Contains(item.Message.ToLower()))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

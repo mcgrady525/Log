@@ -12,7 +12,14 @@ go
 /*==============================================================*/
 create table t_logs_debug_log_black_list (
    id                   bigint               identity,
-   content              nvarchar(1024)       null,
+   system_code          nvarchar(32)         null,
+   source               nvarchar(64)         null,
+   machine_name         nvarchar(64)         null,
+   ip_address           nvarchar(512)        null,
+   client_ip            nvarchar(512)        null,
+   appdomain_name       nvarchar(512)        null,
+   message              nvarchar(1024)       null,
+   is_regex             bit                  null,
    created_by           int                  not null,
    created_time         datetime             not null,
    last_updated_by      int                  null,
@@ -114,6 +121,7 @@ execute sp_addextendedproperty 'MS_Description',
    'user', @CurrentUser, 'table', 't_logs_debug_log_black_list', 'column', 'last_updated_time'
 go
 
+
 --t_logs_error_log_black_list
 IF OBJECT_ID('dbo.t_logs_error_log_black_list') IS NOT NULL
 	DROP TABLE dbo.t_logs_error_log_black_list;
@@ -124,7 +132,14 @@ GO
 /*==============================================================*/
 create table t_logs_error_log_black_list (
    id                   bigint               identity,
-   content              nvarchar(1024)       null,
+   system_code          nvarchar(32)         null,
+   source               nvarchar(64)         null,
+   machine_name         nvarchar(64)         null,
+   ip_address           nvarchar(512)        null,
+   client_ip            nvarchar(512)        null,
+   appdomain_name       nvarchar(512)        null,
+   message              nvarchar(1024)       null,
+   is_regex             bit                  null,
    created_by           int                  not null,
    created_time         datetime             not null,
    last_updated_by      int                  null,

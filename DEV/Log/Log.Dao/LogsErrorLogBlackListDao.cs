@@ -26,7 +26,7 @@ namespace Log.Dao
         {
             using (var conn = DapperHelper.CreateConnection())
             {
-                var effectRows = conn.Execute(@"INSERT INTO dbo.t_logs_error_log_black_list VALUES (@Content ,@CreatedBy ,@CreatedTime ,@LastUpdatedBy ,@LastUpdatedTime);", item);
+                var effectRows = conn.Execute(@"INSERT INTO dbo.t_logs_error_log_black_list VALUES (@SystemCode,@Source ,@MachineName ,@IpAddress ,@ClientIp ,@AppdomainName ,@Message ,@IsRegex ,@CreatedBy ,@CreatedTime ,@LastUpdatedBy,@LastUpdatedTime);", item);
                 if (effectRows > 0)
                 {
                     return true;
@@ -43,16 +43,7 @@ namespace Log.Dao
         /// <returns></returns>
         public bool Update(TLogsErrorLogBlackList item)
         {
-            using (var conn = DapperHelper.CreateConnection())
-            {
-                var effectRows = conn.Execute(@"UPDATE dbo.t_logs_error_log_black_list SET content= @Content, last_updated_by= @LastUpdatedBy, last_updated_time= @LastUpdatedTime WHERE id= @Id;", item);
-                if (effectRows > 0)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -104,7 +95,13 @@ namespace Log.Dao
 
             using (var conn = DapperHelper.CreateConnection())
             {
-                result = conn.Query<TLogsErrorLogBlackList>(@"SELECT  errorLogBlackList.created_by AS CreatedBy ,
+                result = conn.Query<TLogsErrorLogBlackList>(@"SELECT  errorLogBlackList.system_code AS SystemCode ,
+                                    errorLogBlackList.machine_name AS MachineName ,
+                                    errorLogBlackList.ip_address AS IpAddress ,
+                                    errorLogBlackList.client_ip AS ClientIp ,
+                                    errorLogBlackList.appdomain_name AS AppdomainName ,
+                                    errorLogBlackList.is_regex AS IsRegex ,
+                                    errorLogBlackList.created_by AS CreatedBy ,
                                     errorLogBlackList.created_time AS CreatedTime ,
                                     errorLogBlackList.last_updated_by AS LastUpdatedBy ,
                                     errorLogBlackList.last_updated_time AS LastUpdatedTime ,
@@ -126,7 +123,13 @@ namespace Log.Dao
 
             using (var conn = DapperHelper.CreateConnection())
             {
-                result = conn.Query<TLogsErrorLogBlackList>(@"SELECT  errorLogBlackList.created_by AS CreatedBy ,
+                result = conn.Query<TLogsErrorLogBlackList>(@"SELECT  errorLogBlackList.system_code AS SystemCode ,
+                                    errorLogBlackList.machine_name AS MachineName ,
+                                    errorLogBlackList.ip_address AS IpAddress ,
+                                    errorLogBlackList.client_ip AS ClientIp ,
+                                    errorLogBlackList.appdomain_name AS AppdomainName ,
+                                    errorLogBlackList.is_regex AS IsRegex ,
+                                    errorLogBlackList.created_by AS CreatedBy ,
                                     errorLogBlackList.created_time AS CreatedTime ,
                                     errorLogBlackList.last_updated_by AS LastUpdatedBy ,
                                     errorLogBlackList.last_updated_time AS LastUpdatedTime ,
@@ -155,6 +158,12 @@ namespace Log.Dao
                 var multi = conn.QueryMultiple(@"--获取所有(分页)
                                 SELECT  rs.*
                                 FROM    ( SELECT    ROW_NUMBER() OVER ( ORDER BY errorLogBlackList.id DESC ) AS RowNum ,
+                                                    errorLogBlackList.system_code AS SystemCode ,
+                                                    errorLogBlackList.machine_name AS MachineName ,
+                                                    errorLogBlackList.ip_address AS IpAddress ,
+                                                    errorLogBlackList.client_ip AS ClientIp ,
+                                                    errorLogBlackList.appdomain_name AS AppdomainName ,
+                                                    errorLogBlackList.is_regex AS IsRegex ,
                                                     errorLogBlackList.created_time AS CreatedTime ,
                                                     errorLogBlackList.last_updated_time AS LastUpdatedTime ,
                                                     *

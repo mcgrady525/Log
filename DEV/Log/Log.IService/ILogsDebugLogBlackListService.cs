@@ -24,14 +24,6 @@ namespace Log.IService
         ServiceResult<bool> Insert(InsertDebugLogBlackListRequest request, TRightsUser loginInfo);
 
         /// <summary>
-        /// 修改
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="loginInfo"></param>
-        /// <returns></returns>
-        ServiceResult<bool> Update(UpdateDebugLogBlackListRequest request, TRightsUser loginInfo);
-
-        /// <summary>
         /// 删除(支持批量)
         /// </summary>
         /// <param name="request"></param>

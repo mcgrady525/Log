@@ -26,7 +26,7 @@ namespace Log.Dao
         {
             using (var conn = DapperHelper.CreateConnection())
             {
-                var effectRows = conn.Execute(@"INSERT INTO dbo.t_logs_debug_log_black_list VALUES (@Content ,@CreatedBy ,@CreatedTime ,@LastUpdatedBy ,@LastUpdatedTime);", item);
+                var effectRows = conn.Execute(@"INSERT INTO dbo.t_logs_debug_log_black_list VALUES (@SystemCode ,@Source ,@MachineName ,@IpAddress ,@ClientIp ,@AppdomainName ,@Message ,@IsRegex ,@CreatedBy ,@CreatedTime ,@LastUpdatedBy ,@LastUpdatedTime);", item);
                 if (effectRows > 0)
                 {
                     return true;
@@ -43,16 +43,7 @@ namespace Log.Dao
         /// <returns></returns>
         public bool Update(TLogsDebugLogBlackList item)
         {
-            using (var conn = DapperHelper.CreateConnection())
-            {
-                var effectRows = conn.Execute(@"UPDATE dbo.t_logs_debug_log_black_list SET content= @Content,last_updated_by= @LastUpdatedBy, last_updated_time= @LastUpdatedTime WHERE id= @Id;", item);
-                if (effectRows > 0)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -104,7 +95,13 @@ namespace Log.Dao
 
             using (var conn = DapperHelper.CreateConnection())
             {
-                result = conn.Query<TLogsDebugLogBlackList>(@"SELECT  debugLogBlackList.created_by AS CreatedBy ,
+                result = conn.Query<TLogsDebugLogBlackList>(@"SELECT  debugLogBlackList.system_code AS SystemCode ,
+                                    debugLogBlackList.machine_name AS MachineName ,
+                                    debugLogBlackList.ip_address AS IpAddress ,
+                                    debugLogBlackList.client_ip AS ClientIp ,
+                                    debugLogBlackList.appdomain_name AS AppdomainName ,
+                                    debugLogBlackList.is_regex AS IsRegex ,
+                                    debugLogBlackList.created_by AS CreatedBy ,
                                     debugLogBlackList.created_time AS CreatedTime ,
                                     debugLogBlackList.last_updated_by AS LastUpdatedBy ,
                                     debugLogBlackList.last_updated_time AS LastUpdatedTime ,
@@ -127,7 +124,13 @@ namespace Log.Dao
 
             using (var conn = DapperHelper.CreateConnection())
             {
-                result = conn.Query<TLogsDebugLogBlackList>(@"SELECT  debugLogBlackList.created_by AS CreatedBy ,
+                result = conn.Query<TLogsDebugLogBlackList>(@"SELECT  debugLogBlackList.system_code AS SystemCode ,
+                                    debugLogBlackList.machine_name AS MachineName ,
+                                    debugLogBlackList.ip_address AS IpAddress ,
+                                    debugLogBlackList.client_ip AS ClientIp ,
+                                    debugLogBlackList.appdomain_name AS AppdomainName ,
+                                    debugLogBlackList.is_regex AS IsRegex ,
+                                    debugLogBlackList.created_by AS CreatedBy ,
                                     debugLogBlackList.created_time AS CreatedTime ,
                                     debugLogBlackList.last_updated_by AS LastUpdatedBy ,
                                     debugLogBlackList.last_updated_time AS LastUpdatedTime ,
@@ -168,6 +171,12 @@ namespace Log.Dao
                 var multi = conn.QueryMultiple(@"--获取所有(分页)
                                 SELECT  rs.*
                                 FROM    ( SELECT    ROW_NUMBER() OVER ( ORDER BY debugLogBlackList.id DESC ) AS RowNum ,
+                                                    debugLogBlackList.system_code AS SystemCode ,
+                                                    debugLogBlackList.machine_name AS MachineName ,
+                                                    debugLogBlackList.ip_address AS IpAddress ,
+                                                    debugLogBlackList.client_ip AS ClientIp ,
+                                                    debugLogBlackList.appdomain_name AS AppdomainName ,
+                                                    debugLogBlackList.is_regex AS IsRegex ,
                                                     debugLogBlackList.created_time AS CreatedTime ,
                                                     debugLogBlackList.last_updated_time AS LastUpdatedTime ,
                                                     *

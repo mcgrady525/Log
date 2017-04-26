@@ -12,7 +12,21 @@ namespace Log.Entity.ViewModel
     {
         public long Id { get; set; }
 
-        public string Content { get; set; }
+        public string SystemCode { get; set; }
+
+        public string Source { get; set; }
+
+        public string MachineName { get; set; }
+
+        public string IpAddress { get; set; }
+
+        public string ClientIp { get; set; }
+
+        public string AppdomainName { get; set; }
+
+        public string Message { get; set; }
+
+        public bool? IsRegex { get; set; }
 
         public DateTime CreatedTime { get; set; }
 

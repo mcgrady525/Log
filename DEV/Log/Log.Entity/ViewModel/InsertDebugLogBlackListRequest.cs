@@ -10,9 +10,20 @@ namespace Log.Entity.ViewModel
     /// </summary>
     public class InsertDebugLogBlackListRequest
     {
-        /// <summary>
-        /// 关键字
-        /// </summary>
-        public string KeyWord { get; set; }
+        public string SystemCode { get; set; }
+
+        public string Source { get; set; }
+
+        public string MachineName { get; set; }
+
+        public string IpAddress { get; set; }
+
+        public string ClientIp { get; set; }
+
+        public string AppdomainName { get; set; }
+
+        public string Message { get; set; }
+
+        public bool? IsRegex { get; set; }
     }
 }
