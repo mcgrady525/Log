@@ -89,6 +89,7 @@ namespace Log.Service
         private bool IsMatchErrorLogBlackList(AddErrorLogRequest request, List<TLogsErrorLogBlackList> errorLogBlackList)
         {
             //只要任意一个条件匹配即为true
+            var message = request.Message.LZ4Decompress();
             foreach (var item in errorLogBlackList)
             {
                 //SystemCode
@@ -129,7 +130,6 @@ namespace Log.Service
 
                 //Message
                 //正则模式
-                var message = request.Message.LZ4Decompress();
                 if (item.IsRegex.HasValue && item.IsRegex.Value && !item.Message.IsNullOrEmpty())
                 {
                     if (Regex.IsMatch(message, item.Message))
