@@ -1,0 +1,11 @@
+1，调试日志黑名单
+菜单名称：调试日志黑名单
+菜单编码：debuglogblacklist
+链接地址：DebugLogBlackList/Index
+图标：icon-television_out
+
+2，错误日志黑名单
+菜单名称：错误日志黑名单
+菜单编码：errorlogblacklist
+链接地址：ErrorLogBlackList/Index
+图标：icon-television_in
