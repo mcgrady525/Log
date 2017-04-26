@@ -15,7 +15,7 @@ using Nelibur.ObjectMapper.Bindings;
 using Tracy.Frameworks.Common.Result;
 using Tracy.Frameworks.Common.Extends;
 using Log.Entity.RabbitMQ;
-using Log.Common.Helper;
+using Tracy.Frameworks.Common.Helpers;
 
 namespace Log.Service
 {
@@ -48,11 +48,12 @@ namespace Log.Service
             };
 
             //如果包含在黑名单中的，直接扔掉不写入db
-            List<TLogsDebugLogBlackList> debugLogBlackList = null;
-            if (CacheHelper.Get("DebugLogBlackList") == null)
+            var debugLogBlackListCacheKey = "Log.Cache.DebugLogBlackList";
+            var debugLogBlackList = CacheHelper.Get(debugLogBlackListCacheKey) as List<TLogsDebugLogBlackList>;
+            if (debugLogBlackList == null)
             {
                 debugLogBlackList = _debugLogBlackListDao.GetAll();
-                CacheHelper.Set("DebugLogBlackList", debugLogBlackList);
+                CacheHelper.Set(debugLogBlackListCacheKey, debugLogBlackList);
             }
 
             if (debugLogBlackList.HasValue())

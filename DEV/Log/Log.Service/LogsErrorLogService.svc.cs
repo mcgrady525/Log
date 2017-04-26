@@ -15,6 +15,7 @@ using Nelibur.ObjectMapper.Bindings;
 using Tracy.Frameworks.Common.Result;
 using Tracy.Frameworks.Common.Extends;
 using Log.Entity.RabbitMQ;
+using Tracy.Frameworks.Common.Helpers;
 
 namespace Log.Service
 {
@@ -25,10 +26,12 @@ namespace Log.Service
     {
         //注入dao
         private readonly ILogsErrorLogDao _errorLogDao;
+        private readonly ILogsErrorLogBlackListDao _errorLogBlackListDao;
 
-        public LogsErrorLogService(ILogsErrorLogDao errorLogDao)
+        public LogsErrorLogService(ILogsErrorLogDao errorLogDao, ILogsErrorLogBlackListDao errorLogBlackListDao)
         {
             _errorLogDao = errorLogDao;
+            _errorLogBlackListDao = errorLogBlackListDao;
         }
 
         /// <summary>
@@ -42,6 +45,27 @@ namespace Log.Service
             {
                 ReturnCode = ReturnCodeType.Error
             };
+
+            //如果包含在黑名单中的，直接扔掉不写入db
+            var errorLogBlackListCacheKey = "Log.Cache.ErrorLogBlackList";
+            var errorLogBlackList = CacheHelper.Get(errorLogBlackListCacheKey) as List<TLogsErrorLogBlackList>;
+            if (errorLogBlackList == null)
+            {
+                errorLogBlackList = _errorLogBlackListDao.GetAll();
+                CacheHelper.Set(errorLogBlackListCacheKey, errorLogBlackList);
+            }
+
+            if (errorLogBlackList.HasValue())
+            {
+                var message = request.Message.LZ4Decompress();
+                var isInBlackList = errorLogBlackList.Count(p => message.Contains(p.Content)) > 0;
+                if (isInBlackList)
+                {
+                    result.ReturnCode = ReturnCodeType.Success;
+                    result.Content = true;
+                    return result;
+                }
+            }
 
             //TinyMapper对象映射
             TinyMapper.Bind<AddErrorLogRequest, TLogsErrorLog>();

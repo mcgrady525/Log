@@ -8,40 +8,18 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>jQuery UI测试</title>
-    <link href="~/Scripts/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" />
-    <script src="~/Scripts/jquery-1.8.2.js"></script>
-    <script src="~/Scripts/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
-    <script src="~/Scripts/easyui-1.3.2/jquery.easyui.min.js"></script>
-    <script src="~/Scripts/easyui-1.3.2/easyui-lang-zh_CN.js"></script>
+    <title>测试</title>
+    <script type="text/javascript" src="~/Scripts/jquery-1.8.2.min.js"></script>
     <script type="text/javascript">
-        $(function () {
-            var availableTags = [
-              "ActionScript",
-              "AppleScript",
-              "Asp",
-              "BASIC",
-              "C",
-              "C++",
-              "Clojure",
-              "COBOL",
-              "ColdFusion",
-              "Erlang",
-              "Fortran",
-              "Groovy",
-              "Haskell",
-              "Java",
-              "JavaScript",
-              "Lisp",
-              "Perl",
-              "PHP",
-              "Python",
-              "Ruby",
-              "Scala",
-              "Scheme"
-            ];
-            $("#date").autocomplete({
-                source: availableTags
+        $("#btnClearCache").live("click", function () {
+            //ajax post
+            $.post('@Url.Action("ClearAllCache", "Test")', function (data) {
+                if (data.success) {
+                    $("#lblClearCacheResult").text("清除全部缓存成功!");
+                }
+                else {
+                    $("#lblClearCacheResult").text("清除失败，请重试!");
+                }
             });
         });
 
@@ -49,8 +27,11 @@
 
 </head>
 <body>
-    <div> 
-        <input type="text" name="date" id="date" />
+    <!--缓存清理-->
+    <div class="divClearCache">
+        <h2>缓存清理</h2>
+        <input type="button" id="btnClearCache" name="btnClearCache" value="清除全部缓存" />
+        <label id="lblClearCacheResult" style="color:red"></label>
     </div>
 </body>
 </html>
