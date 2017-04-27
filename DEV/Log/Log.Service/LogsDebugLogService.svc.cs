@@ -17,6 +17,7 @@ using Tracy.Frameworks.Common.Extends;
 using Log.Entity.RabbitMQ;
 using Tracy.Frameworks.Common.Helpers;
 using System.Text.RegularExpressions;
+using Log.Common.Helper;
 
 namespace Log.Service
 {
@@ -91,6 +92,7 @@ namespace Log.Service
         {
             //只要任意一个条件匹配即为true
             var message = request.Message.LZ4Decompress();
+            var isMatchRegex = false;
             foreach (var item in debugLogBlackList)
             {
                 //SystemCode
@@ -133,7 +135,16 @@ namespace Log.Service
                 //正则模式
                 if (item.IsRegex.HasValue && item.IsRegex.Value && !item.Message.IsNullOrEmpty())
                 {
-                    if (Regex.IsMatch(message, item.Message))
+                    //如果message太长，使用正则会有性能问题，所以最好加上timeout设置
+                    try
+                    {
+                        isMatchRegex = Regex.IsMatch(message, item.Message, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(500));
+                    }
+                    catch (RegexMatchTimeoutException ex)
+                    {
+                        LogHelper.Error(() => string.Format("Timeout after {0} seconds matching {1}", ex.MatchTimeout, ex.Input));
+                    }
+                    if (isMatchRegex)
                     {
                         return true;
                     }
