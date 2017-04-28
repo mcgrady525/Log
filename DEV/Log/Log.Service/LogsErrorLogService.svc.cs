@@ -141,7 +141,7 @@ namespace Log.Service
                     }
                     catch (RegexMatchTimeoutException ex)
                     {
-                        LogHelper.Error(() => string.Format("Timeout after {0} seconds matching {1}", ex.MatchTimeout, ex.Input));
+                        //LogHelper.Error(() => string.Format("Timeout after {0} seconds matching {1}", ex.MatchTimeout, ex.Input));
                     }
                     if (isMatchRegex)
                     {
