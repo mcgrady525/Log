@@ -78,6 +78,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainService.cs" />
+    <Compile Include="Manager\DebugLogManager.cs" />
+    <Compile Include="Manager\ErrorLogManager.cs" />
+    <Compile Include="Manager\PerfLogManager.cs" />
+    <Compile Include="Manager\XmlLogManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

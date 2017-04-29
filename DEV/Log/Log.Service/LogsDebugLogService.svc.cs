@@ -84,6 +84,75 @@ namespace Log.Service
         }
 
         /// <summary>
+        /// 插入调试日志(批量)
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public ServiceResult<bool> AddDebugLogs(List<AddDebugLogRequest> list)
+        {
+            var result = new ServiceResult<bool>
+            {
+                ReturnCode = ReturnCodeType.Error
+            };
+
+            if (!list.HasValue())
+            {
+                result.ReturnCode = ReturnCodeType.Success;
+                result.Content = true;
+                return result;
+            }
+
+            //黑名单过滤
+            var matchedDebugLogs = new List<AddDebugLogRequest>();
+            var debugLogBlackListCacheKey = "Log.Cache.DebugLogBlackList";
+            var debugLogBlackList = CacheHelper.Get(debugLogBlackListCacheKey) as List<TLogsDebugLogBlackList>;
+            if (debugLogBlackList == null)
+            {
+                debugLogBlackList = _debugLogBlackListDao.GetAll();
+                CacheHelper.Set(debugLogBlackListCacheKey, debugLogBlackList);
+            }
+
+            if (debugLogBlackList.HasValue())
+            {
+                foreach (var debugLog in list)
+                {
+                    var isMatchBlackList = IsMatchDebugLogBlackList(debugLog, debugLogBlackList);
+                    if (isMatchBlackList)
+                    {
+                        matchedDebugLogs.Add(debugLog);
+                    }
+                }
+            }
+
+            list = list.Except(matchedDebugLogs).ToList();
+            if (!list.HasValue())
+            {
+                result.ReturnCode = ReturnCodeType.Success;
+                result.Content = true;
+                return result;
+            }
+
+            //TinyMapper对象映射
+            var insertedDebugLogs = new List<TLogsDebugLog>();
+            TLogsDebugLog insertedDebugLog = null;
+            foreach (var debugLog in list)
+            {
+                TinyMapper.Bind<AddDebugLogRequest, TLogsDebugLog>();
+                insertedDebugLog = TinyMapper.Map<TLogsDebugLog>(debugLog);
+                insertedDebugLogs.Add(insertedDebugLog);
+            }
+
+            var rs = _debugLogDao.BatchInsert(insertedDebugLogs);
+            if (rs == true)
+            {
+                result.ReturnCode = ReturnCodeType.Success;
+                result.Content = true;
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// 是否匹配黑名单
         /// </summary>
         /// <param name="request"></param>

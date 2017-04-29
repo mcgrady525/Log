@@ -22,6 +22,13 @@ namespace Log.IDao
         bool Insert(TLogsDebugLog item);
 
         /// <summary>
+        /// 批量插入
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        bool BatchInsert(List<TLogsDebugLog> list);
+
+        /// <summary>
         /// 获取所有调试日志(分页)
         /// </summary>
         /// <param name="request"></param>

@@ -63,6 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\ConfigHelper.AppSettings.cs" />
     <Compile Include="Helper\ConfigHelper.cs" />
     <Compile Include="Helper\ConfigHelper.Paths.cs" />
     <Compile Include="Helper\DapperHelper.cs" />

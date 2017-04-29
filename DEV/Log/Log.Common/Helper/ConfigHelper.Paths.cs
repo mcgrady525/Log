@@ -10,7 +10,7 @@ namespace Log.Common.Helper
     /// <summary>
     /// 配置文件扩展，Paths
     /// </summary>
-    public static partial class ConfigHelper
+    public sealed partial class ConfigHelper
     {
         /// <summary>
         /// 一次性加载所有Paths地址

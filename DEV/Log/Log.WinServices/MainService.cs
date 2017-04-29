@@ -15,6 +15,7 @@ using Tracy.Frameworks.Configurations;
 using Tracy.Frameworks.Common.Extends;
 using Tracy.Frameworks.RabbitMQ;
 using Log.Entity.RabbitMQ;
+using Log.WinServices.Manager;
 
 namespace Log.WinServices
 {
@@ -203,7 +204,7 @@ namespace Log.WinServices
                 //使用发布/订阅模式消费消息
                 rabbitMQProxy.Subscribe<AddDebugLogRequest>(item =>
                 {
-                    _debugLogService.AddDebugLog(item);
+                    DebugLogManager.Enqueue(item);
                 });
             }
             catch (Exception ex)

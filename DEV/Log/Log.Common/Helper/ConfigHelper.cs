@@ -9,7 +9,7 @@ namespace Log.Common.Helper
     /// <summary>
     /// 配置文件扩展
     /// </summary>
-    public static partial class ConfigHelper
+    public sealed partial class ConfigHelper
     {
         /// <summary>
         /// 获取应用程序根目录路径

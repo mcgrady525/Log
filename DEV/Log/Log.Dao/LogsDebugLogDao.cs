@@ -11,6 +11,7 @@ using Tracy.Frameworks.Common.Result;
 using Log.Entity.ViewModel;
 using Tracy.Frameworks.Common.Extends;
 using System.Data;
+using System.Data.SqlClient;
 
 namespace Log.Dao
 {
@@ -35,6 +36,35 @@ namespace Log.Dao
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// 批量插入
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public bool BatchInsert(List<TLogsDebugLog> list)
+        {
+            //使用SqlBulkCopy
+            var result = false;
+            using (var conn= DapperHelper.CreateConnection())
+            {
+                //list转DataTable
+                var dt = list.ToDataTable();
+                using (var sqlbulkcopy = new SqlBulkCopy((SqlConnection)conn))
+                {
+                    sqlbulkcopy.BatchSize= list.Count;
+                    sqlbulkcopy.DestinationTableName = "t_logs_debug_log";//tableName
+                    for (var i = 0; i < dt.Columns.Count; i++)
+                    {
+                        sqlbulkcopy.ColumnMappings.Add(dt.Columns[i].ColumnName, dt.Columns[i].ColumnName);
+                    }
+                    sqlbulkcopy.WriteToServer(dt);
+                    result = true;
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
