@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Tracy.Frameworks.Common.Extends;
 using Log.Common.Helper;
 using System.Threading;
+using Autofac;
+using System.Reflection;
 
 namespace Log.WinServices.Manager
 {
@@ -28,11 +30,43 @@ namespace Log.WinServices.Manager
             WriteLog();
         }, TaskCreationOptions.LongRunning);
 
+        private static IContainer container = null;
         private static ILogsDebugLogService _debugLogService;
 
-        public DebugLogManager(ILogsDebugLogService debugLogService)
+        static DebugLogManager()
         {
-            _debugLogService = debugLogService;
+            //Autofac初始化
+            var builder = new ContainerBuilder();
+            var iDao = Assembly.Load("Log.IDao");
+            var dao = Assembly.Load("Log.Dao");
+            var iService = Assembly.Load("Log.IService");
+            var service = Assembly.Load("Log.Service");
+            builder.RegisterAssemblyTypes(iDao, dao).Where(t => t.Name.EndsWith("Dao")).AsImplementedInterfaces();
+            builder.RegisterAssemblyTypes(iService, service).Where(t => t.Name.EndsWith("Service")).AsImplementedInterfaces();
+            container = builder.Build();
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                _debugLogService = scope.Resolve<ILogsDebugLogService>();
+            }
+        }
+
+        public DebugLogManager()
+        {
+            //Autofac初始化
+            var builder = new ContainerBuilder();
+            var iDao = Assembly.Load("Log.IDao");
+            var dao = Assembly.Load("Log.Dao");
+            var iService = Assembly.Load("Log.IService");
+            var service = Assembly.Load("Log.Service");
+            builder.RegisterAssemblyTypes(iDao, dao).Where(t => t.Name.EndsWith("Dao")).AsImplementedInterfaces();
+            builder.RegisterAssemblyTypes(iService, service).Where(t => t.Name.EndsWith("Service")).AsImplementedInterfaces();
+            container = builder.Build();
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                _debugLogService = scope.Resolve<ILogsDebugLogService>();
+            }
         }
 
         /// <summary>
@@ -68,7 +102,7 @@ namespace Log.WinServices.Manager
         /// <returns></returns>
         public static List<AddDebugLogRequest> Dequeue()
         {
-            //按配置从队列中取出一批消息
+            //从队列中取出一批消息
             var result = new List<AddDebugLogRequest>();
             AddDebugLogRequest item = null;
 
@@ -104,7 +138,5 @@ namespace Log.WinServices.Manager
                 DebugLogQueue.Enqueue(item);
             }
         }
-
-
     }
 }
