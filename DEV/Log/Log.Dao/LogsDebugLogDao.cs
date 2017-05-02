@@ -50,7 +50,8 @@ namespace Log.Dao
             using (var conn= DapperHelper.CreateConnection())
             {
                 //list转DataTable
-                var dt = list.ToDataTable();
+                var dt = LogNewHelper.ConvertToDataTable(list);
+
                 using (var sqlbulkcopy = new SqlBulkCopy((SqlConnection)conn))
                 {
                     sqlbulkcopy.BatchSize= list.Count;

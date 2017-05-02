@@ -33,6 +33,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\packages\Autofac.4.4.0\lib\net45\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="MiniProfiler">
       <HintPath>..\packages\MiniProfiler.3.2.0.157\lib\net40\MiniProfiler.dll</HintPath>
     </Reference>
@@ -68,6 +71,7 @@
     <Compile Include="Helper\ConfigHelper.Paths.cs" />
     <Compile Include="Helper\DapperHelper.cs" />
     <Compile Include="Helper\LogHelper.cs" />
+    <Compile Include="Helper\LogNewHelper.cs" />
     <Compile Include="Helper\RabbitMQHelper.cs" />
     <Compile Include="Helper\RightsHelper.cs" />
     <Compile Include="Helper\ToolbarHelper.cs" />

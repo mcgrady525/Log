@@ -33,14 +33,7 @@ namespace Log.WinServices
             cancelToken = new CancellationTokenSource();
 
             //Autofac初始化
-            var builder = new ContainerBuilder();
-            var iDao = Assembly.Load("Log.IDao");
-            var dao = Assembly.Load("Log.Dao");
-            var iService = Assembly.Load("Log.IService");
-            var service = Assembly.Load("Log.Service");
-            builder.RegisterAssemblyTypes(iDao, dao).Where(t => t.Name.EndsWith("Dao")).AsImplementedInterfaces();
-            builder.RegisterAssemblyTypes(iService, service).Where(t => t.Name.EndsWith("Service")).AsImplementedInterfaces();
-            container = builder.Build();
+            container = LogNewHelper.BuildAutofacContainer();
 
             //rabbitMQ初始化
             var config = System.Configuration.ConfigurationManager.GetSection("rabbitMQ") as RabbitMQConfigurationSection;
@@ -195,16 +188,17 @@ namespace Log.WinServices
             try
             {
                 LogHelper.Info(() => "开始消费调试日志消息!");
-                //ILogsDebugLogService _debugLogService;
-                //using (var scope = container.BeginLifetimeScope())
-                //{
-                //    _debugLogService = scope.Resolve<ILogsDebugLogService>();
-                //}
+                ILogsDebugLogService _debugLogService;
+                using (var scope = container.BeginLifetimeScope())
+                {
+                    _debugLogService = scope.Resolve<ILogsDebugLogService>();
+                }
 
                 //使用发布/订阅模式消费消息
                 rabbitMQProxy.Subscribe<AddDebugLogRequest>(item =>
                 {
-                    DebugLogManager.Enqueue(item);
+                    //DebugLogManager.Enqueue(item);//批量写入
+                    _debugLogService.AddDebugLog(item);//单条写入
                 });
             }
             catch (Exception ex)

@@ -18,6 +18,7 @@ using Log.Entity.RabbitMQ;
 using Tracy.Frameworks.Common.Helpers;
 using System.Text.RegularExpressions;
 using Log.Common.Helper;
+using System.Diagnostics;
 
 namespace Log.Service
 {
@@ -49,6 +50,8 @@ namespace Log.Service
                 ReturnCode = ReturnCodeType.Error
             };
 
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
             //如果包含在黑名单中的，直接扔掉不写入db
             var debugLogBlackListCacheKey = "Log.Cache.DebugLogBlackList";
             var debugLogBlackList = CacheHelper.Get(debugLogBlackListCacheKey) as List<TLogsDebugLogBlackList>;
@@ -57,10 +60,17 @@ namespace Log.Service
                 debugLogBlackList = _debugLogBlackListDao.GetAll();
                 CacheHelper.Set(debugLogBlackListCacheKey, debugLogBlackList);
             }
+            stopWatch.Stop();
+            LogHelper.Info(()=>string.Format("获取黑名单，用时：{0}ms", stopWatch.ElapsedMilliseconds.ToString("N0")));
 
             if (debugLogBlackList.HasValue())
             {
+                stopWatch = Stopwatch.StartNew();
+                stopWatch.Start();
                 var isMatchBlackList = IsMatchDebugLogBlackList(request, debugLogBlackList);
+                stopWatch.Stop();
+                LogHelper.Info(() => string.Format("匹配黑名单，用时：{0}ms", stopWatch.ElapsedMilliseconds.ToString("N0")));
+
                 if (isMatchBlackList)
                 {
                     result.ReturnCode = ReturnCodeType.Success;

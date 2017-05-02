@@ -36,32 +36,7 @@ namespace Log.WinServices.Manager
         static DebugLogManager()
         {
             //Autofac初始化
-            var builder = new ContainerBuilder();
-            var iDao = Assembly.Load("Log.IDao");
-            var dao = Assembly.Load("Log.Dao");
-            var iService = Assembly.Load("Log.IService");
-            var service = Assembly.Load("Log.Service");
-            builder.RegisterAssemblyTypes(iDao, dao).Where(t => t.Name.EndsWith("Dao")).AsImplementedInterfaces();
-            builder.RegisterAssemblyTypes(iService, service).Where(t => t.Name.EndsWith("Service")).AsImplementedInterfaces();
-            container = builder.Build();
-
-            using (var scope = container.BeginLifetimeScope())
-            {
-                _debugLogService = scope.Resolve<ILogsDebugLogService>();
-            }
-        }
-
-        public DebugLogManager()
-        {
-            //Autofac初始化
-            var builder = new ContainerBuilder();
-            var iDao = Assembly.Load("Log.IDao");
-            var dao = Assembly.Load("Log.Dao");
-            var iService = Assembly.Load("Log.IService");
-            var service = Assembly.Load("Log.Service");
-            builder.RegisterAssemblyTypes(iDao, dao).Where(t => t.Name.EndsWith("Dao")).AsImplementedInterfaces();
-            builder.RegisterAssemblyTypes(iService, service).Where(t => t.Name.EndsWith("Service")).AsImplementedInterfaces();
-            container = builder.Build();
+            container = LogNewHelper.BuildAutofacContainer();
 
             using (var scope = container.BeginLifetimeScope())
             {
