@@ -10,14 +10,13 @@ using Log.Entity.Common;
 using Log.IDao;
 using Log.Entity.Db;
 using Log.Entity.ViewModel;
-using Nelibur.ObjectMapper;
-using Nelibur.ObjectMapper.Bindings;
 using Tracy.Frameworks.Common.Result;
 using Tracy.Frameworks.Common.Extends;
 using Log.Entity.RabbitMQ;
 using Tracy.Frameworks.Common.Helpers;
 using System.Text.RegularExpressions;
 using Log.Common.Helper;
+using EmitMapper;
 
 namespace Log.Service
 {
@@ -68,9 +67,9 @@ namespace Log.Service
                 }
             }
 
-            //TinyMapper对象映射
-            TinyMapper.Bind<AddErrorLogRequest, TLogsErrorLog>();
-            var item = TinyMapper.Map<TLogsErrorLog>(request);
+            //EmitMapper对象映射
+            var mapper = ObjectMapperManager.DefaultInstance.GetMapper<AddErrorLogRequest, TLogsErrorLog>();
+            var item = mapper.Map(request);
 
             var rs = _errorLogDao.Insert(item);
             if (rs == true)

@@ -1,24 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Log.IService;
-using System.ServiceModel.Activation;
-using System.ServiceModel;
 using Log.IDao;
 using Log.Entity.Common;
 using Log.Entity.Db;
 using Log.Entity.ViewModel;
-using Nelibur.ObjectMapper;
-using Nelibur.ObjectMapper.Bindings;
 using Tracy.Frameworks.Common.Result;
 using Tracy.Frameworks.Common.Extends;
 using Log.Entity.RabbitMQ;
 using Tracy.Frameworks.Common.Helpers;
 using System.Text.RegularExpressions;
-using Log.Common.Helper;
-using System.Diagnostics;
+using EmitMapper;
 
 namespace Log.Service
 {
@@ -50,8 +43,6 @@ namespace Log.Service
                 ReturnCode = ReturnCodeType.Error
             };
 
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
             //如果包含在黑名单中的，直接扔掉不写入db
             var debugLogBlackListCacheKey = "Log.Cache.DebugLogBlackList";
             var debugLogBlackList = CacheHelper.Get(debugLogBlackListCacheKey) as List<TLogsDebugLogBlackList>;
@@ -60,17 +51,9 @@ namespace Log.Service
                 debugLogBlackList = _debugLogBlackListDao.GetAll();
                 CacheHelper.Set(debugLogBlackListCacheKey, debugLogBlackList);
             }
-            stopWatch.Stop();
-            LogHelper.Info(()=>string.Format("获取黑名单，用时：{0}ms", stopWatch.ElapsedMilliseconds.ToString("N0")));
-
             if (debugLogBlackList.HasValue())
             {
-                stopWatch = Stopwatch.StartNew();
-                stopWatch.Start();
                 var isMatchBlackList = IsMatchDebugLogBlackList(request, debugLogBlackList);
-                stopWatch.Stop();
-                LogHelper.Info(() => string.Format("匹配黑名单，用时：{0}ms", stopWatch.ElapsedMilliseconds.ToString("N0")));
-
                 if (isMatchBlackList)
                 {
                     result.ReturnCode = ReturnCodeType.Success;
@@ -79,9 +62,9 @@ namespace Log.Service
                 }
             }
 
-            //TinyMapper对象映射
-            TinyMapper.Bind<AddDebugLogRequest, TLogsDebugLog>();
-            var item = TinyMapper.Map<TLogsDebugLog>(request);
+            //EmitMapper对象映射
+            var mapper = ObjectMapperManager.DefaultInstance.GetMapper<AddDebugLogRequest, TLogsDebugLog>();
+            var item = mapper.Map(request);
 
             var rs = _debugLogDao.Insert(item);
             if (rs == true)
@@ -142,13 +125,13 @@ namespace Log.Service
                 return result;
             }
 
-            //TinyMapper对象映射
+            //EmitMapper对象映射
             var insertedDebugLogs = new List<TLogsDebugLog>();
             TLogsDebugLog insertedDebugLog = null;
             foreach (var debugLog in list)
             {
-                TinyMapper.Bind<AddDebugLogRequest, TLogsDebugLog>();
-                insertedDebugLog = TinyMapper.Map<TLogsDebugLog>(debugLog);
+                var mapper = ObjectMapperManager.DefaultInstance.GetMapper<AddDebugLogRequest, TLogsDebugLog>();
+                insertedDebugLog = mapper.Map(debugLog);
                 insertedDebugLogs.Add(insertedDebugLog);
             }
 

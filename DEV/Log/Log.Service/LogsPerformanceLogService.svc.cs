@@ -3,17 +3,13 @@ using Log.Entity.Db;
 using Log.Entity.ViewModel;
 using Log.IDao;
 using Log.IService;
-using Nelibur.ObjectMapper;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Activation;
-using System.Text;
-using System.Threading.Tasks;
 using Tracy.Frameworks.Common.Result;
 using Tracy.Frameworks.Common.Extends;
 using Log.Entity.RabbitMQ;
+using EmitMapper;
+using EmitMapper.MappingConfiguration;
 
 namespace Log.Service
 {
@@ -42,12 +38,17 @@ namespace Log.Service
                 ReturnCode = ReturnCodeType.Error
             };
 
-            //TinyMapper对象映射
-            TinyMapper.Bind<AddPerformanceLogRequest, TLogsPerformanceLog>(config => 
-            {
-                config.Bind(x => x.MethodCName, y => y.MethodCname);
-            });
-            var item = TinyMapper.Map<TLogsPerformanceLog>(request);
+            //EmitMapper对象映射
+            var mapper = ObjectMapperManager.DefaultInstance.GetMapper<AddPerformanceLogRequest, TLogsPerformanceLog>(new DefaultMapConfig()
+                .MatchMembers((x, y) =>
+                {
+                    if (x == "MethodCName" && y == "MethodCname")
+                    {
+                        return true;
+                    }
+                    return x == y;
+                }));
+            var item = mapper.Map(request);
 
             var rs = _perfLogDao.Insert(item);
             if (rs == true)

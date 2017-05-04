@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Activation;
-using System.Text;
-using System.Threading.Tasks;
 using Log.IService;
 using Log.Entity.Common;
 using Log.IDao;
 using Log.Entity.Db;
 using Log.Entity.ViewModel;
-using Nelibur.ObjectMapper;
-using Nelibur.ObjectMapper.Bindings;
 using Tracy.Frameworks.Common.Result;
 using Tracy.Frameworks.Common.Extends;
 using Log.Entity.RabbitMQ;
+using EmitMapper;
+using EmitMapper.MappingConfiguration;
 
 namespace Log.Service
 {
@@ -43,12 +38,17 @@ namespace Log.Service
                 ReturnCode = ReturnCodeType.Error
             };
 
-            //TinyMapper对象映射
-            TinyMapper.Bind<AddXmlLogRequest, TLogsXmlLog>(config =>
-            {
-                config.Bind(x => x.MethodCName, y => y.MethodCname);
-            });
-            var item = TinyMapper.Map<TLogsXmlLog>(request);
+            //EmitMapper对象映射
+            var mapper = ObjectMapperManager.DefaultInstance.GetMapper<AddXmlLogRequest, TLogsXmlLog>(new DefaultMapConfig()
+                .MatchMembers((x, y) =>
+                {
+                    if (x == "MethodCName" && y == "MethodCname")
+                    {
+                        return true;
+                    }
+                    return x == y;
+                }));
+            var item = mapper.Map(request);
 
             var rs = _xmlLogDao.Insert(item);
             if (rs == true)

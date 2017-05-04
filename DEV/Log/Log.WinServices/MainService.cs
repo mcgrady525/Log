@@ -60,26 +60,26 @@ namespace Log.WinServices
             }, TaskCreationOptions.LongRunning);
             tasks.Add(debugLogTask);
 
-            ////消费error log
-            //var errorLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
-            //{
-            //    ConsumerErrorLogMessage();
-            //}, TaskCreationOptions.LongRunning);
-            //tasks.Add(errorLogTask);
+            //消费error log
+            var errorLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
+            {
+                ConsumerErrorLogMessage();
+            }, TaskCreationOptions.LongRunning);
+            tasks.Add(errorLogTask);
 
-            ////消费xml log
-            //var xmlLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
-            //{
-            //    ConsumerXmlLogMessage();
-            //}, TaskCreationOptions.LongRunning);
-            //tasks.Add(xmlLogTask);
+            //消费xml log
+            var xmlLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
+            {
+                ConsumerXmlLogMessage();
+            }, TaskCreationOptions.LongRunning);
+            tasks.Add(xmlLogTask);
 
-            ////消费perf log
-            //var perfLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
-            //{
-            //    ConsumerPerfLogMessage();
-            //}, TaskCreationOptions.LongRunning);
-            //tasks.Add(perfLogTask);
+            //消费perf log
+            var perfLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
+            {
+                ConsumerPerfLogMessage();
+            }, TaskCreationOptions.LongRunning);
+            tasks.Add(perfLogTask);
 
             LogHelper.Info(() => "LogWinServices服务启动成功!");
 
@@ -197,7 +197,6 @@ namespace Log.WinServices
                 //使用发布/订阅模式消费消息
                 rabbitMQProxy.Subscribe<AddDebugLogRequest>(item =>
                 {
-                    //DebugLogManager.Enqueue(item);//批量写入
                     _debugLogService.AddDebugLog(item);//单条写入
                 });
             }
