@@ -49,6 +49,7 @@
     <Compile Include="ILogsDebugLogDao.cs" />
     <Compile Include="ILogsErrorLogBlackListDao.cs" />
     <Compile Include="ILogsErrorLogDao.cs" />
+    <Compile Include="ILogsOperateLogDao.cs" />
     <Compile Include="ILogsPerformanceLogDao.cs" />
     <Compile Include="ILogsXmlLogDao.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

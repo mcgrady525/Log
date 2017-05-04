@@ -81,6 +81,13 @@ namespace Log.WinServices
             }, TaskCreationOptions.LongRunning);
             tasks.Add(perfLogTask);
 
+            //消费operate log
+            var operateLogTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
+            {
+                ConsumerOperateLogMessage();
+            }, TaskCreationOptions.LongRunning);
+            tasks.Add(operateLogTask);
+
             LogHelper.Info(() => "LogWinServices服务启动成功!");
 
             return true;
@@ -96,6 +103,32 @@ namespace Log.WinServices
             rabbitMQProxy.Dispose();
 
             return true;
+        }
+
+        /// <summary>
+        /// 消费操作日志消息
+        /// </summary>
+        private void ConsumerOperateLogMessage()
+        {
+            try
+            {
+                LogHelper.Info(() => "开始消费操作日志消息!");
+                ILogsPerformanceLogService _perfLogService;
+                using (var scope = container.BeginLifetimeScope())
+                {
+                    _perfLogService = scope.Resolve<ILogsPerformanceLogService>();
+                }
+
+                //使用发布/订阅模式消费消息
+                rabbitMQProxy.Subscribe<AddPerformanceLogRequest>(item =>
+                {
+                    _perfLogService.AddPerfLog(item);
+                });
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error(() => string.Format("消费性能日志消息时发生异常，详细信息：", ex.ToString()));
+            }
         }
 
         /// <summary>

@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="AddDebugLogRequest.cs" />
     <Compile Include="AddErrorLogRequest.cs" />
+    <Compile Include="AddOperateLogRequest.cs" />
     <Compile Include="AddPerformanceLogRequest.cs" />
     <Compile Include="AddXmlLogRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

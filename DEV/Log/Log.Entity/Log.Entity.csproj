@@ -56,6 +56,7 @@
     <Compile Include="Db\TLogsErrorLog.cs" />
     <Compile Include="Db\TLogsErrorLogBlackList.cs" />
     <Compile Include="Db\TLogsErrorLogTip.cs" />
+    <Compile Include="Db\TLogsOperateLog.cs" />
     <Compile Include="Db\TLogsPerformanceLog.cs" />
     <Compile Include="Db\TLogsPerformanceLogTip.cs" />
     <Compile Include="Db\TLogsXmlLog.cs" />

@@ -52,6 +52,7 @@
     <Compile Include="LogsDebugLogDao.cs" />
     <Compile Include="LogsErrorLogBlackListDao.cs" />
     <Compile Include="LogsErrorLogDao.cs" />
+    <Compile Include="LogsOperateLogDao.cs" />
     <Compile Include="LogsPerformanceLogDao.cs" />
     <Compile Include="LogsXmlLogDao.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
