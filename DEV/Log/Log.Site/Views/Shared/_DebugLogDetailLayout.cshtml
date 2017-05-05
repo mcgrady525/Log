@@ -1,11 +1,16 @@
 ﻿
 @using StackExchange.Profiling;
+@using Log.Common.Helper;
+@using Tracy.Frameworks.Common.Extends;
+@{
+    var environment = ConfigHelper.GetAppSetting("Environment");
+}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title</title>
+    <title>@string.Format("{0}({1})", ViewBag.Title, environment)</title>
     <link type="image/x-icon" rel="shortcut icon" href="~/Content/images/favicon.png" />
     @RenderSection("Header", false)
 </head>
