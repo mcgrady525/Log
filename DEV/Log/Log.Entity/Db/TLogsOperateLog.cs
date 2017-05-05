@@ -146,5 +146,12 @@ namespace Log.Entity.Db
 		[Column("created_time")] 
 		public DateTime? CreatedTime { get; set; }
 		
+		/// <summary>
+		/// client_ip
+		/// </summary>
+		[DataMember]
+		[Column("client_ip")] 
+		public string ClientIp { get; set; }
+		
 	}
 }

@@ -1,0 +1,63 @@
+﻿@using Tracy.Frameworks.Common.Extends;
+@using Log.Common.Helper;
+@model Log.Entity.Db.TLogsOperateLog
+@{
+    ViewBag.Title = "操作日志详情";
+    Layout = "~/Views/Shared/_DebugLogDetailLayout.cshtml";
+}
+
+@{
+    //创建时间
+    var createdTime = string.Empty;
+    if (Model.CreatedTime.HasValue)
+    {
+        createdTime = Model.CreatedTime.Value.ToString("yyyy-MM-dd HH:mm:ss.fff");
+    }
+    
+    //操作时间
+    var operatedTime = string.Empty;
+    if (Model.OperatedTime.HasValue)
+    {
+        operatedTime = Model.OperatedTime.Value.ToString("yyyy-MM-dd HH:mm:ss.fff");
+    }
+    
+}
+
+<h2>Id</h2>
+@Html.DisplayFor(p => p.Id)
+<h2>Created Time</h2>
+@Html.Raw(createdTime)
+<h2>System Code</h2>
+@Html.DisplayFor(p => p.SystemCode)
+<h2>Source</h2>
+@Html.DisplayFor(p => p.Source)
+<h2>Machine Name</h2>
+@Html.DisplayFor(p => p.MachineName)
+<h2>Ip Address(服务器)</h2>
+@Html.DisplayFor(p => p.IpAddress)
+<h2>Ip Address(客户端)</h2>
+@Html.DisplayFor(p => p.ClientIp)
+<h2>Process Id</h2>
+@Html.DisplayFor(p => p.ProcessId)
+<h2>Process Name</h2>
+@Html.DisplayFor(p => p.ProcessName)
+<h2>Thread Id</h2>
+@Html.DisplayFor(p => p.ThreadId)
+<h2>Thread Name</h2>
+@Html.DisplayFor(p => p.ThreadName)
+<h2>Appdomain Name</h2>
+@Html.DisplayFor(p => p.AppdomainName)
+<h2>OperatedTime</h2>
+@Html.Raw(operatedTime)
+<h2>UserId</h2>
+@Html.DisplayFor(p => p.UserId)
+<h2>UserName</h2>
+@Html.DisplayFor(p => p.UserName)
+<h2>OperateModule(操作模块)</h2>
+@Html.DisplayFor(p => p.OperateModule)
+<h2>OperateType(操作类型)</h2>
+@Html.DisplayFor(p => p.OperateType)
+<h2>ModifyBefore</h2>
+@Html.DisplayFor(p => p.ModifyBeforeDetail)
+<h2>ModifyAfter</h2>
+@Html.DisplayFor(p => p.ModifyAfterDetail)

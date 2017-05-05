@@ -194,5 +194,41 @@ namespace Log.Dao
 
             return new Tuple<List<string>, List<string>, List<string>, List<string>>(systemCodes, sources, operateModules, operateTypes);
         }
+
+        /// <summary>
+        /// 依据id获取
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public TLogsOperateLog GetById(long id)
+        {
+            TLogsOperateLog result = null;
+
+            using (var conn= DapperHelper.CreateConnection())
+            {
+                result = conn.Query<TLogsOperateLog>(@"SELECT  operateLogs.system_code AS SystemCode ,
+                                operateLogs.machine_name AS MachineName ,
+                                operateLogs.ip_address AS IpAddress ,
+                                operateLogs.process_id AS ProcessId ,
+                                operateLogs.process_name AS ProcessName ,
+                                operateLogs.thread_id AS ThreadId ,
+                                operateLogs.thread_name AS ThreadName ,
+                                operateLogs.appdomain_name AS AppdomainName ,
+                                operateLogs.operated_time AS OperatedTime ,
+                                operateLogs.user_id AS UserId ,
+                                operateLogs.user_name AS UserName ,
+                                operateLogs.operate_module AS OperateModule ,
+                                operateLogs.operate_type AS OperateType ,
+                                operateLogs.modify_before AS ModifyBefore ,
+                                operateLogs.modify_after AS ModifyAfter ,
+                                operateLogs.created_time AS CreatedTime ,
+                                operateLogs.client_ip AS ClientIp ,
+                                *
+                        FROM    dbo.t_logs_operate_log (NOLOCK) AS operateLogs
+                        WHERE   operateLogs.id = @Id;", new { @Id = id }).FirstOrDefault();
+            }
+
+            return result;
+        }
     }
 }

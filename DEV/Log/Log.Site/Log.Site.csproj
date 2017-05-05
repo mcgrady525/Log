@@ -1780,6 +1780,7 @@
     <Content Include="Views\ErrorLogBlackList\Index.cshtml" />
     <Content Include="Views\ErrorLogBlackList\Add.cshtml" />
     <Content Include="Views\OperateLog\Index.cshtml" />
+    <Content Include="Views\OperateLog\Detail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

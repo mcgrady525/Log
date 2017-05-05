@@ -80,4 +80,20 @@ namespace Log.Entity.Db
 
     }
 
+    public partial class TLogsOperateLog
+    {
+        /// <summary>
+        /// ModifyBefore字段解压
+        /// </summary>
+        [DataMember]
+        public string ModifyBeforeDetail { get; set; }
+
+        /// <summary>
+        /// ModifyAfter字段解压
+        /// </summary>
+        [DataMember]
+        public string ModifyAfterDetail { get; set; }
+
+    }
+
 }

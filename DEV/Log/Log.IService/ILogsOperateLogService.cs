@@ -1,4 +1,5 @@
 ﻿using Log.Entity.Common;
+using Log.Entity.Db;
 using Log.Entity.RabbitMQ;
 using Log.Entity.ViewModel;
 using System;
@@ -40,6 +41,13 @@ namespace Log.IService
         /// </summary>
         /// <returns></returns>
         ServiceResult<Tuple<List<string>, List<string>, List<string>, List<string>>> GetAutoCompleteData();
+
+        /// <summary>
+        /// 详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        ServiceResult<TLogsOperateLog> GetById(long id);
 
     }
 }

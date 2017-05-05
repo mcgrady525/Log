@@ -130,5 +130,52 @@ namespace Log.Service
             return result;
         }
 
+        /// <summary>
+        /// 详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ServiceResult<TLogsOperateLog> GetById(long id)
+        {
+            var result = new ServiceResult<TLogsOperateLog>
+            {
+                ReturnCode = ReturnCodeType.Error,
+                Content = new TLogsOperateLog()
+            };
+
+            var rs = _operateLogDao.GetById(id);
+            if (rs != null)
+            {
+                //处理modify_before
+                if (rs.ModifyBefore != null && rs.ModifyBefore.Length > 0)
+                {
+                    try
+                    {
+                        rs.ModifyBeforeDetail = rs.ModifyBefore.LZ4Decompress();
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                //处理modify_after
+                if (rs.ModifyAfter != null && rs.ModifyAfter.Length > 0)
+                {
+                    try
+                    {
+                        rs.ModifyAfterDetail = rs.ModifyAfter.LZ4Decompress();
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                result.ReturnCode = ReturnCodeType.Success;
+                result.Content = rs;
+            }
+
+            return result;
+        }
+
     }
 }

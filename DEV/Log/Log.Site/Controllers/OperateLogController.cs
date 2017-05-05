@@ -8,6 +8,7 @@ using Log.IService;
 using Log.Entity.Common;
 using Log.Entity.ViewModel;
 using Tracy.Frameworks.Common.Extends;
+using Log.Entity.Db;
 
 namespace Log.Site.Controllers
 {
@@ -32,6 +33,24 @@ namespace Log.Site.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        /// <summary>
+        /// 详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [LoginAuthorization]
+        public ActionResult Detail(long id)
+        {
+            TLogsOperateLog operateLog = null;
+            var rs = _operateLogService.GetById(id);
+            if (rs.ReturnCode == ReturnCodeType.Success)
+            {
+                operateLog = rs.Content;
+            }
+
+            return View(operateLog);
         }
 
         /// <summary>
