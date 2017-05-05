@@ -57,6 +57,7 @@
     <Compile Include="Db\TLogsErrorLogBlackList.cs" />
     <Compile Include="Db\TLogsErrorLogTip.cs" />
     <Compile Include="Db\TLogsOperateLog.cs" />
+    <Compile Include="Db\TLogsOperateLogTip.cs" />
     <Compile Include="Db\TLogsPerformanceLog.cs" />
     <Compile Include="Db\TLogsPerformanceLogTip.cs" />
     <Compile Include="Db\TLogsXmlLog.cs" />
@@ -80,6 +81,8 @@
     <Compile Include="ViewModel\GetPagingDebugLogBlackListResponse.cs" />
     <Compile Include="ViewModel\GetPagingErrorLogBlackListRequest.cs" />
     <Compile Include="ViewModel\GetPagingErrorLogBlackListResponse.cs" />
+    <Compile Include="ViewModel\GetPagingOperateLogsRequest.cs" />
+    <Compile Include="ViewModel\GetPagingOperateLogsResponse.cs" />
     <Compile Include="ViewModel\InsertDebugLogBlackListRequest.cs" />
     <Compile Include="ViewModel\AddMenuRequest.cs" />
     <Compile Include="ViewModel\AddOrganizationRequest.cs" />

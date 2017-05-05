@@ -113,21 +113,21 @@ namespace Log.WinServices
             try
             {
                 LogHelper.Info(() => "开始消费操作日志消息!");
-                ILogsPerformanceLogService _perfLogService;
+                ILogsOperateLogService _operateLogService;
                 using (var scope = container.BeginLifetimeScope())
                 {
-                    _perfLogService = scope.Resolve<ILogsPerformanceLogService>();
+                    _operateLogService = scope.Resolve<ILogsOperateLogService>();
                 }
 
                 //使用发布/订阅模式消费消息
-                rabbitMQProxy.Subscribe<AddPerformanceLogRequest>(item =>
+                rabbitMQProxy.Subscribe<AddOperateLogRequest>(item =>
                 {
-                    _perfLogService.AddPerfLog(item);
+                    _operateLogService.AddOperateLog(item);
                 });
             }
             catch (Exception ex)
             {
-                LogHelper.Error(() => string.Format("消费性能日志消息时发生异常，详细信息：", ex.ToString()));
+                LogHelper.Error(() => string.Format("消费操作日志消息时发生异常，详细信息：", ex.ToString()));
             }
         }
 

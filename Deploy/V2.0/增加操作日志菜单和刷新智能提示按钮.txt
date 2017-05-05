@@ -1,0 +1,10 @@
+1，操作日志(菜单)
+菜单名称：操作日志
+菜单编码：operatelog
+链接地址：OperateLog/Index
+图标：icon-sport_golf
+
+2，刷新操作日志智能提示(按钮)
+按钮名称：刷新操作日志智能提示
+标识码：refresh_operatelog_tip
+icon:icon-reload

@@ -53,6 +53,7 @@
     <Compile Include="LogsDebugLogService.svc.cs" />
     <Compile Include="LogsErrorLogBlackListService.cs" />
     <Compile Include="LogsErrorLogService.svc.cs" />
+    <Compile Include="LogsOperateLogService.svc.cs" />
     <Compile Include="LogsPerformanceLogService.svc.cs" />
     <Compile Include="LogsXmlLogService.svc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -50,6 +50,7 @@
     <Compile Include="ILogsDebugLogService.cs" />
     <Compile Include="ILogsErrorLogBlackListService.cs" />
     <Compile Include="ILogsErrorLogService.cs" />
+    <Compile Include="ILogsOperateLogService.cs" />
     <Compile Include="ILogsPerformanceLogService.cs" />
     <Compile Include="ILogsXmlLogService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

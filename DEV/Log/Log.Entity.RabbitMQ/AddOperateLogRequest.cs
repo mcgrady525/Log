@@ -98,5 +98,10 @@ namespace Log.Entity.RabbitMQ
         /// </summary>
         public DateTime? CreatedTime { get; set; }
 
+        /// <summary>
+        /// client_ip
+        /// </summary>
+        public string ClientIp { get; set; }
+
     }
 }

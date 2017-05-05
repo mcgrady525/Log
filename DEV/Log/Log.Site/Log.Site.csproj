@@ -1715,6 +1715,7 @@
     <Compile Include="Controllers\ErrorLogController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
+    <Compile Include="Controllers\OperateLogController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
     <Compile Include="Controllers\PerformanceLogController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
@@ -1778,6 +1779,7 @@
     <Content Include="Views\DebugLogBlackList\Add.cshtml" />
     <Content Include="Views\ErrorLogBlackList\Index.cshtml" />
     <Content Include="Views\ErrorLogBlackList\Add.cshtml" />
+    <Content Include="Views\OperateLog\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
