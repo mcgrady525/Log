@@ -53,11 +53,15 @@
 @Html.DisplayFor(p => p.UserId)
 <h2>UserName</h2>
 @Html.DisplayFor(p => p.UserName)
-<h2>OperateModule(操作模块)</h2>
+<h2>OperateModule</h2>
 @Html.DisplayFor(p => p.OperateModule)
-<h2>OperateType(操作类型)</h2>
+<h2>OperateType</h2>
 @Html.DisplayFor(p => p.OperateType)
-<h2>ModifyBefore</h2>
+<h2>修改前</h2>
+<pre id="preModifyBefore">
 @Html.DisplayFor(p => p.ModifyBeforeDetail)
-<h2>ModifyAfter</h2>
+</pre>
+<h2>修改后</h2>
+<pre id="preModifyAfter">
 @Html.DisplayFor(p => p.ModifyAfterDetail)
+</pre>

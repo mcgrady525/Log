@@ -27,7 +27,7 @@ namespace Log.Dao
         {
             using (var conn = DapperHelper.CreateConnection())
             {
-                var effectedRows = conn.Execute(@"INSERT INTO dbo.t_logs_operate_log VALUES  (@SystemCode ,@Source ,@MachineName ,@IpAddress ,@ProcessId ,@ProcessName ,@ThreadId ,@ThreadName ,@AppdomainName ,@OperatedTime ,@UserId ,@UserName ,@OperateModule ,@OperateType ,@ModifyBefore ,@ModifyAfter ,@CreatedTime);", item);
+                var effectedRows = conn.Execute(@"INSERT INTO dbo.t_logs_operate_log VALUES  (@SystemCode ,@Source ,@MachineName ,@IpAddress ,@ProcessId ,@ProcessName ,@ThreadId ,@ThreadName ,@AppdomainName ,@OperatedTime ,@UserId ,@UserName ,@OperateModule ,@OperateType ,@ModifyBefore ,@ModifyAfter ,@CreatedTime, @ClientIp);", item);
                 if (effectedRows > 0)
                 {
                     return true;
