@@ -56,6 +56,22 @@
                 </tr>
                 <tr>
                     <th>
+                        CorpId：
+                    </th>
+                    <td>
+                        <input type="text" name="ui_operatelog_corpId" id="ui_operatelog_corpId" autocomplete="off" style="width: 130px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        CorpName：
+                    </th>
+                    <td>
+                        <input type="text" name="ui_operatelog_corpName" id="ui_operatelog_corpName" autocomplete="off" style="width: 130px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
                         OperatedTime：
                     </th>
                     <td>
@@ -151,6 +167,8 @@
             Source: $('#ui_operatelog_search').find('[name=ui_operatelog_source]').val(),
             UserId: $('#ui_operatelog_search').find('[name=ui_operatelog_userId]').val(),
             UserName: $('#ui_operatelog_search').find('[name=ui_operatelog_userName]').val(),
+            CorpId: $('#ui_operatelog_search').find('[name=ui_operatelog_corpId]').val(),
+            CorpName: $('#ui_operatelog_search').find('[name=ui_operatelog_corpName]').val(),
             OperateModule: $('#ui_operatelog_search').find('[name=ui_operatelog_operateModule]').val(),
             OperateType: $('#ui_operatelog_search').find('[name=ui_operatelog_operateType]').val(),
             OperatedTimeStart: $('#ui_operatelog_operatedTimeStart').datetimebox('getValue'),
@@ -192,14 +210,16 @@
                                                 return '<a href="' + row.DetailUrl + '" target="_blank">' + value + '</a>';
                                             }
                                         },
-                                        { field: 'CreatedTime', title: 'CreatedTime', sortable: true, width: 160 },
+                                        //{ field: 'CreatedTime', title: 'CreatedTime', sortable: true, width: 160 },
+                                        { field: 'OperatedTime', title: 'OperatedTime', sortable: true, width: 160 },
                                         { field: 'SystemCode', title: 'SystemCode', sortable: true, width: 100 },
                                         { field: 'Source', title: 'Source', sortable: true, width: 120 },
                                         { field: 'IpAddress', title: 'IpAddress(服务器)', sortable: true, width: 120 },
                                         { field: 'ClientIp', title: 'IpAddress(客户端)', sortable: true, width: 120 },
-                                        { field: 'OperatedTime', title: 'OperatedTime', sortable: true, width: 160 },
                                         { field: 'UserId', title: 'UserId', sortable: true, width: 120 },
                                         { field: 'UserName', title: 'UserName', sortable: true, width: 120 },
+                                        { field: 'CorpId', title: 'CorpId', sortable: true, width: 120 },
+                                        { field: 'CorpName', title: 'CorpName', sortable: true, width: 160 },
                                         { field: 'OperateModule', title: 'OperateModule', sortable: true, width: 120 },
                                         { field: 'OperateType', title: 'OperateType', sortable: true, width: 120 }
                             ]],

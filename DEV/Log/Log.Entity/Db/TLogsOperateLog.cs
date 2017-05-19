@@ -153,5 +153,19 @@ namespace Log.Entity.Db
 		[Column("client_ip")] 
 		public string ClientIp { get; set; }
 		
+		/// <summary>
+		/// corp_id
+		/// </summary>
+		[DataMember]
+		[Column("corp_id")] 
+		public long? CorpId { get; set; }
+		
+		/// <summary>
+		/// corp_name
+		/// </summary>
+		[DataMember]
+		[Column("corp_name")] 
+		public string CorpName { get; set; }
+		
 	}
 }

@@ -27,7 +27,7 @@ namespace Log.Dao
         {
             using (var conn = DapperHelper.CreateConnection())
             {
-                var effectedRows = conn.Execute(@"INSERT INTO dbo.t_logs_operate_log VALUES  (@SystemCode ,@Source ,@MachineName ,@IpAddress ,@ProcessId ,@ProcessName ,@ThreadId ,@ThreadName ,@AppdomainName ,@OperatedTime ,@UserId ,@UserName ,@OperateModule ,@OperateType ,@ModifyBefore ,@ModifyAfter ,@CreatedTime, @ClientIp);", item);
+                var effectedRows = conn.Execute(@"INSERT INTO dbo.t_logs_operate_log VALUES  (@SystemCode ,@Source ,@MachineName ,@IpAddress ,@ProcessId ,@ProcessName ,@ThreadId ,@ThreadName ,@AppdomainName ,@OperatedTime ,@UserId ,@UserName ,@OperateModule ,@OperateType ,@ModifyBefore ,@ModifyAfter ,@CreatedTime, @ClientIp, @CorpId, @CorpName);", item);
                 if (effectedRows > 0)
                 {
                     return true;
@@ -62,6 +62,8 @@ namespace Log.Dao
                                         operateLogs.user_name AS UserName,
                                         operateLogs.operate_module AS OperateModule,
                                         operateLogs.operate_type AS OperateType,
+                                        operateLogs.corp_id AS CorpId,
+                                        operateLogs.corp_name AS CorpName,
                                         *
                                 FROM    dbo.t_logs_operate_log(NOLOCK) AS operateLogs
                                 WHERE   1 = 1");
@@ -92,6 +94,18 @@ namespace Log.Dao
                 sbSqlPaging.Append(" AND operateLogs.user_name LIKE @UserName");
                 sbSqlTotal.Append(" AND operateLogs.user_name LIKE @UserName");
                 p.Add("UserName", "%" + request.UserName + "%", System.Data.DbType.String);
+            }
+            if (request.CorpId> 0)
+            {
+                sbSqlPaging.Append(" AND operateLogs.corp_id=@CorpId");
+                sbSqlTotal.Append(" AND operateLogs.corp_id=@CorpId");
+                p.Add("CorpId", request.CorpId, System.Data.DbType.Int64);
+            }
+            if (!request.CorpName.IsNullOrEmpty())
+            {
+                sbSqlPaging.Append(" AND operateLogs.corp_name LIKE @CorpName");
+                sbSqlTotal.Append(" AND operateLogs.corp_name LIKE @CorpName");
+                p.Add("CorpName", "%" + request.CorpName + "%", System.Data.DbType.String);
             }
             if (!request.OperateModule.IsNullOrEmpty())
             {

@@ -70,5 +70,15 @@ namespace Log.Entity.ViewModel
         /// </summary>
         public string DetailUrl { get; set; }
 
+        /// <summary>
+        /// 客户id
+        /// </summary>
+        public long CorpId { get; set; }
+
+        /// <summary>
+        /// 客户名称
+        /// </summary>
+        public string CorpName { get; set; }
+
     }
 }

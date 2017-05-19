@@ -26,5 +26,15 @@ namespace Log.Entity.ViewModel
         public DateTime? OperatedTimeStart { get; set; }
 
         public DateTime? OperatedTimeEnd { get; set; }
+
+        /// <summary>
+        /// 客户id
+        /// </summary>
+        public long CorpId { get; set; }
+
+        /// <summary>
+        /// 客户名称
+        /// </summary>
+        public string CorpName { get; set; }
     }
 }
