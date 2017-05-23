@@ -167,5 +167,12 @@ namespace Log.Entity.Db
 		[Column("corp_name")] 
 		public string CorpName { get; set; }
 		
+		/// <summary>
+		/// remark
+		/// </summary>
+		[DataMember]
+		[Column("remark")] 
+		public string Remark { get; set; }
+		
 	}
 }

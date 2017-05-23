@@ -80,5 +80,10 @@ namespace Log.Entity.ViewModel
         /// </summary>
         public string CorpName { get; set; }
 
+        /// <summary>
+        /// 备注，方便通过关键字过滤
+        /// </summary>
+        public string Remark { get; set; }
+
     }
 }

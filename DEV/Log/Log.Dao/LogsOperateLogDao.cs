@@ -27,7 +27,7 @@ namespace Log.Dao
         {
             using (var conn = DapperHelper.CreateConnection())
             {
-                var effectedRows = conn.Execute(@"INSERT INTO dbo.t_logs_operate_log VALUES  (@SystemCode ,@Source ,@MachineName ,@IpAddress ,@ProcessId ,@ProcessName ,@ThreadId ,@ThreadName ,@AppdomainName ,@OperatedTime ,@UserId ,@UserName ,@OperateModule ,@OperateType ,@ModifyBefore ,@ModifyAfter ,@CreatedTime, @ClientIp, @CorpId, @CorpName);", item);
+                var effectedRows = conn.Execute(@"INSERT INTO dbo.t_logs_operate_log VALUES  (@SystemCode ,@Source ,@MachineName ,@IpAddress ,@ProcessId ,@ProcessName ,@ThreadId ,@ThreadName ,@AppdomainName ,@OperatedTime ,@UserId ,@UserName ,@OperateModule ,@OperateType ,@ModifyBefore ,@ModifyAfter ,@CreatedTime, @ClientIp, @CorpId, @CorpName, @Remark);", item);
                 if (effectedRows > 0)
                 {
                     return true;
@@ -83,6 +83,18 @@ namespace Log.Dao
                 sbSqlTotal.Append(" AND operateLogs.source=@Source");
                 p.Add("Source", request.Source, System.Data.DbType.String);
             }
+            if (!request.OperateModule.IsNullOrEmpty())
+            {
+                sbSqlPaging.Append(" AND operateLogs.operate_module=@OperateModule");
+                sbSqlTotal.Append(" AND operateLogs.operate_module=@OperateModule");
+                p.Add("OperateModule", request.OperateModule, System.Data.DbType.String);
+            }
+            if (!request.OperateType.IsNullOrEmpty())
+            {
+                sbSqlPaging.Append(" AND operateLogs.operate_type=@OperateType");
+                sbSqlTotal.Append(" AND operateLogs.operate_type=@OperateType");
+                p.Add("OperateType", request.OperateType, System.Data.DbType.String);
+            }
             if (!request.UserId.IsNullOrEmpty())
             {
                 sbSqlPaging.Append(" AND operateLogs.user_id LIKE @UserId");
@@ -107,18 +119,12 @@ namespace Log.Dao
                 sbSqlTotal.Append(" AND operateLogs.corp_name LIKE @CorpName");
                 p.Add("CorpName", "%" + request.CorpName + "%", System.Data.DbType.String);
             }
-            if (!request.OperateModule.IsNullOrEmpty())
+            if (!request.Remark.IsNullOrEmpty())
             {
-                sbSqlPaging.Append(" AND operateLogs.operate_module=@OperateModule");
-                sbSqlTotal.Append(" AND operateLogs.operate_module=@OperateModule");
-                p.Add("OperateModule", request.OperateModule, System.Data.DbType.String);
-            }
-            if (!request.OperateType.IsNullOrEmpty())
-            {
-                sbSqlPaging.Append(" AND operateLogs.operate_type=@OperateType");
-                sbSqlTotal.Append(" AND operateLogs.operate_type=@OperateType");
-                p.Add("OperateType", request.OperateType, System.Data.DbType.String);
-            }
+                sbSqlPaging.Append(" AND operateLogs.remark LIKE @Remark");
+                sbSqlTotal.Append(" AND operateLogs.remark LIKE @Remark");
+                p.Add("Remark", "%" + request.Remark + "%", System.Data.DbType.String);
+            }            
             if (request.OperatedTimeStart.HasValue)
             {
                 sbSqlPaging.Append(" AND operateLogs.operated_time >= @OperatedTimeStart");
@@ -237,6 +243,8 @@ namespace Log.Dao
                                 operateLogs.modify_after AS ModifyAfter ,
                                 operateLogs.created_time AS CreatedTime ,
                                 operateLogs.client_ip AS ClientIp ,
+                                operateLogs.corp_id AS CorpId,
+                                operateLogs.corp_name AS CorpName,
                                 *
                         FROM    dbo.t_logs_operate_log (NOLOCK) AS operateLogs
                         WHERE   operateLogs.id = @Id;", new { @Id = id }).FirstOrDefault();

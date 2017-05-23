@@ -36,5 +36,10 @@ namespace Log.Entity.ViewModel
         /// 客户名称
         /// </summary>
         public string CorpName { get; set; }
+
+        /// <summary>
+        /// 备注，方便通过关键字过滤
+        /// </summary>
+        public string Remark { get; set; }
     }
 }

@@ -72,6 +72,14 @@
                 </tr>
                 <tr>
                     <th>
+                        Remark：
+                    </th>
+                    <td>
+                        <input type="text" name="ui_operatelog_remark" id="ui_operatelog_remark" autocomplete="off" style="width: 130px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
                         OperatedTime：
                     </th>
                     <td>
@@ -165,12 +173,13 @@
         $("#ui_operatelog_dg").datagrid('load', {
             SystemCode: $('#ui_operatelog_search').find('[name=ui_operatelog_systemCode]').val(),
             Source: $('#ui_operatelog_search').find('[name=ui_operatelog_source]').val(),
+            OperateModule: $('#ui_operatelog_search').find('[name=ui_operatelog_operateModule]').val(),
+            OperateType: $('#ui_operatelog_search').find('[name=ui_operatelog_operateType]').val(),
             UserId: $('#ui_operatelog_search').find('[name=ui_operatelog_userId]').val(),
             UserName: $('#ui_operatelog_search').find('[name=ui_operatelog_userName]').val(),
             CorpId: $('#ui_operatelog_search').find('[name=ui_operatelog_corpId]').val(),
             CorpName: $('#ui_operatelog_search').find('[name=ui_operatelog_corpName]').val(),
-            OperateModule: $('#ui_operatelog_search').find('[name=ui_operatelog_operateModule]').val(),
-            OperateType: $('#ui_operatelog_search').find('[name=ui_operatelog_operateType]').val(),
+            Remark: $('#ui_operatelog_search').find('[name=ui_operatelog_remark]').val(),            
             OperatedTimeStart: $('#ui_operatelog_operatedTimeStart').datetimebox('getValue'),
             OperatedTimeEnd: $('#ui_operatelog_operatedTimeEnd').datetimebox('getValue')
         });
@@ -216,12 +225,13 @@
                                         { field: 'Source', title: 'Source', sortable: true, width: 120 },
                                         { field: 'IpAddress', title: 'IpAddress(服务器)', sortable: true, width: 120 },
                                         { field: 'ClientIp', title: 'IpAddress(客户端)', sortable: true, width: 120 },
-                                        { field: 'UserId', title: 'UserId', sortable: true, width: 120 },
+                                        { field: 'UserId', title: 'UserId', sortable: true, width: 80 },
                                         { field: 'UserName', title: 'UserName', sortable: true, width: 120 },
-                                        { field: 'CorpId', title: 'CorpId', sortable: true, width: 120 },
-                                        { field: 'CorpName', title: 'CorpName', sortable: true, width: 160 },
+                                        { field: 'CorpId', title: 'CorpId', sortable: true, width: 80 },
+                                        { field: 'CorpName', title: 'CorpName', sortable: true, width: 220 },
                                         { field: 'OperateModule', title: 'OperateModule', sortable: true, width: 120 },
-                                        { field: 'OperateType', title: 'OperateType', sortable: true, width: 120 }
+                                        { field: 'OperateType', title: 'OperateType', sortable: true, width: 120 },
+                                        { field: 'Remark', title: 'Remark', sortable: true, width: 180 }
                             ]],
                             toolbar: toolbar.length == 0 ? null : toolbar
                         });
