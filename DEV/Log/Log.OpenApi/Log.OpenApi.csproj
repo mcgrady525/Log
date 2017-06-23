@@ -142,6 +142,7 @@
     <Compile Include="Controllers\PerformanceLogController.cs" />
     <Compile Include="Controllers\TraceLogController.cs" />
     <Compile Include="Controllers\XmlLogController.cs" />
+    <Compile Include="Controllers\XmlPerformanceLogController.cs" />
     <Compile Include="Filters\GlobalHandleErrorAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

@@ -51,6 +51,7 @@
     <Compile Include="AddOperateLogRequest.cs" />
     <Compile Include="AddPerformanceLogRequest.cs" />
     <Compile Include="AddXmlLogRequest.cs" />
+    <Compile Include="AddXmlPerformanceLogRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
