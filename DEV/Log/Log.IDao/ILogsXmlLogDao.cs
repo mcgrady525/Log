@@ -37,7 +37,7 @@ namespace Log.IDao
         /// 获取智能提示数据源
         /// </summary>
         /// <returns></returns>
-        Tuple<List<string>, List<string>, List<string>, List<string>> GetAutoCompleteData();
+        Tuple<List<string>, List<string>, List<string>, List<string>, List<string>> GetAutoCompleteData();
 
         /// <summary>
         /// 依id查询

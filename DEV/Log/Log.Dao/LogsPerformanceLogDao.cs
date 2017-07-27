@@ -124,6 +124,12 @@ namespace Log.Dao
                 sbSqlTotal.Append(" AND perfLogs.method_name=@MethodName");
                 p.Add("MethodName", request.MethodName, System.Data.DbType.String);
             }
+            if (!request.MethodCName.IsNullOrEmpty())
+            {
+                sbSqlPaging.Append(" AND perfLogs.method_cname=@MethodCName");
+                sbSqlTotal.Append(" AND perfLogs.method_cname=@MethodCName");
+                p.Add("MethodCName", request.MethodCName, System.Data.DbType.String);
+            }
             if (request.CreatedTimeStart.HasValue)
             {
                 sbSqlPaging.Append(" AND perfLogs.created_time >= @CreatedTimeStart");
@@ -184,31 +190,35 @@ namespace Log.Dao
         /// 获取智能提示数据源
         /// </summary>
         /// <returns></returns>
-        public Tuple<List<string>, List<string>, List<string>, List<string>> GetAutoCompleteData()
+        public Tuple<List<string>, List<string>, List<string>, List<string>, List<string>> GetAutoCompleteData()
         {
             var systemCodes = new List<string>();
             var sources = new List<string>();
             var classNames = new List<string>();
             var methodNames = new List<string>();
+            var methodCNames = new List<string>();
 
             using (var conn = DapperHelper.CreateConnection())
             {
                 var query = conn.Query<TLogsXmlLogTip>(@"SELECT  perfLogTips.system_code AS SystemCode ,
                             perfLogTips.class_name AS ClassName ,
                             perfLogTips.method_name AS MethodName ,
+                            perfLogTips.method_cname AS MethodCName ,
                             *
                     FROM    dbo.t_logs_performance_log_tip (NOLOCK) AS perfLogTips
                     ORDER BY perfLogTips.system_code ,
                             perfLogTips.source ,
                             perfLogTips.class_name ,
-                            perfLogTips.method_name;").ToList();
+                            perfLogTips.method_name,
+                            perfLogTips.method_cname;").ToList();
                 systemCodes = query.Select(p => p.SystemCode).Distinct().ToList();
                 sources = query.Select(p => p.Source).Distinct().ToList();
                 classNames = query.Select(p => p.ClassName).Distinct().ToList();
                 methodNames = query.Select(p => p.MethodName).Distinct().ToList();
+                methodCNames = query.Select(p => p.MethodCName).Distinct().ToList();
             }
 
-            return new Tuple<List<string>, List<string>, List<string>, List<string>>(systemCodes, sources, classNames, methodNames);
+            return new Tuple<List<string>, List<string>, List<string>, List<string>, List<string>>(systemCodes, sources, classNames, methodNames, methodCNames);
         }
 
         /// <summary>

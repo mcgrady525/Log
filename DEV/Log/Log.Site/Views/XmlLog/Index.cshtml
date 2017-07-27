@@ -40,6 +40,14 @@
                 </tr>
                 <tr>
                     <th>
+                        MethodCName：
+                    </th>
+                    <td>
+                        <input type="text" name="ui_xmllog_methodCName" id="ui_xmllog_methodCName" style="width: 130px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
                         CreatedTime：
                     </th>
                     <td>
@@ -91,16 +99,19 @@
         var sources = {};
         var classNames = {};
         var methodNames = {};
+        var methodCNames = {};
         $.post('@Url.Action("GetAutoCompleteData", "XmlLog")', function (data) {
             if (data.success) {
                 systemCodes = $.parseJSON(data.systemCodes);
                 sources = $.parseJSON(data.sources);
                 classNames = $.parseJSON(data.classNames);
                 methodNames = $.parseJSON(data.methodNames);
+                methodCNames = $.parseJSON(data.methodCNames);
                 $("#ui_xmllog_systemCode").autocomplete({ source: systemCodes });
                 $("#ui_xmllog_source").autocomplete({ source: sources });
                 $("#ui_xmllog_className").autocomplete({ source: classNames });
                 $("#ui_xmllog_methodName").autocomplete({ source: methodNames });
+                $("#ui_xmllog_methodCName").autocomplete({ source: methodCNames });
             }
             else {
                 $.show_warning("提示", "初始化智能提示失败!");
@@ -138,6 +149,7 @@
             Source: $('#ui_xmllog_search').find("input[name='ui_xmllog_source']").val(),
             ClassName: $('#ui_xmllog_search').find("input[name='ui_xmllog_className']").val(),
             MethodName: $('#ui_xmllog_search').find("input[name='ui_xmllog_methodName']").val(),
+            MethodCName: $('#ui_xmllog_search').find("input[name='ui_xmllog_methodCName']").val(),
             CreatedTimeStart: $('#ui_xmllog_createdTimeStart').datetimebox('getValue'),
             CreatedTimeEnd: $('#ui_xmllog_createdTimeEnd').datetimebox('getValue')
         });

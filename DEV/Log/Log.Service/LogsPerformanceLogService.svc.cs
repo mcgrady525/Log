@@ -114,16 +114,17 @@ namespace Log.Service
         /// 获取智能提示数据源
         /// </summary>
         /// <returns></returns>
-        public ServiceResult<Tuple<List<string>, List<string>, List<string>, List<string>>> GetAutoCompleteData()
+        public ServiceResult<Tuple<List<string>, List<string>, List<string>, List<string>, List<string>>> GetAutoCompleteData()
         {
             var systemCodes = new List<string>();
             var sources = new List<string>();
             var classNames = new List<string>();
             var methodNames = new List<string>();
-            var result = new ServiceResult<Tuple<List<string>, List<string>, List<string>, List<string>>>
+            var methodCNames = new List<string>();
+            var result = new ServiceResult<Tuple<List<string>, List<string>, List<string>, List<string>, List<string>>>
             {
                 ReturnCode = ReturnCodeType.Error,
-                Content = new Tuple<List<string>, List<string>, List<string>, List<string>>(systemCodes, sources, classNames, methodNames)
+                Content = new Tuple<List<string>, List<string>, List<string>, List<string>, List<string>>(systemCodes, sources, classNames, methodNames, methodCNames)
             };
 
             var rs = _perfLogDao.GetAutoCompleteData();

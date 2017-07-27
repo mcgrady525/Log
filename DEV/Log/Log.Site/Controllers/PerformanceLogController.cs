@@ -113,6 +113,7 @@ namespace Log.Site.Controllers
             var sources = new List<string>();
             var classNames = new List<string>();
             var methodNames = new List<string>();
+            var methodCNames = new List<string>();
 
             var rs = _perfLogService.GetAutoCompleteData();
             if (rs.ReturnCode == ReturnCodeType.Success)
@@ -121,10 +122,11 @@ namespace Log.Site.Controllers
                 sources = rs.Content.Item2;
                 classNames = rs.Content.Item3;
                 methodNames = rs.Content.Item4;
+                methodCNames = rs.Content.Item5;
                 flag = true;
             }
 
-            return Json(new { success = flag, msg = msg, systemCodes = systemCodes.ToJson(), sources = sources.ToJson(), classNames = classNames.ToJson(), methodNames = methodNames.ToJson() }, JsonRequestBehavior.AllowGet);
+            return Json(new { success = flag, msg = msg, systemCodes = systemCodes.ToJson(), sources = sources.ToJson(), classNames = classNames.ToJson(), methodNames = methodNames.ToJson(), methodCNames = methodCNames.ToJson() }, JsonRequestBehavior.AllowGet);
         }
 
     }

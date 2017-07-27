@@ -68,6 +68,13 @@ namespace Log.Entity.Db
 		[DataMember]
 		[Column("modified_time")] 
 		public DateTime? ModifiedTime { get; set; }
+
+        /// <summary>
+        /// method_cname
+        /// </summary>
+        [DataMember]
+        [Column("method_cname")]
+        public string MethodCName { get; set; }
 		
 	}
 }

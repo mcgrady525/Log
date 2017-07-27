@@ -110,6 +110,12 @@ namespace Log.Dao
                 sbSqlTotal.Append(" AND xmlLogs.method_name=@MethodName");
                 p.Add("MethodName", request.MethodName, System.Data.DbType.String);
             }
+            if (!request.MethodCName.IsNullOrEmpty())
+            {
+                sbSqlPaging.Append(" AND xmlLogs.method_cname=@MethodCName");
+                sbSqlTotal.Append(" AND xmlLogs.method_cname=@MethodCName");
+                p.Add("MethodCName", request.MethodCName, System.Data.DbType.String);
+            }
             if (request.CreatedTimeStart.HasValue)
             {
                 sbSqlPaging.Append(" AND xmlLogs.created_time >= @CreatedTimeStart");
@@ -149,31 +155,35 @@ namespace Log.Dao
         /// 获取智能提示数据源
         /// </summary>
         /// <returns></returns>
-        public Tuple<List<string>, List<string>, List<string>, List<string>> GetAutoCompleteData()
+        public Tuple<List<string>, List<string>, List<string>, List<string>, List<string>> GetAutoCompleteData()
         {
             var systemCodes = new List<string>();
             var sources = new List<string>();
             var classNames = new List<string>();
             var methodNames = new List<string>();
+            var methodCNames = new List<string>();
 
             using (var conn = DapperHelper.CreateConnection())
             {
                 var query = conn.Query<TLogsXmlLogTip>(@"SELECT  xmlLogTips.system_code AS SystemCode ,
                             xmlLogTips.class_name AS ClassName ,
                             xmlLogTips.method_name AS MethodName ,
+                            xmlLogTips.method_cname AS MethodCName ,
                             *
                     FROM    dbo.t_logs_xml_log_tip AS xmlLogTips
                     ORDER BY xmlLogTips.system_code ,
                             xmlLogTips.source ,
                             xmlLogTips.class_name ,
-                            xmlLogTips.method_name;").ToList();
+                            xmlLogTips.method_name,
+                            xmlLogTips.method_cname;").ToList();
                 systemCodes = query.Select(p => p.SystemCode).Distinct().ToList();
                 sources = query.Select(p => p.Source).Distinct().ToList();
                 classNames = query.Select(p => p.ClassName).Distinct().ToList();
                 methodNames = query.Select(p => p.MethodName).Distinct().ToList();
+                methodCNames = query.Select(p => p.MethodCName).Distinct().ToList();
             }
 
-            return new Tuple<List<string>, List<string>, List<string>, List<string>>(systemCodes, sources, classNames, methodNames);
+            return new Tuple<List<string>, List<string>, List<string>, List<string>, List<string>>(systemCodes, sources, classNames, methodNames, methodCNames);
         }
 
         /// <summary>

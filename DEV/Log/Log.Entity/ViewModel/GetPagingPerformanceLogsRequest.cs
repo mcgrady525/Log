@@ -19,6 +19,8 @@ namespace Log.Entity.ViewModel
 
         public string MethodName { get; set; }
 
+        public string MethodCName { get; set; }
+
         public DateTime? CreatedTimeStart { get; set; }
 
         public DateTime? CreatedTimeEnd { get; set; }

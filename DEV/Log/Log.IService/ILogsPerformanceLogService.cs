@@ -46,7 +46,7 @@ namespace Log.IService
         /// </summary>
         /// <returns></returns>
         [OperationContract]
-        ServiceResult<Tuple<List<string>, List<string>, List<string>, List<string>>> GetAutoCompleteData();
+        ServiceResult<Tuple<List<string>, List<string>, List<string>, List<string>, List<string>>> GetAutoCompleteData();
 
         /// <summary>
         /// 依据id获取perf log
