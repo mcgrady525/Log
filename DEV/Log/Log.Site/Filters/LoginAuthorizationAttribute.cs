@@ -118,7 +118,7 @@ namespace Log.Site.Filters
             if (!(controllerName.Equals("account") && actionName.Equals("login")))
             {
                 var path = filterContext.HttpContext.Request.Path;
-                var url = "Account/Login?ReturnUrl={0}";
+                var url = "~/Account/Login?ReturnUrl={0}";
                 filterContext.HttpContext.Response.Redirect(string.Format(url, HttpUtility.UrlDecode(path)), true);
             }
         }

@@ -41,7 +41,6 @@ namespace Log.Site.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [LoginAuthorization]
         public ActionResult Detail(long id)
         {
             TLogsXmlLog xmlLog = null;

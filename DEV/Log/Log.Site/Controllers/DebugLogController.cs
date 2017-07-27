@@ -42,7 +42,6 @@ namespace Log.Site.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [LoginAuthorization]
         public ActionResult Detail(int id)
         {
             TLogsDebugLog debugLog = null;
