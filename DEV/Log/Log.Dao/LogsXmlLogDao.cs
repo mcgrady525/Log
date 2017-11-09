@@ -24,7 +24,7 @@ namespace Log.Dao
         {
             using (var conn = DapperHelper.CreateConnection())
             {
-                var effectRows = conn.Execute(@"INSERT INTO dbo.t_logs_xml_log VALUES (@SystemCode ,@Source ,@MachineName ,@IpAddress ,@ProcessId ,@ProcessName ,@ThreadId ,@ThreadName ,@AppdomainName ,@ClassName ,@MethodName ,@Remark ,@CreatedTime,@Rq ,@Rs, @ClientIp, @MethodCname);", item);
+                var effectRows = conn.Execute(@"INSERT INTO dbo.t_logs_xml_log VALUES (@SystemCode ,@Source ,@MachineName ,@IpAddress ,@ProcessId ,@ProcessName ,@ThreadId ,@ThreadName ,@AppdomainName ,@ClassName ,@MethodName ,@Remark ,@CreatedTime,@Rq ,@Rs, @ClientIp, @MethodCname, @Duration);", item);
                 if (effectRows > 0)
                 {
                     return true;
@@ -79,6 +79,7 @@ namespace Log.Dao
                         xmlLogs.ip_address AS IpAddress ,
                         xmlLogs.client_ip AS ClientIp,
                         xmlLogs.appdomain_name AS AppDomainName ,
+                        xmlLogs.machine_name AS MachineName,
                         *
                 FROM    dbo.t_logs_xml_log(NOLOCK) AS xmlLogs
                 WHERE   1 = 1");

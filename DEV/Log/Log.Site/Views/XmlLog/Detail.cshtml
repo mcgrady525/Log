@@ -13,6 +13,13 @@
     {
         createdTime = Model.CreatedTime.Value.ToString("yyyy-MM-dd HH:mm:ss.fff");
     }
+
+    //duration，格式：
+    var duration = string.Empty;
+    if (Model.Duration.HasValue)
+    {
+        duration = Model.Duration.Value.ToString("N0");
+    }
 }
 
 <h2>Id</h2>
@@ -29,6 +36,8 @@
 @Html.DisplayFor(p => p.MethodName)
 <h2>MethodCName</h2>
 @Html.DisplayFor(p => p.MethodCname)
+<h2>Duration(单位:ms)</h2>
+@Html.Raw(duration)
 <h2>Machine Name</h2>
 @Html.DisplayFor(p => p.MachineName)
 <h2>Ip Address(服务器)</h2>

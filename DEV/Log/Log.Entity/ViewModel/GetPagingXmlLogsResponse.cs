@@ -69,5 +69,24 @@ namespace Log.Entity.ViewModel
         /// 客户端IP
         /// </summary>
         public string ClientIp { get; set; }
+
+        /// <summary>
+        /// MachineName
+        /// </summary>
+        public string MachineName { get; set; }
+
+        /// <summary>
+        /// 耗时，单位：ms
+        /// </summary>
+        public long Duration { get; set; }
+
+        public string DurationToStringN
+        {
+            get
+            {
+                return Duration.ToString("N0");
+            }
+        }
+
     }
 }

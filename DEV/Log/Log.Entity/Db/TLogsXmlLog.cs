@@ -146,5 +146,12 @@ namespace Log.Entity.Db
 		[Column("method_cname")] 
 		public string MethodCname { get; set; }
 		
+		/// <summary>
+		/// duration
+		/// </summary>
+		[DataMember]
+		[Column("duration")] 
+		public long? Duration { get; set; }
+		
 	}
 }
