@@ -97,5 +97,11 @@ namespace Log.Entity.RabbitMQ
         /// method_cname
         /// </summary>
         public string MethodCName { get; set; }
+
+        /// <summary>
+        /// 耗时，单位：ms
+        /// 接口性能放在xml日志中
+        /// </summary>
+        public long Duration { get; set; }
     }
 }
